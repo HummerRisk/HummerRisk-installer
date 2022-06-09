@@ -1,0 +1,439 @@
+# Language locale/zh translations for PACKAGE package.
+# Copyright (C) 2021 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-07-27 16:54+0800\n"
+"Language-Team: Language locale/zh\n"
+"Language: locale/zh_CN/LC_MESSAGES/hummerrisk-installer\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: scripts/0_prepare.sh:21
+msgid "Starting to download Docker engine"
+msgstr "开始下载 Docker 程序"
+
+#: scripts/0_prepare.sh:23
+msgid "Download docker fails, check the network is normal"
+msgstr "下载 docker 失败, 请检查网络是否正常"
+
+#: scripts/0_prepare.sh:28
+msgid "Using Docker cache"
+msgstr "使用 Docker 缓存文件"
+
+#: scripts/0_prepare.sh:43
+msgid "Starting to download Docker Compose binary"
+msgstr "开始下载 Docker Compose 程序"
+
+#: scripts/0_prepare.sh:45
+msgid "Download docker-compose fails, check the network is normal"
+msgstr "下载 docker-compose 失败, 请检查网络是否正常"
+
+#: scripts/0_prepare.sh:50
+msgid "Using Docker Compose cache"
+msgstr "使用 Docker Compose 缓存文件"
+
+#: scripts/0_prepare.sh:63
+msgid "Docker is not running, please install and start"
+msgstr "Docker 没有运行, 请安装并启动"
+
+#: scripts/0_prepare.sh:89
+#, fuzzy
+msgid "Save image"
+msgstr "保存镜像"
+
+#: scripts/0_prepare.sh:92
+msgid "The image has been saved, skipping"
+msgstr "已保存过该镜像, 跳过"
+
+#: scripts/0_prepare.sh:102
+msgid "Preparing Docker offline package"
+msgstr "准备 Docker 离线包"
+
+#: scripts/0_prepare.sh:106
+msgid "Preparing image offline package"
+msgstr "准备 Docker 镜像离线包"
+
+#: scripts/1_config_hummerrisk.sh:8
+msgid "Configure Persistent Directory"
+msgstr "配置持久化目录"
+
+#: scripts/1_config_hummerrisk.sh:11
+msgid "Do you need custom persistent store, will use the default directory"
+msgstr "是否需要自定义持久化存储, 默认将使用目录"
+
+#: scripts/1_config_hummerrisk.sh:14
+msgid ""
+"To modify the persistent directory such as logs video, you can select your "
+"largest disk and create a directory in it, such as"
+msgstr "修改日志录像等持久化的目录, 可以找个最大的磁盘, 并创建目录, 如"
+
+#: scripts/1_config_hummerrisk.sh:15
+msgid ""
+"Note: you can not change it after installation, otherwise the database may "
+"be lost"
+msgstr "注意：安装后不能更改, 否则数据库可能会丢失"
+
+#: scripts/1_config_hummerrisk.sh:19
+msgid "Persistent storage directory"
+msgstr "持久化存储目录"
+
+#: scripts/1_config_hummerrisk.sh:49
+msgid "Please enter MySQL server IP"
+msgstr "请输入 mysql 的主机地址"
+
+#: scripts/1_config_hummerrisk.sh:55
+msgid "Please enter MySQL server port"
+msgstr "请输入 mysql 的端口"
+
+#: scripts/1_config_hummerrisk.sh:58
+msgid "Please enter MySQL database name"
+msgstr "请输入 mysql 的数据库"
+
+#: scripts/1_config_hummerrisk.sh:61
+msgid "Please enter MySQL username"
+msgstr "请输入 mysql 的用户名"
+
+#: scripts/1_config_hummerrisk.sh:64
+msgid "Please enter MySQL password"
+msgstr "请输入 mysql 的密码"
+
+#: scripts/1_config_hummerrisk.sh:67
+msgid "Failed to connect to database, please reset"
+msgstr "测试连接数据库失败, 请重新设置"
+
+#: scripts/1_config_hummerrisk.sh:99
+msgid "Configure MySQL"
+msgstr "配置 MySQL"
+
+#: scripts/1_config_hummerrisk.sh:105
+msgid "Do you want to use external MySQL"
+msgstr "是否使用外部 MySQL"
+
+#: scripts/1_config_hummerrisk.sh:116
+msgid "Configure External Port"
+msgstr "配置对外端口"
+
+#: scripts/1_config_hummerrisk.sh:119
+msgid "Do you need to customize the hummerrisk external port"
+msgstr "是否需要配置 hummerrisk 对外访问端口"
+
+#: scripts/1_config_hummerrisk.sh:121
+msgid "hummerrisk web port"
+msgstr "hummerrisk web 端口"
+
+#: scripts/1_config_hummerrisk.sh:130
+msgid "Init hummerrisk Database"
+msgstr "初始化 hummerrisk 数据库"
+
+#: scripts/2_install_docker.sh:23
+msgid "Docker program does not exist"
+msgstr "Docker 程序不存在"
+
+#: scripts/2_install_docker.sh:42
+msgid "There are updates available currently. Do you want to update"
+msgstr "检测到 Docker 版本有更新, 是否更新"
+
+#: scripts/2_install_docker.sh:129
+msgid "Do you need custom docker root dir, will use the default directory"
+msgstr "是否需要 Docker 存储目录, 默认将使用目录"
+
+#: scripts/2_install_docker.sh:133
+msgid ""
+"Modify the default storage directory of Docker image, you can select your "
+"largest disk and create a directory in it, such as"
+msgstr "修改 Docker 默认的存储目录, 可以找个最大的磁盘, 并创建目录, 如"
+
+#: scripts/2_install_docker.sh:136
+msgid "Docker image storage directory"
+msgstr "Docker 镜像存储目录"
+
+#: scripts/2_install_docker.sh:192
+#, fuzzy
+msgid "Skip docker installation on MacOS"
+msgstr "macOS 跳过安装 Docker"
+
+#: scripts/2_install_docker.sh:195
+msgid "Install Docker"
+msgstr "安装 Docker"
+
+#: scripts/2_install_docker.sh:198
+msgid "Configure Docker"
+msgstr "配置 Docker"
+
+#: scripts/2_install_docker.sh:200
+msgid "Start Docker"
+msgstr "启动 Docker"
+
+#: scripts/3_load_images.sh:35
+msgid "Docker image loaded, skipping"
+msgstr "镜像已加载, 跳过"
+
+#: scripts/4_install_hummerrisk.sh:10
+msgid ""
+"The current Linux system does not support systemd management. Please deploy "
+"docker by yourself before running this script again"
+msgstr ""
+"当前 Linux 系统不支持 systemd 管理, 请先自行部署 docker 后再重新运行此脚本"
+
+#: scripts/4_install_hummerrisk.sh:14
+msgid ""
+"The current Linux system does not support systemd management. Please deploy "
+"docker-compose by yourself before running this script again"
+msgstr ""
+"当前 Linux 系统不支持 systemd 管理, 请先自行部署 docker-compose 后再重新运行"
+"此脚本"
+
+#: scripts/4_install_hummerrisk.sh:21
+msgid "The Installation is Complete"
+msgstr "安装完成了"
+
+#: scripts/4_install_hummerrisk.sh:28
+msgid "You can use the following command to start, and then visit"
+msgstr "可以使用如下命令启动, 然后访问"
+
+#: scripts/4_install_hummerrisk.sh:32
+msgid "Other management commands"
+msgstr "其它一些管理命令"
+
+#: scripts/4_install_hummerrisk.sh:37
+msgid "For more commands, you can enter ./hrctl.sh --help to understand"
+msgstr "更多还有一些命令, 你可以 ./hrctl.sh --help 来了解"
+
+#: scripts/4_install_hummerrisk.sh:39
+msgid "Web access"
+msgstr "Web 访问"
+
+#: scripts/4_install_hummerrisk.sh:41
+msgid "Default username"
+msgstr "默认用户"
+
+#: scripts/4_install_hummerrisk.sh:41
+msgid "Default password"
+msgstr "默认密码"
+
+#: scripts/4_install_hummerrisk.sh:43
+msgid "More information"
+msgstr "更多信息"
+
+#: scripts/4_install_hummerrisk.sh:44
+msgid "Offical Website"
+msgstr "我们的官网"
+
+#: scripts/4_install_hummerrisk.sh:45
+msgid "Documentation"
+msgstr "我们的文档"
+
+#: scripts/4_install_hummerrisk.sh:54
+msgid "Install and Configure Docker"
+msgstr "安装配置 Docker"
+
+#: scripts/4_install_hummerrisk.sh:58
+msgid "Loading Docker Image"
+msgstr "加载 Docker 镜像"
+
+#: scripts/4_install_hummerrisk.sh:62
+msgid "Install and Configure hummerrisk"
+msgstr "安装配置 hummerrisk"
+
+#: scripts/5_db_backup.sh:22
+msgid "Backing up"
+msgstr "正在备份"
+
+#: scripts/5_db_backup.sh:27
+msgid "Backup failed"
+msgstr "备份失败"
+
+#: scripts/5_db_backup.sh:31
+msgid "Backup succeeded! The backup file has been saved to"
+msgstr "备份成功! 备份文件已存放至"
+
+#: scripts/6_db_restore.sh:16
+msgid "Start restoring database"
+msgstr "开始还原数据库"
+
+#: scripts/6_db_restore.sh:22
+msgid "file does not exist"
+msgstr "文件不存在"
+
+#: scripts/6_db_restore.sh:27
+msgid ""
+"Database recovery failed. Please check whether the database file is complete "
+"or try to recover manually"
+msgstr "数据库恢复失败. 请检查数据库文件是否完整, 或尝试手动恢复"
+
+#: scripts/6_db_restore.sh:30
+msgid "Database recovered successfully"
+msgstr "数据库恢复成功"
+
+#: scripts/6_db_restore.sh:36
+msgid "Format error"
+msgstr "格式错误"
+
+#: scripts/6_db_restore.sh:40
+msgid "The backup file does not exist"
+msgstr "备份文件不存在"
+
+#: scripts/7_upgrade.sh:34
+msgid ""
+"Detected that the hummerrisk container is running. Do you want to close the "
+"container and continue to upgrade"
+msgstr "检测到 hummerrisk 正在运行, 是否需要关闭并继续升级"
+
+#: scripts/7_upgrade.sh:47
+msgid "Failed to backup the database. Continue to upgrade"
+msgstr "备份数据库失败, 继续升级吗"
+
+#: scripts/7_upgrade.sh:53
+msgid "Skip database backup"
+msgstr "跳过备份数据库"
+
+#: scripts/7_upgrade.sh:60
+msgid "Do you need to clean up the old version image"
+msgstr "是否需要清理旧版本镜像文件"
+
+#: scripts/7_upgrade.sh:75
+msgid "Are you sure you want to update the current version to"
+msgstr "是否将版本更新至"
+
+#: scripts/7_upgrade.sh:87
+msgid "Upgrade Docker image"
+msgstr "升级镜像文件"
+
+#: scripts/7_upgrade.sh:90 hrctl.sh:48
+msgid "Backup database"
+msgstr "备份数据库"
+
+#: scripts/7_upgrade.sh:93
+msgid "Cleanup Image"
+msgstr "清理镜像"
+
+#: scripts/7_upgrade.sh:96
+msgid "Upgrade successfully. You can now restart the program"
+msgstr "升级成功, 可以重启程序了"
+
+#: scripts/8_uninstall.sh:8
+msgid "Make sure you have a backup of data, this operation is not reversible"
+msgstr "请确认已经备份好相关数据, 此操作不可逆"
+
+#: scripts/8_uninstall.sh:12
+#, fuzzy
+msgid "Are you clean up hummerrisk files"
+msgstr "确认清理 hummerrisk 相关文件"
+
+#: scripts/8_uninstall.sh:19 scripts/8_uninstall.sh:21
+#: scripts/8_uninstall.sh:23
+msgid "Cleaning up"
+msgstr "正在清理"
+
+#: scripts/8_uninstall.sh:30
+msgid "Do you need to clean up the Docker image"
+msgstr "是否清理 Docker 镜像"
+
+#: scripts/8_uninstall.sh:36
+msgid "Cleanup complete"
+msgstr "清理完成"
+
+#: scripts/8_uninstall.sh:40 hrctl.sh:43
+msgid "Uninstall hummerrisk"
+msgstr "卸载 hummerrisk"
+
+#: scripts/utils.sh:138
+msgid "no default"
+msgstr "无默认值"
+
+#: scripts/utils.sh:140
+msgid "default"
+msgstr "默认为"
+
+#: scripts/utils.sh:188
+msgid "complete"
+msgstr "完成"
+
+#: scripts/utils.sh:192
+msgid "fail"
+msgstr "失败"
+
+#: scripts/utils.sh:251 hrctl.sh:14
+msgid "Please install it first"
+msgstr "请先安装"
+
+#: scripts/utils.sh:286
+msgid "Check Configuration File"
+msgstr "检查配置文件"
+
+#: scripts/utils.sh:287
+msgid "Path to Configuration file"
+msgstr "配置文件位置"
+
+#: scripts/utils.sh:312
+msgid "Backup Configuration File"
+msgstr "备份配置文件"
+
+#: scripts/utils.sh:314
+msgid "Back up to"
+msgstr "正在备份"
+
+#: hrctl.sh:13
+msgid "Configuration file not found"
+msgstr "配置文件不存在"
+
+#: hrctl.sh:27
+msgid "Deployment Management Script"
+msgstr "安装部署脚本"
+
+#: hrctl.sh:34
+msgid "Status    hummerrisk"
+msgstr "检查 hummerrisk"
+
+#: hrctl.sh:35
+msgid "Upgrade   hummerrisk"
+msgstr "升级 hummerrisk"
+
+#: hrctl.sh:36
+msgid "Reconfig  hummerrisk"
+msgstr "重设 hummerrisk"
+
+#: hrctl.sh:39
+msgid "Start     hummerrisk"
+msgstr "启动 hummerrisk"
+
+#: hrctl.sh:40
+msgid "Stop      hummerrisk"
+msgstr "停止 hummerrisk"
+
+#: hrctl.sh:41
+msgid "Down      hummerrisk"
+msgstr "下线 hummerrisk"
+
+#: hrctl.sh:42
+msgid "Restart   hummerrisk"
+msgstr "重启 hummerrisk"
+
+#: hrctl.sh:46
+msgid "View hummerrisk version"
+msgstr "查看 hummerrisk 版本"
+
+#: hrctl.sh:47
+msgid "Loading docker image"
+msgstr "加载 Docker 镜像"
+
+#: hrctl.sh:49
+msgid "Data recovery through database backup file"
+msgstr "通过数据库备份文件恢复数据"
+
+#: hrctl.sh:110
+msgid "The current version is up to date"
+msgstr "当前版本已是最新"
+
+#: hrctl.sh:114
+msgid "The latest version is"
+msgstr "最新版本是"
+
+#: hrctl.sh:118
+msgid "The current version is"
+msgstr "当前版本是"
