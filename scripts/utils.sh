@@ -104,7 +104,7 @@ function test_mysql_connect() {
   password=$4
   db=$5
   command="CREATE TABLE IF NOT EXISTS test(id INT); DROP TABLE test;"
-  docker run -it --rm hummerrisk/mysql:5.7.31 mysql -h"${host}" -P"${port}" -u"${user}" -p"${password}" "${db}" -e "${command}" 2>/dev/null
+  docker run -it --rm hummerrisk/mysql:5.7.34 mysql -h"${host}" -P"${port}" -u"${user}" -p"${password}" "${db}" -e "${command}" 2>/dev/null
 }
 
 function get_images() {
@@ -115,7 +115,7 @@ function get_images() {
   fi
 
   images=(
-    "hummerrisk/mysql:5.7.31"
+    "hummerrisk/mysql:5.7.34"
     "hummerrisk/hummerrisk:${VERSION}"
   )
   for image in "${images[@]}"; do

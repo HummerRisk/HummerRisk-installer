@@ -23,7 +23,7 @@ function main() {
 
   docker_network_check
   backup_cmd="mysqldump --host=${HOST} --port=${PORT} --user=${USER} --password=${PASSWORD} ${DATABASE}"
-  if ! docker run --rm -i --network=hr_default hummerrisk/mysql:5.7.31 ${backup_cmd} > "${DB_FILE}"; then
+  if ! docker run --rm -i --network=hr_default hummerrisk/mysql:5.7.34 ${backup_cmd} > "${DB_FILE}"; then
     log_error "$(gettext 'Backup failed')!"
     rm -f "${DB_FILE}"
     exit 1

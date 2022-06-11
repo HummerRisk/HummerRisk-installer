@@ -57,7 +57,7 @@ function pull_image() {
 }
 
 function main() {
-  if [[ -d "${IMAGE_DIR}" && -f "${IMAGE_DIR}/mysql:5.7.31.tar" ]]; then
+  if [[ -d "${IMAGE_DIR}" && -f "${IMAGE_DIR}/mysql:5.7.34.tar" ]]; then
     load_image_files
   else
     pull_image
