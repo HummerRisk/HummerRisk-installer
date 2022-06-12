@@ -38,7 +38,7 @@ function post_install() {
 
   echo_yellow "\n3. $(gettext 'Web access')"
   echo "http://${HOST}:${HTTP_PORT}"
-  echo "$(gettext 'Default username'): admin  $(gettext 'Default password'): hummerrisk"
+  echo "$(gettext 'Default username'): admin  $(gettext 'Default password'): hummer"
 
   echo_yellow "\n4. $(gettext 'More information')"
   echo "$(gettext 'Offical Website'): https://www.hummerrisk.com/"
