@@ -19,7 +19,7 @@ jobs:
         env:
           RELEASE_VERSION: ${{github.ref}}
         run: |
-          git clone https://github.com/hummerrisk/hummerrisk-installer.git --depth=1
+          git clone https://github.com/HummerRisk/installer.git --depth=1
           cd hummerrisk-installer
           rm -rf hudson.* .travis.yml .git .github
           chmod +x hrctl.sh
