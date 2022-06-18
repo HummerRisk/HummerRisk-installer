@@ -5,7 +5,7 @@ installer 可以安装、部署、更新 管理 hummerrisk
 ## 安装部署
 
 ```bash
-cd hummerrisk-installer
+cd installer
 
 # 安装，版本是在 static.env 指定的
 ./hrctl.sh install
