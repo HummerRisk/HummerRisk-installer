@@ -17,7 +17,7 @@ cd hummerrisk-installer
 ./hrctl.sh upgrade
 
 # 升级到指定版本
-./hrctl.sh upgrade v0.1.1
+./hrctl.sh upgrade v0.1.0
 ```
 
 ## 离线安装
