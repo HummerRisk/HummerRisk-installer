@@ -19,6 +19,8 @@ services:
     volumes:
       - ${VOLUME_DIR}/conf:/opt/hummerrisk/conf
       - ${VOLUME_DIR}/logs:/opt/hummerrisk/logs
+      - ${VOLUME_DIR}/conf:/opt/hummerrisk/file
+      - ${VOLUME_DIR}/conf:/opt/hummerrisk/image
     healthcheck:
       test: "curl -fsL http://localhost:8088 > /dev/null"
       interval: 10s
