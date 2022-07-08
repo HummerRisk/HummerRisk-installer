@@ -19,16 +19,16 @@ function main() {
     mkdir -p ${BACKUP_DIR}
   fi
 
-  echo "$(gettext 'Backing up')..."
+  echo " 'Backing up'..."
 
   docker_network_check
   backup_cmd="mysqldump --host=${HOST} --port=${PORT} --user=${USER} --password=${PASSWORD} ${DATABASE}"
   if ! docker run --rm -i --network=hr_default hummerrisk/mysql:5.7.34 ${backup_cmd} > "${DB_FILE}"; then
-    log_error "$(gettext 'Backup failed')!"
+    log_error " 'Backup failed'!"
     rm -f "${DB_FILE}"
     exit 1
   else
-    log_success "$(gettext 'Backup succeeded! The backup file has been saved to'): ${DB_FILE}"
+    log_success " 'Backup succeeded! The backup file has been saved to': ${DB_FILE}"
   fi
 }
 

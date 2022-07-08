@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
-#
-BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+export VERSION=v0.1
 export SCRIPT_DIR="$BASE_DIR"
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 PROJECT_DIR=$(dirname "${SCRIPT_DIR}")
-
-# 国际化处理
-export TEXTDOMAINDIR=$PROJECT_DIR/locale
-export TEXTDOMAIN=hummerrisk-installer
 
 export CONFIG_DIR='/opt/hummerrisk/config'
 export CONFIG_FILE=$CONFIG_DIR/config.txt
 
-STATIC_ENV=${PROJECT_DIR}/static.env
-# shellcheck source=../static.env
-. "${STATIC_ENV}"
 
 export OS=$(uname -s)
 export DOCKER_VERSION=18.06.3-ce

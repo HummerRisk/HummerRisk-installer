@@ -32,7 +32,7 @@ function load_image_files() {
       echo
       docker load <"${IMAGE_DIR}/${filename}"
     else
-      echo "$(gettext 'Docker image loaded, skipping')"
+      echo " 'Docker image loaded, skipping'"
     fi
   done
 }

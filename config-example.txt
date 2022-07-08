@@ -1,7 +1,9 @@
 # 以下设置如果为空系统会自动生成随机字符串填入
 
 ## 安装配置
+# 镜像仓库地址
 DOCKER_IMAGE_PREFIX=registry.cn-beijing.aliyuncs.com
+# 数据持久化目录
 VOLUME_DIR=/opt/hummerrisk
 DOCKER_DIR=/var/lib/docker
 
@@ -18,7 +20,7 @@ DB_USER=root
 DB_PASSWORD=
 DB_NAME=hummerrisk
 
-## Service 端口
+## Service web端口
 HTTP_PORT=80
 
 # 额外的配置

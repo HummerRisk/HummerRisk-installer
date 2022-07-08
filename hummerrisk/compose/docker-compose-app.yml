@@ -2,7 +2,8 @@ version: '2.4'
 
 services:
   hummerrisk:
-    image: hummerrisk/hummerrisk:${VERSION}
+    image: ${DOCKER_IMAGE_PREFIX}/hummerrisk/hummerrisk:v0.1
+#    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hummerrisk:${VERSION}
     container_name: hummer_risk
     restart: always
     ports:
@@ -19,6 +20,7 @@ services:
     volumes:
       - ${VOLUME_DIR}/conf:/opt/hummerrisk/conf
       - ${VOLUME_DIR}/logs:/opt/hummerrisk/logs
+      - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
       test: "curl -fsL http://localhost:8088 > /dev/null"
       interval: 10s

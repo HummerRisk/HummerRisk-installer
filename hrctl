@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#
+
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 # shellcheck source=scripts/utils.sh
 . "${PROJECT_DIR}/scripts/utils.sh"
@@ -10,8 +10,8 @@ args=("$@")
 
 function check_config_file() {
   if [[ ! -f "${CONFIG_FILE}" ]]; then
-    echo "$(gettext 'Configuration file not found'): ${CONFIG_FILE}"
-    echo "$(gettext 'Please install it first')"
+    echo " 'Configuration file not found': ${CONFIG_FILE}"
+    echo "'Please install it first'"
     return 3
   fi
   if [[ ! -f .env ]]; then
@@ -24,29 +24,29 @@ function pre_check() {
 }
 
 function usage() {
-  echo "hummerrisk $(gettext 'Deployment Management Script')"
+  echo "hummerrisk Deployment Management Script"
   echo
   echo "Usage: "
   echo "  hrctl [COMMAND] [ARGS...]"
   echo "  hrctl --help"
   echo
   echo "Installation Commands: "
-  echo "  status     $(gettext 'Status    hummerrisk')"
-  echo "  upgrade    $(gettext 'Upgrade   hummerrisk')"
-  echo "  reconfig   $(gettext 'Reconfig  hummerrisk')"
+  echo "  status     Status    hummerrisk"
+  echo "  upgrade    Upgrade   hummerrisk"
+  echo "  reconfig   Reconfig  hummerrisk"
   echo
   echo "Management Commands: "
-  echo "  start      $(gettext 'Start     hummerrisk')"
-  echo "  stop       $(gettext 'Stop      hummerrisk')"
-  echo "  down       $(gettext 'Down      hummerrisk')"
-  echo "  restart    $(gettext 'Restart   hummerrisk')"
-  echo "  uninstall  $(gettext 'Uninstall hummerrisk')"
+  echo "  start      Start     hummerrisk"
+  echo "  stop       Stop      hummerrisk"
+  echo "  down       Down      hummerrisk"
+  echo "  restart    Restart   hummerrisk"
+  echo "  uninstall  Uninstall hummerrisk"
   echo
   echo "More Commands: "
-  echo "  version            $(gettext 'View hummerrisk version')"
-  echo "  load_image         $(gettext 'Loading docker image')"
-  echo "  backup_db          $(gettext 'Backup database')"
-  echo "  restore_db [file]  $(gettext 'Data recovery through database backup file')"
+  echo "  version            View hummerrisk version"
+  echo "  load_image         Loading docker image"
+  echo "  backup_db          Backup database"
+  echo "  restore_db [file]  Data recovery through database backup file"
   echo
 }
 
@@ -103,38 +103,6 @@ function restart() {
   start
 }
 
-function check_update() {
-  current_version=$(get_current_version)
-  latest_version=$(get_latest_version)
-  if [[ "${current_version}" == "${latest_version}" ]]; then
-    echo_green "$(gettext 'The current version is up to date'): ${latest_version}"
-    echo
-    return
-  fi
-  if [[ -n "${latest_version}" ]] && [[ ${latest_version} =~ v.* ]]; then
-    echo -e "\033[32m$(gettext 'The latest version is'): ${latest_version}\033[0m"
-  else
-    exit 1
-  fi
-  echo -e "$(gettext 'The current version is'): ${current_version}"
-  Install_DIR="$(cd "$(dirname "${PROJECT_DIR}")" >/dev/null 2>&1 && pwd)"
-  if [[ ! -d "${Install_DIR}/hummerrisk-installer-${latest_version}" ]]; then
-    if [[ ! -f "${Install_DIR}/hummerrisk-installer-${latest_version}.tar.gz" ]]; then
-      timeout 60s wget -qO "${Install_DIR}/hummerrisk-installer-${latest_version}.tar.gz" "https://github.com/hummerrisk/hummerrisk-installer/releases/download/${latest_version}/hummerrisk-installer-${latest_version}.tar.gz" || {
-        rm -f "${Install_DIR}/hummerrisk-installer-${latest_version}.tar.gz"
-        exit 1
-      }
-    fi
-    tar -xf "${Install_DIR}/hummerrisk-installer-${latest_version}.tar.gz" -C "${Install_DIR}" || {
-      rm -rf "${Install_DIR}/hummerrisk-installer-${latest_version}" "${Install_DIR}/hummerrisk-installer-${latest_version}.tar.gz"
-      exit 1
-    }
-  fi
-  cd "${Install_DIR}/hummerrisk-installer-${latest_version}" || exit 1
-  ./hrctl.sh upgrade "${latest_version}"
-  ln -sf /usr/bin/hrctl "${PROJECT_DIR}/hrctl.sh"
-}
-
 function main() {
   if [[ "${action}" == "help" || "${action}" == "h" || "${action}" == "-h" || "${action}" == "--help" ]]; then
     echo ""
@@ -150,9 +118,6 @@ function main() {
       ;;
     upgrade)
       bash "${SCRIPT_DIR}/7_upgrade.sh" "$target"
-      ;;
-    check_update)
-      check_update
       ;;
     reconfig)
       ${EXE} down -v

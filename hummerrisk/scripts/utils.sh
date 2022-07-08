@@ -14,20 +14,31 @@ function is_confirm() {
   fi
 }
 
-function random_str() {
-  len=$1
-  if [[ -z ${len} ]]; then
-    len=16
-  fi
-  uuid=None
-  if command -v dmidecode &>/dev/null; then
-    uuid=$(dmidecode -t 1 | grep UUID | awk '{print $2}' | base64 | head -c ${len})
-  fi
-  if [[ "$(echo "$uuid" | wc -L)" == "${len}" ]]; then
-    echo "${uuid}"
-  else
-    cat < /dev/urandom | tr -dc A-Za-z0-9 | head -c ${len}; echo
-  fi
+function echo_logo() {
+  cat << "EOF"
+
+██╗  ██╗██╗   ██╗███╗   ███╗███╗   ███╗███████╗██████╗ ██████╗ ██╗███████╗██╗  ██╗
+██║  ██║██║   ██║████╗ ████║████╗ ████║██╔════╝██╔══██╗██╔══██╗██║██╔════╝██║ ██╔╝
+███████║██║   ██║██╔████╔██║██╔████╔██║█████╗  ██████╔╝██████╔╝██║███████╗█████╔╝
+██╔══██║██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══╝  ██╔══██╗██╔══██╗██║╚════██║██╔═██╗
+██║  ██║╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║███████╗██║  ██║██║  ██║██║███████║██║  ██╗
+╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚══════╝╚═╝  ╚═╝
+
+EOF
+
+  echo -e "\t\t\t\t\t\t\t\t   Version: \033[33m $VERSION \033[0m \n"
+}
+
+function echo_red() {
+  echo -e "\033[1;31m$1\033[0m"
+}
+
+function echo_green() {
+  echo -e "\033[1;32m$1\033[0m"
+}
+
+function echo_yellow() {
+  echo -e "\033[1;33m$1\033[0m"
 }
 
 function has_config() {
@@ -53,7 +64,6 @@ function get_env_value() {
   key=$1
   default=${2-''}
   value=$(env | grep "$key=" | awk -F= '{ print $2 }')
-
   echo "${value}"
 }
 
@@ -135,9 +145,9 @@ function read_from_input() {
     msg="${msg} (${choices}) "
   fi
   if [[ -z "${default}" ]]; then
-    msg="${msg} ($(gettext 'no default'))"
+    msg="${msg} ( 'no default'))"
   else
-    msg="${msg} ($(gettext 'default') ${default})"
+    msg="${msg} ( 'default') ${default})"
   fi
   echo -n "${msg}: "
   read -r input
@@ -171,25 +181,9 @@ function check_md5() {
   fi
 }
 
-function echo_red() {
-  echo -e "\033[1;31m$1\033[0m"
-}
-
-function echo_green() {
-  echo -e "\033[1;32m$1\033[0m"
-}
-
-function echo_yellow() {
-  echo -e "\033[1;33m$1\033[0m"
-}
-
-function echo_done() {
-  sleep 0.5
-  echo "$(gettext 'complete')"
-}
 
 function echo_failed() {
-  echo_red "$(gettext 'fail')"
+  echo_red "[FAILED] $1"
 }
 
 function log_success() {
@@ -248,7 +242,7 @@ function install_required_pkg() {
       apk add -q gettext-dev
     }
   else
-    echo_red "$(gettext 'Please install it first') $required_pkg"
+    echo_red " 'Please install it first') $required_pkg"
     exit 1
   fi
 }
@@ -283,8 +277,8 @@ function prepare_config() {
   echo -e './hrctl.sh $@' >> /usr/bin/hrctl
   chmod 755 /usr/bin/hrctl
 
-  echo_yellow "1. $(gettext 'Check Configuration File')"
-  echo "$(gettext 'Path to Configuration file'): ${CONFIG_DIR}"
+  echo_yellow "1.  'Check Configuration File'"
+  echo " 'Path to Configuration file'): ${CONFIG_DIR}"
   if [[ ! -d "${CONFIG_DIR}" ]]; then
     mkdir -p "${CONFIG_DIR}"
     cp config-example.txt "${CONFIG_FILE}"
@@ -309,25 +303,10 @@ function prepare_config() {
   fi
   now=$(date +'%Y-%m-%d_%H-%M-%S')
   backup_config_file="${backup_dir}/config.txt.${now}"
-  echo_yellow "\n2. $(gettext 'Backup Configuration File')"
+  echo_yellow "\n2.  'Backup Configuration File'"
   cp "${CONFIG_FILE}" "${backup_config_file}"
-  echo "$(gettext 'Back up to') ${backup_config_file}"
+  echo " 'Back up to') ${backup_config_file}"
   echo_done
-}
-
-function echo_logo() {
-  cat << "EOF"
-
-██╗  ██╗██╗   ██╗███╗   ███╗███╗   ███╗███████╗██████╗ ██████╗ ██╗███████╗██╗  ██╗
-██║  ██║██║   ██║████╗ ████║████╗ ████║██╔════╝██╔══██╗██╔══██╗██║██╔════╝██║ ██╔╝
-███████║██║   ██║██╔████╔██║██╔████╔██║█████╗  ██████╔╝██████╔╝██║███████╗█████╔╝
-██╔══██║██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══╝  ██╔══██╗██╔══██╗██║╚════██║██╔═██╗
-██║  ██║╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║███████╗██║  ██║██║  ██║██║███████║██║  ██╗
-╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚══════╝╚═╝  ╚═╝
-
-EOF
-
-  echo -e "\t\t\t\t\t\t\t\t   Version: \033[33m $VERSION \033[0m \n"
 }
 
 function get_latest_version() {

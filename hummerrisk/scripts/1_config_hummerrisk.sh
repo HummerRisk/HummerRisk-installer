@@ -5,18 +5,18 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 . "${BASE_DIR}/utils.sh"
 
 function set_volume_dir() {
-  echo_yellow "1. $(gettext 'Configure Persistent Directory')"
-  volume_dir=$(get_config VOLUME_DIR "/opt/hummerrisk")
+  echo_yellow "1.  'Configure Persistent Directory'"
+  volume_dir= VOLUME_DIR "/opt/hummerrisk"
   confirm="n"
-  read_from_input confirm "$(gettext 'Do you need custom persistent store, will use the default directory') ${volume_dir}?" "y/n" "${confirm}"
+  read_from_input confirm " 'Do you need custom persistent store, will use the default directory' ${volume_dir}?" "y/n" "${confirm}"
   if [[ "${confirm}" == "y" ]]; then
     echo
-    echo "$(gettext 'To modify the persistent directory such as logs video, you can select your largest disk and create a directory in it, such as') /opt/hummerrisk"
-    echo "$(gettext 'Note: you can not change it after installation, otherwise the database may be lost')"
+    echo " 'To modify the persistent directory such as logs video, you can select your largest disk and create a directory in it, such as' /opt/hummerrisk"
+    echo " 'Note: you can not change it after installation, otherwise the database may be lost'"
     echo
     df -h | grep -Ev "map|devfs|tmpfs|overlay|shm"
     echo
-    read_from_input volume_dir "$(gettext 'Persistent storage directory')" "" "${volume_dir}"
+    read_from_input volume_dir " 'Persistent storage directory'" "" "${volume_dir}"
     if [[ "${volume_dir}" == "y" ]]; then
       echo_failed
       echo
@@ -46,25 +46,25 @@ function set_volume_dir() {
 
 function set_external_mysql() {
   mysql_host=$(get_config DB_HOST)
-  read_from_input mysql_host "$(gettext 'Please enter MySQL server IP')" "" "${mysql_host}"
+  read_from_input mysql_host " 'Please enter MySQL server IP'" "" "${mysql_host}"
   if [[ "${mysql_host}" == "127.0.0.1" || "${mysql_host}" == "localhost" ]]; then
     mysql_host=$(hostname -I | cut -d ' ' -f1)
   fi
 
   mysql_port=$(get_config DB_PORT)
-  read_from_input mysql_port "$(gettext 'Please enter MySQL server port')" "" "${mysql_port}"
+  read_from_input mysql_port " 'Please enter MySQL server port'" "" "${mysql_port}"
 
   mysql_db=$(get_config DB_NAME)
-  read_from_input mysql_db "$(gettext 'Please enter MySQL database name')" "" "${mysql_db}"
+  read_from_input mysql_db " 'Please enter MySQL database name'" "" "${mysql_db}"
 
   mysql_user=$(get_config DB_USER)
-  read_from_input mysql_user "$(gettext 'Please enter MySQL username')" "" "${mysql_user}"
+  read_from_input mysql_user " 'Please enter MySQL username'" "" "${mysql_user}"
 
   mysql_pass=$(get_config DB_PASSWORD)
-  read_from_input mysql_pass "$(gettext 'Please enter MySQL password')" "" "${mysql_pass}"
+  read_from_input mysql_pass " 'Please enter MySQL password'" "" "${mysql_pass}"
 
   if ! test_mysql_connect "${mysql_host}" "${mysql_port}" "${mysql_user}" "${mysql_pass}" "${mysql_db}"; then
-    echo_red "$(gettext 'Failed to connect to database, please reset')"
+    echo_red " 'Failed to connect to database, please reset'"
     echo
     set_mysql
   fi
@@ -96,13 +96,13 @@ function set_internal_mysql() {
 }
 
 function set_mysql() {
-  echo_yellow "\n2. $(gettext 'Configure MySQL')"
+  echo_yellow "\n2. 'Configure MySQL'"
   use_external_mysql=$(get_config USE_EXTERNAL_MYSQL)
   confirm="n"
   if [[ "${use_external_mysql}" == "1" ]]; then
     confirm="y"
   fi
-  read_from_input confirm "$(gettext 'Do you want to use external MySQL')?" "y/n" "${confirm}"
+  read_from_input confirm " 'Do you want to use external MySQL'?" "y/n" "${confirm}"
 
   if [[ "${confirm}" == "y" ]]; then
     set_external_mysql
@@ -113,12 +113,12 @@ function set_mysql() {
 }
 
 function set_service_port() {
-  echo_yellow "\n3. $(gettext 'Configure External Port')"
+  echo_yellow "\n3.  'Configure External Port'"
   http_port=$(get_config HTTP_PORT)
   confirm="n"
-  read_from_input confirm "$(gettext 'Do you need to customize the hummerrisk external port')?" "y/n" "${confirm}"
+  read_from_input confirm " 'Do you need to customize the hummerrisk external port')?" "y/n" "${confirm}"
   if [[ "${confirm}" == "y" ]]; then
-    read_from_input http_port "$(gettext 'hummerrisk web port')" "" "${http_port}"
+    read_from_input http_port " 'hummerrisk web port'" "" "${http_port}"
     set_config HTTP_PORT "${http_port}"
   fi
   echo_done
@@ -127,7 +127,7 @@ function set_service_port() {
 function init_db() {
   use_external_mysql=$(get_config USE_EXTERNAL_MYSQL)
   if [[ "${use_external_mysql}" == "1" ]]; then
-    echo_yellow "\n4. $(gettext 'Init hummerrisk Database')"
+    echo_yellow "\n4.  'Init hummerrisk Database'"
     volume_dir=$(get_config VOLUME_DIR)
     docker_network_check
     bash "${BASE_DIR}/6_db_restore.sh" "${volume_dir}/conf/mysql/sql/hummerrisk.sql" || {

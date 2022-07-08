@@ -20,7 +20,7 @@ function install_docker() {
     prepare_docker_bin
   fi
   if [[ ! -f ./docker/dockerd ]]; then
-    echo_red "Error: $(gettext 'Docker program does not exist')"
+    echo_red "Error:  'Docker program does not exist'"
     exit 1
   fi
 
@@ -39,7 +39,7 @@ function install_docker() {
     copy_docker
   elif [[ "${docker_version_match}" != "1" ]]; then
     confirm="n"
-    read_from_input confirm "$(gettext 'There are updates available currently. Do you want to update')?" "y/n" "${confirm}"
+    read_from_input confirm " 'There are updates available currently. Do you want to update'?" "y/n" "${confirm}"
     if [[ "${confirm}" == "y" ]]; then
       copy_docker
     fi
@@ -126,14 +126,14 @@ f.close()
 function config_docker() {
   docker_storage_path=$(get_config DOCKER_DIR "/var/lib/docker")
   confirm="n"
-  read_from_input confirm "$(gettext 'Do you need custom docker root dir, will use the default directory') ${docker_storage_path}?" "y/n" "${confirm}"
+  read_from_input confirm " 'Do you need custom docker root dir, will use the default directory' ${docker_storage_path}?" "y/n" "${confirm}"
 
   if [[ "${confirm}" == "y" ]]; then
     echo
-    echo "$(gettext 'Modify the default storage directory of Docker image, you can select your largest disk and create a directory in it, such as') /opt/docker"
+    echo " 'Modify the default storage directory of Docker image, you can select your largest disk and create a directory in it, such as' /opt/docker"
     df -h | grep -Ev "map|devfs|tmpfs|overlay|shm"
     echo
-    read_from_input docker_storage_path "$(gettext 'Docker image storage directory')" '' "${docker_storage_path}"
+    read_from_input docker_storage_path " 'Docker image storage directory'" '' "${docker_storage_path}"
     if [[ "${docker_storage_path}" == "y" ]]; then
       echo_failed
       echo
@@ -189,15 +189,15 @@ function check_docker_compose() {
 
 function main() {
   if [[ "${OS}" == 'Darwin' ]]; then
-    echo "$(gettext 'Skip docker installation on MacOS')"
+    echo " 'Skip docker installation on MacOS'"
     return
   fi
-  echo_yellow "1. $(gettext 'Install Docker')"
+  echo_yellow "1.  'Install Docker'"
   check_docker_install
   check_compose_install
-  echo_yellow "\n2. $(gettext 'Configure Docker')"
+  echo_yellow "\n2.  'Configure Docker'"
   check_docker_config
-  echo_yellow "\n3. $(gettext 'Start Docker')"
+  echo_yellow "\n3.  'Start Docker'"
   check_docker_start
   check_docker_compose
 }

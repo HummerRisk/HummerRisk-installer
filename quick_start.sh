@@ -1,64 +1,39 @@
 #!/bin/bash
 #
 
-Version=dev
+set -e
+export CURRENT_DIR=$(cd "$(dirname "$0")";pwd)
+export VERSION=$(curl -s https://api.github.com/repos/HummerRisk/HummerRisk/releases/latest | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g')
 
-function install_soft() {
-    if command -v dnf > /dev/null; then
-      if [ "$1" == "python" ]; then
-        dnf -q -y install python2
-        ln -s /usr/bin/python2 /usr/bin/python
-      else
-        dnf -q -y install $1
-      fi
-    elif command -v yum > /dev/null; then
-      yum -q -y install $1
-    elif command -v apt > /dev/null; then
-      apt-get -qqy install $1
-    elif command -v zypper > /dev/null; then
-      zypper -q -n install $1
-    elif command -v apk > /dev/null; then
-      apk add -q $1
-    else
-      echo -e "[\033[31m ERROR \033[0m] Please install it first (请先安装) $1 "
-      exit 1
-    fi
-}
-
-function prepare_install() {
-  for i in curl wget zip python; do
-    command -v $i &>/dev/null || install_soft $i
-  done
-}
+hummerrisk_online_file_name="hummerrisk-${VERSION}-online.tar.gz"
 
 function get_installer() {
-  echo "download install script to /opt/hummerrisk-installer-${Version} (开始下载安装脚本到 /opt/hummerrisk-installer-${Version})"
+  echo "Download install script to /opt/hummerrisk-installer-${VERSION} (开始下载安装脚本到 /opt/hummerrisk-installer-${VERSION})"
   cd /opt || exit
-  if [ ! -d "/opt/hummerrisk-installer-${Version}" ]; then
-    timeout 60s wget -qO hummerrisk-installer-${Version}.tar.gz https://github.com/hummerrisk/hummerrisk-installer/releases/download/${Version}/hummerrisk-installer-${Version}.tar.gz || {
-      rm -rf /opt/hummerrisk-installer-${Version}.tar.gz
-      echo -e "[\033[31m ERROR \033[0m] Failed to download hummerrisk-installer-${Version} (下载 hummerrisk-installer-${Version} 失败, 请检查网络是否正常或尝试重新执行脚本)"
+  if [ ! -d "/opt/hummerrisk-installer-${VERSION}" ]; then
+    timeout 60s curl -LOk -m 60 -o "${hummerrisk_online_file_name}" https://github.com/hummerrisk/hummerrisk/releases/download/"${VERSION}"/"${hummerrisk_online_file_name}" || {
+    rm -rf /opt/"${hummerrisk_online_file_name}"
+    echo -e "[\033[31m ERROR \033[0m] Failed to download hummerrisk-installer-${VERSION} (下载 hummerrisk-installer-${VERSION} 失败, 请检查网络是否正常或尝试重新执行脚本)"
+    exit 1
+    }
+    tar -xf /opt/"${hummerrisk_online_file_name}" -C /opt || {
+      rm -rf /opt/hummerrisk-installer-"${VERSION}"
+      echo -e "[\033[31m ERROR \033[0m] Failed to unzip hummerrisk-installer-${VERSION} (解压 hummerrisk-installer-${VERSION} 失败, 请检查网络是否正常或尝试重新执行脚本)"
       exit 1
     }
-    tar -xf /opt/hummerrisk-installer-${Version}.tar.gz -C /opt || {
-      rm -rf /opt/hummerrisk-installer-${Version}
-      echo -e "[\033[31m ERROR \033[0m] Failed to unzip hummerrisk-installer-${Version} (解压 hummerrisk-installer-${Version} 失败, 请检查网络是否正常或尝试重新执行脚本)"
-      exit 1
-    }
-    rm -rf /opt/hummerrisk-installer-${Version}.tar.gz
+    rm -rf /opt/"${hummerrisk_online_file_name}"
   fi
 }
 
 function config_installer() {
-  cd /opt/hummerrisk-installer-${Version} || exit 1
-  sed -i "s/VERSION=.*/VERSION=${Version}/g" /opt/hummerrisk-installer-${Version}/static.env
-  ./hrctl.sh install
-  ./hrctl.sh start
+  cd /opt/hummerrisk-installer-"${VERSION}" || exit 1
+  sed -i -e "1,3s/VERSION=.*/VERSION=${VERSION}/g" /opt/hummerrisk-installer-"${VERSION}"/scripts/const.sh
 }
 
 function main(){
-  prepare_install
   get_installer
   config_installer
+  ./hrctl install
 }
+
 main
