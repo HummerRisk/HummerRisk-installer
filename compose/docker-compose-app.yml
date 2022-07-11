@@ -2,7 +2,7 @@ version: '2.4'
 
 services:
   hummerrisk:
-    image: hummerrisk/hummerrisk:${VERSION}
+    image: ${DOCKER_IMAGE_PREFIX}/hummerrisk/hummerrisk:${VERSION}
     container_name: hummer_risk
     restart: always
     ports:
