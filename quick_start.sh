@@ -35,7 +35,7 @@ function get_installer() {
   echo "download install script to /opt/hummerrisk-installer-${Version} (开始下载安装脚本到 /opt/hummerrisk-installer-${Version})"
   cd /opt || exit
   if [ ! -d "/opt/hummerrisk-installer-${Version}" ]; then
-    timeout 60s wget -qO hummerrisk-installer-${Version}.tar.gz https://github.com/hummerrisk/hummerrisk-installer/releases/download/${Version}/hummerrisk-installer-${Version}.tar.gz || {
+    timeout 60s wget -qO hummerrisk-installer-${Version}.tar.gz https://github.com/HummerRisk/HummerRisk/releases/download/${Version}/hummerrisk-installer-${Version}.tar.gz || {
       rm -rf /opt/hummerrisk-installer-${Version}.tar.gz
       echo -e "[\033[31m ERROR \033[0m] Failed to download hummerrisk-installer-${Version} (下载 hummerrisk-installer-${Version} 失败, 请检查网络是否正常或尝试重新执行脚本)"
       exit 1
