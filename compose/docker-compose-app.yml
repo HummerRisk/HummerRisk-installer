@@ -21,6 +21,7 @@ services:
       - ${VOLUME_DIR}/logs:/opt/hummerrisk/logs
       - ${VOLUME_DIR}/conf:/opt/hummerrisk/file
       - ${VOLUME_DIR}/conf:/opt/hummerrisk/image
+      - ${VOLUME_DIR}/data/dependency-check:/usr/share/dependency-check
       - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
       test: "curl -fsL http://localhost:8088 > /dev/null"
