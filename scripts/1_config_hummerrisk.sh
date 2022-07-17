@@ -24,7 +24,7 @@ function set_volume_dir() {
     fi
   fi
   if [[ ! -d "${volume_dir}" ]]; then
-    mkdir -p ${volume_dir}
+    mkdir -p ${volume_dir}/data/dependency-check
     cp -R "${PROJECT_DIR}/config_init/conf" ${volume_dir}
   fi
   set_config VOLUME_DIR ${volume_dir}
