@@ -23,7 +23,7 @@ function main() {
     exit 2
   fi
 
-  if ! docker run --rm -i --network=hr_default hummerrisk/mysql:5.7.34 ${restore_cmd} <"${DB_FILE}"; then
+  if ! docker run --rm -i --network=hr_default hummerrisk/mysql:5.7.38 ${restore_cmd} <"${DB_FILE}"; then
     log_error " 'Database recovery failed. Please check whether the database file is complete or try to recover manually')!"
     exit 1
   else
@@ -33,7 +33,7 @@ function main() {
 
 if [[ "$0" == "${BASH_SOURCE[0]}" ]]; then
   if [[ -z "$1" ]]; then
-    log_error " 'Format error')！Usage './hrctl.sh restore_db DB_Backup_file '"
+    log_error " 'Format error')！Usage 'hrctl restore_db DB_Backup_file '"
     exit 1
   fi
   if [[ ! -f $1 ]]; then

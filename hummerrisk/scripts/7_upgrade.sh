@@ -7,7 +7,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 target=$1
 
 function upgrade_config() {
-  volume_dir=$(get_config VOLUME_DIR)
+  run_base=$(get_config RUN_BASE)
   \cp -rf config_init/conf/version "${volume_dir}/conf/version"
 
   current_version=$(get_config CURRENT_VERSION)
@@ -83,7 +83,7 @@ function main() {
 
   echo_yellow "\n6.  'Upgrade successfully. You can now restart the program'"
   echo "cd ${PROJECT_DIR}"
-  echo "./hrctl.sh start"
+  echo "hrctl start"
   set_current_version
 
   cd ${PROJECT_DIR} || exit 1

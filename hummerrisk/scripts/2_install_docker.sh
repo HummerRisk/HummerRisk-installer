@@ -3,10 +3,9 @@
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 . "${BASE_DIR}/utils.sh"
-. "${BASE_DIR}/0_prepare.sh"
 
-DOCKER_CONFIG="/etc/docker/daemon.json"
-docker_copy_failed=0
+#DOCKER_CONFIG="/etc/docker/daemon.json"
+#docker_copy_failed=0
 
 cd "${BASE_DIR}" || exit 1
 
@@ -16,54 +15,30 @@ function copy_docker() {
 }
 
 function install_docker() {
-  if [[ ! -f ./docker/dockerd ]]; then
-    prepare_docker_bin
-  fi
-  if [[ ! -f ./docker/dockerd ]]; then
-    echo_red "Error:  'Docker program does not exist'"
-    exit 1
-  fi
-
-  docker_exist=1
-  docker_version_match=1
-  old_docker_md5=$(get_file_md5 /usr/bin/dockerd)
-  new_docker_md5=$(get_file_md5 ./docker/dockerd)
-
-  if [[ ! -f "/usr/bin/dockerd" ]]; then
-    docker_exist=0
-  elif [[ "${old_docker_md5}" != "${new_docker_md5}" ]]; then
-    docker_version_match=0
-  fi
-
-  if [[ "${docker_exist}" != "1" ]]; then
-    copy_docker
-  elif [[ "${docker_version_match}" != "1" ]]; then
-    confirm="n"
-    read_from_input confirm " 'There are updates available currently. Do you want to update'?" "y/n" "${confirm}"
-    if [[ "${confirm}" == "y" ]]; then
-      copy_docker
-    fi
-  fi
+   if [[ -d docker ]]; then
+      log "... Offline | install docker"
+      cp docker/bin/* /usr/bin/
+      cp docker/service/docker.service /etc/systemd/system/
+      chmod +x /usr/bin/docker*
+      chmod 754 /etc/systemd/system/docker.service
+      log "... Start docker"
+      systemctl enable docker; systemctl daemon-reload; service docker start
+   else
+      log "... Online| install docker"
+      curl -fsSL https://get.docker.com -o get-docker.sh 2>&1
+      sudo sh get-docker.sh 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      log "... Start docker"
+      systemctl enable docker; systemctl daemon-reload; service docker start
+   fi
 }
 
-function install_compose() {
-  if [[ ! -f ./docker/docker-compose ]]; then
-    prepare_compose_bin
-  fi
-  old_docker_compose_md5=$(get_file_md5 /usr/bin/docker-compose)
-  new_docker_compose_md5=$(get_file_md5 ./docker/docker-compose)
-  if [[ ! -f "/usr/bin/docker-compose" || "${old_docker_compose_md5}" != "${new_docker_compose_md5}" ]]; then
-    \cp -f ./docker/docker-compose /usr/bin/
-    chmod +x /usr/bin/docker-compose
-  fi
-}
 
 function check_docker_install() {
   command -v docker >/dev/null || {
     if command -v dnf >/dev/null; then
       if [[ -f "/etc/redhat-release" ]]; then
         if ! command -v docker >/dev/null; then
-          yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine >/dev/null 2>&1
+          yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine >/dev/null
           yum install -q -y yum-utils
           yum-config-manager -y --add-repo https://download.docker.com/linux/centos/docker-ce.repo
           yum install -q -y docker-ce docker-ce-cli containerd.io
@@ -78,85 +53,10 @@ function check_docker_install() {
 
 function check_compose_install() {
   command -v docker-compose >/dev/null || {
-    install_compose
+  curl -L https://get.daocloud.io/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose 2>&1 | tee -a ${CURRENT_DIR}/install.log
+  chmod +x /usr/local/bin/docker-compose
+  ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
   }
-  echo_done
-}
-
-function set_docker_config() {
-  key=$1
-  value=$2
-
-  if command -v python >/dev/null; then
-    docker_command=python
-  elif command -v python2 >/dev/null; then
-    docker_command=python2
-  elif command -v python3 >/dev/null; then
-    docker_command=python3
-  else
-    return
-  fi
-
-  if [[ ! -f "${DOCKER_CONFIG}" ]]; then
-    config_dir=$(dirname ${DOCKER_CONFIG})
-    if [[ ! -d ${config_dir} ]]; then
-      mkdir -p "${config_dir}"
-    fi
-    echo -e "{\n}" >>${DOCKER_CONFIG}
-  fi
-
-"${docker_command}" -c "import json
-key = '${key}'
-value = '${value}'
-try:
-    value = json.loads(value)
-except:
-    pass
-filepath = \"${DOCKER_CONFIG}\"
-f = open(filepath);
-config = json.load(f);
-config[key] = value
-f.close();
-f = open(filepath, 'w');
-json.dump(config, f, indent=True, sort_keys=True);
-f.close()
-"
-}
-
-function config_docker() {
-  docker_storage_path=$(get_config DOCKER_DIR "/var/lib/docker")
-  confirm="n"
-  read_from_input confirm " 'Do you need custom docker root dir, will use the default directory' ${docker_storage_path}?" "y/n" "${confirm}"
-
-  if [[ "${confirm}" == "y" ]]; then
-    echo
-    echo " 'Modify the default storage directory of Docker image, you can select your largest disk and create a directory in it, such as' /opt/docker"
-    df -h | grep -Ev "map|devfs|tmpfs|overlay|shm"
-    echo
-    read_from_input docker_storage_path " 'Docker image storage directory'" '' "${docker_storage_path}"
-    if [[ "${docker_storage_path}" == "y" ]]; then
-      echo_failed
-      echo
-      config_docker
-    fi
-  fi
-
-  if [[ ! -d "${docker_storage_path}" ]]; then
-    mkdir -p "${docker_storage_path}"
-  fi
-  set_config DOCKER_DIR "${docker_storage_path}"
-
-  set_docker_config registry-mirrors '["https://hub-mirror.c.163.com", "http://f1361db2.m.daocloud.io"]'
-  set_docker_config live-restore "true"
-  set_docker_config data-root "${docker_storage_path}"
-  set_docker_config log-driver "json-file"
-  set_docker_config log-opts '{"max-size": "10m", "max-file": "3"}'
-}
-
-function check_docker_config() {
-  if [[ ! -f "/etc/docker/daemon.json" ]]; then
-    config_docker
-  fi
   echo_done
 }
 
@@ -195,9 +95,7 @@ function main() {
   echo_yellow "1.  'Install Docker'"
   check_docker_install
   check_compose_install
-  echo_yellow "\n2.  'Configure Docker'"
-  check_docker_config
-  echo_yellow "\n3.  'Start Docker'"
+  echo_yellow "\n2.  'Start Docker'"
   check_docker_start
   check_docker_compose
 }

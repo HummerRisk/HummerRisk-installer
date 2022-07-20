@@ -4,11 +4,11 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 . "${BASE_DIR}/utils.sh"
 
-function set_volume_dir() {
+function set_run_base() {
   echo_yellow "1.  'Configure Persistent Directory'"
-  volume_dir= VOLUME_DIR "/opt/hummerrisk"
+  run_base="${HR_BASE}/hummerrisk"
   confirm="n"
-  read_from_input confirm " 'Do you need custom persistent store, will use the default directory' ${volume_dir}?" "y/n" "${confirm}"
+  read_from_input confirm " 'Do you need custom persistent store, will use the default directory' ${run_base}?" "y/n" "${confirm}"
   if [[ "${confirm}" == "y" ]]; then
     echo
     echo " 'To modify the persistent directory such as logs video, you can select your largest disk and create a directory in it, such as' /opt/hummerrisk"
@@ -16,31 +16,38 @@ function set_volume_dir() {
     echo
     df -h | grep -Ev "map|devfs|tmpfs|overlay|shm"
     echo
-    read_from_input volume_dir " 'Persistent storage directory'" "" "${volume_dir}"
-    if [[ "${volume_dir}" == "y" ]]; then
+    read_from_input run_base " 'Persistent storage directory'" "" "${run_base}"
+    if [[ "${run_base}" == "y" ]]; then
       echo_failed
       echo
-      set_volume_dir
+      set_run_base
     fi
   fi
-  if [[ ! -d "${volume_dir}" ]]; then
-    mkdir -p ${volume_dir}
-    cp -R "${PROJECT_DIR}/config_init/conf" ${volume_dir}
+  if [[ ! -d "${run_base}" ]]; then
+    echo "Test: 创建 ${run_base} 和 复制 ${PROJECT_DIR}/config_init"
+    mkdir -p "${run_base}"
+    \cp -rR "${PROJECT_DIR}/config_init" "${run_base}/conf"
   fi
-  set_config VOLUME_DIR ${volume_dir}
-  if [[ ! -d "${volume_dir}/conf" ]]; then
-    cp -R "${PROJECT_DIR}/config_init/conf" ${volume_dir}
+  set_config RUN_BASE ${run_base}
+  if [[ ! -d "${run_base}/conf" ]]; then
+    cp -R "${PROJECT_DIR}/config_init" ${run_base}
   fi
-  if [[ ! -d "${volume_dir}/conf/mysql/sql" ]]; then
-    mkdir -p "${volume_dir}/conf/mysql/sql"
+  if [[ ! -d "${run_base}/conf/mysql/sql" ]]; then
+    mkdir -p "${run_base}/conf/mysql/sql"
   fi
-  if [[ ! -f "${volume_dir}/conf/mysql/mysql.cnf" ]]; then
-    cp "${PROJECT_DIR}/config_init/mysql/mysql.cnf" "${volume_dir}/conf/mysql"
+  if [[ ! -f "${run_base}/conf/mysql/mysql.cnf" ]]; then
+    cp "${PROJECT_DIR}/config_init/mysql/mysql.cnf" "${run_base}/conf/mysql"
   fi
-  if [[ ! -f "${volume_dir}/conf/mysql/sql" ]]; then
-    cp "${PROJECT_DIR}/config_init/mysql/hummerrisk.sql" "${volume_dir}/conf/mysql/sql"
+  if [[ ! -f "${run_base}/conf/mysql/sql" ]]; then
+    cp "${PROJECT_DIR}/config_init/mysql/hummerrisk.sql" "${run_base}/conf/mysql/sql"
   fi
-  chmod 644 -R "${volume_dir}/conf"
+  chmod 644 -R "${run_base}/conf"
+  echo "Test: 4config_hummer set_run_base : 查看PROJECT_DIR: ${PROJECT_DIR}"
+  if [[ ! -d "${run_base}/data" ]]; then
+    mkdir -p "${run_base}"/data/{hummerrisk,mysql}
+  fi
+  \cp -rp "${PROJECT_DIR}/compose" "${run_base}"
+  \cp -rp "${PROJECT_DIR}/scripts" "${run_base}"
   echo_done
 }
 
@@ -76,10 +83,10 @@ function set_external_mysql() {
   set_config DB_NAME "${mysql_db}"
   set_config USE_EXTERNAL_MYSQL 1
 
-  volume_dir=$(get_config VOLUME_DIR)
-  sed -i "s@jdbc:mysql://mysql:3306@jdbc:mysql://${mysql_host}:${mysql_port}@g" "${volume_dir}/conf/hummerrisk.properties"
-  sed -i "s@spring.datasource.username=.*@spring.datasource.username=${mysql_user}@g" "${volume_dir}/conf/hummerrisk.properties"
-  sed -i "s@spring.datasource.password=.*@spring.datasource.password=${mysql_pass}@g" "${volume_dir}/conf/hummerrisk.properties"
+  run_base=$(get_config RUN_BASE)
+  sed -i "s@jdbc:mysql://mysql:3306@jdbc:mysql://${mysql_host}:${mysql_port}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
+  sed -i "s@spring.datasource.username=.*@spring.datasource.username=${mysql_user}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
+  sed -i "s@spring.datasource.password=.*@spring.datasource.password=${mysql_pass}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
 }
 
 function set_internal_mysql() {
@@ -88,10 +95,10 @@ function set_internal_mysql() {
   if [[ -z "${password}" ]]; then
     DB_PASSWORD=$(random_str 26)
     set_config DB_PASSWORD "${DB_PASSWORD}"
-    volume_dir=$(get_config VOLUME_DIR)
-    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${DB_PASSWORD}@g" "${volume_dir}/conf/hummerrisk.properties"
+    run_base=$(get_config RUN_BASE)
+    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${DB_PASSWORD}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
   else
-    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${password}@g" "${volume_dir}/conf/hummerrisk.properties"
+    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${password}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
   fi
 }
 
@@ -128,9 +135,9 @@ function init_db() {
   use_external_mysql=$(get_config USE_EXTERNAL_MYSQL)
   if [[ "${use_external_mysql}" == "1" ]]; then
     echo_yellow "\n4.  'Init hummerrisk Database'"
-    volume_dir=$(get_config VOLUME_DIR)
+    run_base=$(get_config RUN_BASE)
     docker_network_check
-    bash "${BASE_DIR}/6_db_restore.sh" "${volume_dir}/conf/mysql/sql/hummerrisk.sql" || {
+    bash "${BASE_DIR}/6_db_restore.sh" "${run_base}/conf/mysql/sql/hummerrisk.sql" || {
       echo_failed
       exit 1
     }
@@ -139,7 +146,10 @@ function init_db() {
 }
 
 function main() {
-  set_volume_dir
+  echo -e "Test 1_config查看变量: BASE_DIR PROJECT_DIR HR_BASE CONFIG_DIR CONFIG_FILE RUN_BASE\n"
+  echo -e "Test 1_config: $BASE_DIR $PROJECT_DIR $HR_BASE $CONFIG_DIR $CONFIG_FILE $RUN_BASE\n"
+
+  set_run_base
   set_mysql
   set_service_port
   init_db

@@ -2,8 +2,7 @@ version: '2.4'
 
 services:
   hummerrisk:
-    image: ${DOCKER_IMAGE_PREFIX}/hummerrisk/hummerrisk:v0.1
-#    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hummerrisk:${VERSION}
+    image: ${DOCKER_IMAGE_PREFIX}/hummerrisk/hummerrisk:${VERSION}
     container_name: hummer_risk
     restart: always
     ports:
@@ -18,8 +17,8 @@ services:
       PROXY_ADDRESS_FORWARDING: "true"
       JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
     volumes:
-      - ${VOLUME_DIR}/conf:/opt/hummerrisk/conf
-      - ${VOLUME_DIR}/logs:/opt/hummerrisk/logs
+      - ${RUN_BASE}/conf/hummerrisk/hummerrisk.properties:/opt/hummerrisk/conf/hummerrisk.properties
+      - ${RUN_BASE}/logs:/opt/hummerrisk/logs
       - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
       test: "curl -fsL http://localhost:8088 > /dev/null"

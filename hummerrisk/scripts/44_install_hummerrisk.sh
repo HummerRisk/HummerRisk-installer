@@ -27,14 +27,14 @@ function post_install() {
 
   echo_yellow "1.  'You can use the following command to start, and then visit'"
   echo "cd ${PROJECT_DIR}"
-  echo "./hrctl.sh start"
+  echo "hrctl start"
 
   echo_yellow "\n2.  'Other management commands'"
-  echo "./hrctl.sh stop"
-  echo "./hrctl.sh restart"
-  echo "./hrctl.sh backup"
-  echo "./hrctl.sh upgrade"
-  echo " 'For more commands, you can enter ./hrctl.sh --help to understand'"
+  echo "hrctl stop"
+  echo "hrctl restart"
+  echo "hrctl backup"
+  echo "hrctl upgrade"
+  echo " 'For more commands, you can enter hrctl --help to understand'"
 
   echo_yellow "\n3.  'Web access'"
   echo "http://${HOST}:${HTTP_PORT}"
@@ -50,6 +50,7 @@ function main() {
   echo_logo
   pre_install
   prepare_config
+  echo "Test 4_install: 当前目录 $(pwd)"
   set_current_version
   echo_green "\n>>>  'Install and Configure Docker'"
   if ! bash "${BASE_DIR}/2_install_docker.sh"; then

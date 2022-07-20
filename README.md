@@ -8,47 +8,39 @@ installer 可以安装、部署、更新 管理 hummerrisk
 cd installer
 
 # 安装，版本是在 static.env 指定的
-./hrctl.sh install
+hrctl install
 
 # 检查更新
-./hrctl.sh check_update
+hrctl check_update
 
 # 升级到 static.env 中的版本
-./hrctl.sh upgrade
+hrctl upgrade
 
 # 升级到指定版本
-./hrctl.sh upgrade v0.1.0
+hrctl upgrade v0.1.0
 ```
 
-## 离线安装
-```bash
-# 生成离线包
-$ cd scripts && bash 0_prepare.sh
-
-# 完成以后将这个包压缩，复制到想安装的机器，直接安装即可
-$ ./hrctl.sh install
-```
 
 ## 管理命令
 
 ```bash
 # 启动
-./hrctl.sh start
+hrctl start
 
 # 停止
-./hrctl.sh stop
+hrctl stop
 
 # 重启
-./hrctl.sh restart
+hrctl restart
 
 # 升级
-./hrctl.sh upgrade
+hrctl upgrade
 
 # 卸载
-./hrctl.sh uninstall
+hrctl uninstall
 
 # 帮助
-./hrctl.sh --help
+hrctl --help
 ```
 
 ## 配置文件说明
@@ -65,13 +57,13 @@ $ ./hrctl.sh install
 │   ├── hummerrisk.properties      # hummerrisk 配置文件
 │   └── version                     # 版本文件
 └── config
-    └── config.txt                  # 主配置文件
+    └── install.conf                  # 主配置文件
 
 4 directories, 5 files
 ```
 
-### config.txt 说明
+### install.conf 说明
 
-config.txt 文件是环境变量式配置文件，会挂在到各个容器中
+install.conf 文件是环境变量式配置文件，会挂在到各个容器中
 
-config-example.txt 有说明，可以参考
+install.conf 有说明，可以参考

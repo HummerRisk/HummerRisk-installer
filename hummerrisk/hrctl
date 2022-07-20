@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+HR_BASE="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 # shellcheck source=scripts/utils.sh
-. "${PROJECT_DIR}/scripts/utils.sh"
+. "${HR_BASE}/hummerrisk/scripts/utils.sh"
 
 action=${1-}
 target=${2-}
@@ -14,9 +14,9 @@ function check_config_file() {
     echo "'Please install it first'"
     return 3
   fi
-  if [[ ! -f .env ]]; then
-    ln -s "${CONFIG_FILE}" .env
-  fi
+#  if [[ ! -f .env ]]; then
+#    ln -s "${CONFIG_FILE}" .env
+#  fi
 }
 
 function pre_check() {

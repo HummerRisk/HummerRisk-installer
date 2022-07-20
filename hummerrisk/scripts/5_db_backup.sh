@@ -3,8 +3,8 @@
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 . "${BASE_DIR}/utils.sh"
-VOLUME_DIR=$(get_config VOLUME_DIR)
-BACKUP_DIR="${VOLUME_DIR}/db_backup"
+RUN_BASE=$(get_config RUN_BASE)
+BACKUP_DIR="${RUN_BASE}/db_backup"
 CURRENT_VERSION=$(get_config CURRENT_VERSION)
 
 HOST=$(get_config DB_HOST)
@@ -23,7 +23,7 @@ function main() {
 
   docker_network_check
   backup_cmd="mysqldump --host=${HOST} --port=${PORT} --user=${USER} --password=${PASSWORD} ${DATABASE}"
-  if ! docker run --rm -i --network=hr_default hummerrisk/mysql:5.7.34 ${backup_cmd} > "${DB_FILE}"; then
+  if ! docker run --rm -i --network=hr_default hummerrisk/mysql:5.7.38 ${backup_cmd} > "${DB_FILE}"; then
     log_error " 'Backup failed'!"
     rm -f "${DB_FILE}"
     exit 1

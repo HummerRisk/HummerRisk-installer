@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 # shellcheck source=./const.sh
-. "${BASE_DIR}/const.sh"
+. "${CURRENT_DIR}/const.sh"
 
 function is_confirm() {
   read -r confirmed
@@ -114,7 +114,7 @@ function test_mysql_connect() {
   password=$4
   db=$5
   command="CREATE TABLE IF NOT EXISTS test(id INT); DROP TABLE test;"
-  docker run -it --rm hummerrisk/mysql:5.7.34 mysql -h"${host}" -P"${port}" -u"${user}" -p"${password}" "${db}" -e "${command}" 2>/dev/null
+  docker run -it --rm hummerrisk/mysql:5.7.38 mysql -h"${host}" -P"${port}" -u"${user}" -p"${password}" "${db}" -e "${command}" 2>/dev/null
 }
 
 function get_images() {
@@ -124,10 +124,7 @@ function get_images() {
     scope="all"
   fi
 
-  images=(
-    "hummerrisk/mysql:5.7.34"
-    "hummerrisk/hummerrisk:${VERSION}"
-  )
+  images=$(docker images|grep hummerrisk|awk '{print $1":"$2}')
   for image in "${images[@]}"; do
     echo "${image}"
   done
@@ -198,6 +195,11 @@ function log_error() {
   echo_red "[ERROR] $1"
 }
 
+function echo_done() {
+  sleep 0.5
+  echo "'complete'"
+}
+
 function get_docker_compose_services() {
   ignore_db="$1"
   services="hummerrisk"
@@ -208,12 +210,28 @@ function get_docker_compose_services() {
   echo "${services}"
 }
 
+function random_str() {
+  len=$1
+  if [[ -z ${len} ]]; then
+    len=16
+  fi
+  uuid=None
+  if command -v dmidecode &>/dev/null; then
+    uuid=$(dmidecode -t 1 | grep UUID | awk '{print $2}' | base64 | head -c ${len})
+  fi
+  if [[ "${#uuid}" == "${len}" ]]; then
+    echo "${uuid}"
+  else
+    head -c100 < /dev/urandom | base64 | tr -dc A-Za-z0-9 | head -c ${len}; echo
+  fi
+}
 function get_docker_compose_cmd_line() {
   ignore_db="$1"
-  cmd="docker-compose -f ./compose/docker-compose-app.yml"
+  cmd="docker-compose -f ${PROJECT_DIR}/compose/docker-compose-app.yml"
   services=$(get_docker_compose_services "$ignore_db")
+#  echo "Test: utils EXE PROJECT_DIR=${PROJECT_DIR}"
   if [[ "${services}" =~ mysql ]]; then
-    cmd="${cmd} -f ./compose/docker-compose-mysql.yml -f ./compose/docker-compose-mysql-internal.yml"
+    cmd="${cmd} -f  ${PROJECT_DIR}/compose/docker-compose-mysql.yml -f  ${PROJECT_DIR}/compose/docker-compose-mysql-internal.yml"
   fi
   echo "${cmd}"
 }
@@ -270,44 +288,7 @@ function prepare_set_redhat_firewalld() {
   fi
 }
 
-function prepare_config() {
-  cd "${PROJECT_DIR}" || exit 1
-  echo -e "#!/usr/bin/env bash\n#" > /usr/bin/hrctl
-  echo -e "cd ${PROJECT_DIR}" >> /usr/bin/hrctl
-  echo -e './hrctl.sh $@' >> /usr/bin/hrctl
-  chmod 755 /usr/bin/hrctl
 
-  echo_yellow "1.  'Check Configuration File'"
-  echo " 'Path to Configuration file'): ${CONFIG_DIR}"
-  if [[ ! -d "${CONFIG_DIR}" ]]; then
-    mkdir -p "${CONFIG_DIR}"
-    cp config-example.txt "${CONFIG_FILE}"
-  fi
-  if [[ ! -f "${CONFIG_FILE}" ]]; then
-    cp config-example.txt "${CONFIG_FILE}"
-  else
-    echo -e "${CONFIG_FILE}  [\033[32m √ \033[0m]"
-  fi
-  if [[ ! -f .env ]]; then
-    ln -s "${CONFIG_FILE}" .env
-  fi
-  if [[ ! -f "./compose/.env" ]]; then
-    ln -s "${CONFIG_FILE}" ./compose/.env
-  fi
-  chmod 644 -R "${CONFIG_DIR}"
-  echo_done
-
-  backup_dir="${CONFIG_DIR}/backup"
-  if [[ ! -d "${backup_dir}" ]]; then
-    mkdir -p "${backup_dir}"
-  fi
-  now=$(date +'%Y-%m-%d_%H-%M-%S')
-  backup_config_file="${backup_dir}/config.txt.${now}"
-  echo_yellow "\n2.  'Backup Configuration File'"
-  cp "${CONFIG_FILE}" "${backup_config_file}"
-  echo " 'Back up to') ${backup_config_file}"
-  echo_done
-}
 
 function get_latest_version() {
   curl -s 'https://api.github.com/repos/HummerRisk/HummerRisk/releases/latest' |

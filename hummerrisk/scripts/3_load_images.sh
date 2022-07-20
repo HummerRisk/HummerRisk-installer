@@ -45,9 +45,12 @@ function pull_image() {
     echo "[${image}]"
     if ! docker images | grep "${image%:*}" | grep "${image#*:}" >/dev/null; then
       if [[ -n "${DOCKER_IMAGE_PREFIX}" && $(image_has_prefix "${image}") == "0" ]]; then
+        echo -e "Test:3_load_image const查看变量: BASE_DIR PROJECT_DIR HR_BASE CONFIG_DIR CONFIG_FILE\n"
+        echo -e "Test:3_load_imageTest: $BASE_DIR $PROJECT_DIR $HR_BASE $CONFIG_DIR $CONFIG_FILE\n"
+        echo "Test 3_load_image: 当前目录 $(pwd) 镜像：docker pull '${DOCKER_IMAGE_PREFIX}/${image}'"
         docker pull "${DOCKER_IMAGE_PREFIX}/${image}"
-        docker tag "${DOCKER_IMAGE_PREFIX}/${image}" "${image}"
-        docker rmi -f "${DOCKER_IMAGE_PREFIX}/${image}"
+#        docker tag "${DOCKER_IMAGE_PREFIX}/${image}" "${image}"
+#        docker rmi -f "${DOCKER_IMAGE_PREFIX}/${image}"
       else
         docker pull "${image}"
       fi
