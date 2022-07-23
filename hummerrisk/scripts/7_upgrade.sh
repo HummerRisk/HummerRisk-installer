@@ -8,7 +8,6 @@ target=$1
 
 function upgrade_config() {
   run_base=$(get_config RUN_BASE)
-  \cp -rf config_init/conf/version "${volume_dir}/conf/version"
 
   current_version=$(get_config CURRENT_VERSION)
   if [ -z "${current_version}" ]; then
@@ -40,7 +39,7 @@ function backup_db() {
   if [[ "${SKIP_BACKUP_DB}" != "1" ]]; then
     if ! bash "${SCRIPT_DIR}/5_db_backup.sh"; then
       confirm="n"
-      read_from_input confirm " 'Failed to backup the database. Continue to upgrade')?" "y/n" "${confirm}"
+      read_from_input confirm " 'Failed to backup the database. Continue to upgrade'?" "y/n" "${confirm}"
       if [[ "${confirm}" == "n" ]]; then
         exit 1
       fi
@@ -66,7 +65,7 @@ function main() {
     to_version="${target}"
   fi
   if [[ "${to_version}" && "${to_version}" != "${VERSION}" ]]; then
-    sed -i "s@VERSION=.*@VERSION=${to_version}@g" "${PROJECT_DIR}/static.env"
+    sed -i "s@VERSION=.*@VERSION=${to_version}@g" "${SCRIPT_DIR}/const.sh"
     export VERSION=${to_version}
   fi
   echo
@@ -86,8 +85,7 @@ function main() {
   echo "hrctl start"
   set_current_version
 
-  cd ${PROJECT_DIR} || exit 1
-  ./hrctl.sh start
+  hrctl.sh start
 }
 
 if [[ "$0" == "${BASH_SOURCE[0]}" ]]; then

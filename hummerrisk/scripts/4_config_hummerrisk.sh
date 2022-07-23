@@ -4,45 +4,66 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 . "${BASE_DIR}/utils.sh"
 
+function prepare_config() {
+  cd "${PROJECT_DIR}" || exit 1
+  echo_yellow "1.  'Check Configuration File'"
+  echo " 'Path to Configuration file': ${CONFIG_DIR}"
+
+  echo -e "${CONFIG_FILE}  [\033[32m √ \033[0m]"
+  if [[ ! -f "${run_base}/compose/.env" ]]; then
+    ln -s "${CONFIG_FILE}" "${run_base}/compose/.env"
+  fi
+  echo_done
+  backup_dir="${run_base}/backup"
+  if [[ ! -d "${backup_dir}" ]]; then
+    mkdir -p ${backup_dir}
+  fi
+  now=$(date +'%Y-%m-%d_%H-%M-%S')
+  backup_config_file="${backup_dir}/install.conf.${now}"
+  echo_yellow "\n2.  'Backup Configuration File'"
+  \cp -rp ${PROJECT_DIR}/install.conf ${backup_config_file}
+  echo " 'Back up to' ${backup_config_file}"
+
+  echo_done
+}
+
 function set_run_base() {
   echo_yellow "1.  'Configure Persistent Directory'"
-  run_base="${HR_BASE}/hummerrisk"
-  confirm="n"
-  read_from_input confirm " 'Do you need custom persistent store, will use the default directory' ${run_base}?" "y/n" "${confirm}"
-  if [[ "${confirm}" == "y" ]]; then
-    echo
-    echo " 'To modify the persistent directory such as logs video, you can select your largest disk and create a directory in it, such as' /opt/hummerrisk"
-    echo " 'Note: you can not change it after installation, otherwise the database may be lost'"
-    echo
-    df -h | grep -Ev "map|devfs|tmpfs|overlay|shm"
-    echo
-    read_from_input run_base " 'Persistent storage directory'" "" "${run_base}"
-    if [[ "${run_base}" == "y" ]]; then
-      echo_failed
-      echo
-      set_run_base
-    fi
-  fi
+  run_base="${HR_BASE}"
+#  confirm="n"
+  echo "HummerRisk will be installed to the $(echo_yellow /opt/hummerrisk) directory"
+#  read_from_input confirm " 'Do you need custom persistent store, will use the default directory' ${run_base} ?" "y/n" "${confirm}"
+#  if [[ "${confirm}" == "y" ]]; then
+#    echo
+#    echo " 'To modify the persistent directory such as logs video, you can select your largest disk and create a directory in it, such as' /opt/hummerrisk"
+#    echo " 'Note: you can not change it after installation, otherwise the database may be lost'"
+#    echo
+#    df -h | grep -Ev "map|devfs|tmpfs|overlay|shm"
+#    echo
+#    read_from_input run_base " 'Persistent storage directory'"  "${run_base}" "/opt/hummerrisk"
+#    if [[ "${run_base}" == "y" ]]; then
+#      echo_failed
+#      echo
+#      set_run_base
+#    fi
+#  fi
+
+  # 设置 hummerrisk 安装目录
+  export HR_BASE=${run_base}
+  . "${BASE_DIR}/utils.sh"
+  sed -i "1,4s@HR_BASE=.*@HR_BASE=${run_base}@g" hrctl
+  sed -i "s@VERSION=.*@VERSION=${VERSION}@g" "${PROJECT_DIR}/scripts/const.sh"
+#  sed -i "1,4s@RUN_BASE=.*@RUN_BASE=${run_base}@g" "${PROJECT_DIR}/install.conf"
+  \cp -rp hrctl /usr/bin/hrctl
+  chmod 755 /usr/bin/hrctl
+
   if [[ ! -d "${run_base}" ]]; then
-    echo "Test: 创建 ${run_base} 和 复制 ${PROJECT_DIR}/config_init"
     mkdir -p "${run_base}"
     \cp -rR "${PROJECT_DIR}/config_init" "${run_base}/conf"
+    \cp -rR "${PROJECT_DIR}/install.conf" "${run_base}/conf"
+    chmod 644 -R "${run_base}/conf"
   fi
-  set_config RUN_BASE ${run_base}
-  if [[ ! -d "${run_base}/conf" ]]; then
-    cp -R "${PROJECT_DIR}/config_init" ${run_base}
-  fi
-  if [[ ! -d "${run_base}/conf/mysql/sql" ]]; then
-    mkdir -p "${run_base}/conf/mysql/sql"
-  fi
-  if [[ ! -f "${run_base}/conf/mysql/mysql.cnf" ]]; then
-    cp "${PROJECT_DIR}/config_init/mysql/mysql.cnf" "${run_base}/conf/mysql"
-  fi
-  if [[ ! -f "${run_base}/conf/mysql/sql" ]]; then
-    cp "${PROJECT_DIR}/config_init/mysql/hummerrisk.sql" "${run_base}/conf/mysql/sql"
-  fi
-  chmod 644 -R "${run_base}/conf"
-  echo "Test: 4config_hummer set_run_base : 查看PROJECT_DIR: ${PROJECT_DIR}"
+
   if [[ ! -d "${run_base}/data" ]]; then
     mkdir -p "${run_base}"/data/{hummerrisk,mysql}
   fi
@@ -123,7 +144,7 @@ function set_service_port() {
   echo_yellow "\n3.  'Configure External Port'"
   http_port=$(get_config HTTP_PORT)
   confirm="n"
-  read_from_input confirm " 'Do you need to customize the hummerrisk external port')?" "y/n" "${confirm}"
+  read_from_input confirm " 'Do you need to customize the hummerrisk external port'?" "y/n" "${confirm}"
   if [[ "${confirm}" == "y" ]]; then
     read_from_input http_port " 'hummerrisk web port'" "" "${http_port}"
     set_config HTTP_PORT "${http_port}"
@@ -137,7 +158,7 @@ function init_db() {
     echo_yellow "\n4.  'Init hummerrisk Database'"
     run_base=$(get_config RUN_BASE)
     docker_network_check
-    bash "${BASE_DIR}/6_db_restore.sh" "${run_base}/conf/mysql/sql/hummerrisk.sql" || {
+    bash "${BASE_DIR}/6_db_restore.sh" "${run_base}/conf/mysql/hummerrisk.sql" || {
       echo_failed
       exit 1
     }
@@ -146,10 +167,8 @@ function init_db() {
 }
 
 function main() {
-  echo -e "Test 1_config查看变量: BASE_DIR PROJECT_DIR HR_BASE CONFIG_DIR CONFIG_FILE RUN_BASE\n"
-  echo -e "Test 1_config: $BASE_DIR $PROJECT_DIR $HR_BASE $CONFIG_DIR $CONFIG_FILE $RUN_BASE\n"
-
   set_run_base
+  prepare_config
   set_mysql
   set_service_port
   init_db

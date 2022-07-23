@@ -15,8 +15,8 @@ services:
       - ${RUN_BASE}/data/mysql:/var/lib/mysql
       - ${RUN_BASE}/conf/mysql/sql/hummerrisk.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: "mysql -uroot -h127.0.0.1 -p$$MYSQL_ROOT_PASSWORD -e 'SHOW DATABASES;'"
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u${DB_USER}", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
-      timeout: 5s
+      timeout: 10s
       retries: 3
-      start_period: 30s
+      start_period: 60s

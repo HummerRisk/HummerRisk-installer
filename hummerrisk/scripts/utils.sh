@@ -123,8 +123,9 @@ function get_images() {
   if [[ "$USE_XPACK" == "1" ]];then
     scope="all"
   fi
-
-  images=$(docker images|grep hummerrisk|awk '{print $1":"$2}')
+  EXE=$(get_docker_compose_cmd_line)
+  images=$(${EXE} config|grep image:|awk '{print $2}')
+#  images=$(docker images|grep hummerrisk|awk '{print $1":"$2}')
   for image in "${images[@]}"; do
     echo "${image}"
   done
@@ -142,9 +143,9 @@ function read_from_input() {
     msg="${msg} (${choices}) "
   fi
   if [[ -z "${default}" ]]; then
-    msg="${msg} ( 'no default'))"
+    msg="${msg} ( 'no default')"
   else
-    msg="${msg} ( 'default') ${default})"
+    msg="${msg} ( 'default' ${default})"
   fi
   echo -n "${msg}: "
   read -r input
@@ -225,50 +226,16 @@ function random_str() {
     head -c100 < /dev/urandom | base64 | tr -dc A-Za-z0-9 | head -c ${len}; echo
   fi
 }
+
+# shellcheck disable=SC2120
 function get_docker_compose_cmd_line() {
   ignore_db="$1"
-  cmd="docker-compose -f ${PROJECT_DIR}/compose/docker-compose-app.yml"
+  cmd="docker-compose -f ${HR_BASE}/compose/docker-compose-app.yml"
   services=$(get_docker_compose_services "$ignore_db")
-#  echo "Test: utils EXE PROJECT_DIR=${PROJECT_DIR}"
   if [[ "${services}" =~ mysql ]]; then
-    cmd="${cmd} -f  ${PROJECT_DIR}/compose/docker-compose-mysql.yml -f  ${PROJECT_DIR}/compose/docker-compose-mysql-internal.yml"
+    cmd="${cmd} -f  ${HR_BASE}/compose/docker-compose-mysql.yml -f  ${HR_BASE}/compose/docker-compose-service.yml"
   fi
   echo "${cmd}"
-}
-
-function install_required_pkg() {
-  required_pkg=$1
-  if command -v dnf >/dev/null; then
-    if [ "$required_pkg" == "python" ]; then
-      dnf -q -y install python2
-    else
-      dnf -q -y install "$required_pkg"
-    fi
-  elif command -v yum >/dev/null; then
-    yum -q -y install "$required_pkg"
-  elif command -v apt >/dev/null; then
-    apt-get -qq -y install "$required_pkg"
-  elif command -v zypper >/dev/null; then
-    zypper -q -n install "$required_pkg"
-  elif command -v apk >/dev/null; then
-    if [ "$required_pkg" == "python" ]; then
-      apk add -q python2
-    else
-      apk add -q "$required_pkg"
-    fi
-    command -v gettext >/dev/null || {
-      apk add -q gettext-dev
-    }
-  else
-    echo_red " 'Please install it first') $required_pkg"
-    exit 1
-  fi
-}
-
-function prepare_online_install_required_pkg() {
-  for i in curl wget zip python; do
-    command -v $i >/dev/null || install_required_pkg $i
-  done
 }
 
 function prepare_set_redhat_firewalld() {
