@@ -59,8 +59,8 @@ function set_run_base() {
 
   if [[ ! -d "${run_base}" ]]; then
     mkdir -p "${run_base}"
-    \cp -rR "${PROJECT_DIR}/config_init" "${run_base}/conf"
-    \cp -rR "${PROJECT_DIR}/install.conf" "${run_base}/conf"
+    \cp -rP "${PROJECT_DIR}/config_init" "${run_base}/conf"
+    \cp -rP "${PROJECT_DIR}/install.conf" "${run_base}/conf"
     chmod 644 -R "${run_base}/conf"
   fi
 
