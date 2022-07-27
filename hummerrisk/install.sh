@@ -63,7 +63,7 @@ function main() {
   fi
   set_current_version
   post_install
-#  hrctl start
+  hrctl start
 }
 
 if [[ "$0" == "${BASH_SOURCE[0]}" ]]; then
