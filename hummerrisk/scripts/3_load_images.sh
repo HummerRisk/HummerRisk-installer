@@ -29,7 +29,7 @@ function load_image_files() {
       saved_id=$(cat "${md5_path}")
     fi
     if [[ ${image_id} != "${saved_id}" ]]; then
-      echo
+      echo " load local images"
       docker load <"${IMAGE_DIR}/${filename}"
     else
       echo " 'Docker image loaded, skipping'"
@@ -57,7 +57,7 @@ function pull_image() {
 }
 
 function main() {
-  if [[ -d "${IMAGE_DIR}" && -f "${IMAGE_DIR}/mysql:5.7.34.tar" ]]; then
+  if [[ -d "${IMAGE_DIR}" ]]; then
     load_image_files
   else
     pull_image

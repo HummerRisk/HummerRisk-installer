@@ -294,7 +294,7 @@ function get_current_version() {
 
 function pull_image() {
   image=$1
-  DOCKER_IMAGE_PREFIX=$(get_config_or_env 'DOCKER_IMAGE_PREFIX')
+#  DOCKER_IMAGE_PREFIX=$(get_config_or_env 'DOCKER_IMAGE_PREFIX')
   IMAGE_PULL_POLICY=${IMAGE_PULL_POLICY-"Always"}
 
   if docker image inspect -f '{{ .Id }}' "$image" &> /dev/null; then

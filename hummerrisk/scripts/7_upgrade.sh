@@ -8,6 +8,19 @@ target=$1
 
 function upgrade_config() {
   run_base=$(get_config RUN_BASE)
+  confirm="n"
+  to_version="${VERSION}"
+  if [[ -n "${target}" ]]; then
+    to_version="${target}"
+  else
+    echo to_version=$(get_latest_version)
+  fi
+  if [[ "${to_version}" && "${to_version}" != "${VERSION}" ]]; then
+    sed -i "s@VERSION=.*@VERSION=${to_version}@g" "${SCRIPT_DIR}/const.sh"
+    sed -i "s@CURRENT_VERSION=.*@CURRENT_VERSION=${to_version}@g" "${CONFIG_FILE}"
+    export VERSION=${to_version}
+  fi
+  echo
 
   current_version=$(get_config CURRENT_VERSION)
   if [ -z "${current_version}" ]; then
@@ -21,11 +34,6 @@ function upgrade_config() {
       . ~/.bashrc
     fi
   fi
-}
-
-function update_config_if_need() {
-  prepare_config
-  upgrade_config
 }
 
 function backup_db() {
@@ -59,17 +67,8 @@ function clear_images() {
 }
 
 function main() {
-  confirm="n"
-  to_version="${VERSION}"
-  if [[ -n "${target}" ]]; then
-    to_version="${target}"
-  fi
-  if [[ "${to_version}" && "${to_version}" != "${VERSION}" ]]; then
-    sed -i "s@VERSION=.*@VERSION=${to_version}@g" "${SCRIPT_DIR}/const.sh"
-    export VERSION=${to_version}
-  fi
-  echo
-  update_config_if_need
+  echo_yellow "\n2.  'Upgrade hummerrisk config'"
+  upgrade_config
 
   echo_yellow "\n3.  'Upgrade Docker image'"
   bash "${SCRIPT_DIR}/3_load_images.sh"
@@ -85,7 +84,7 @@ function main() {
   echo "hrctl start"
   set_current_version
 
-  hrctl.sh start
+  hrctl start
 }
 
 if [[ "$0" == "${BASH_SOURCE[0]}" ]]; then
