@@ -33,7 +33,7 @@ function prepare_compose_bin() {
   if [[ ! -d "$BASE_DIR/docker" ]]; then
     mkdir -p "${BASE_DIR}/docker"
   fi
-  curl -L https://get.daocloud.io/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o docker/
+  curl -L https://get.daocloud.io/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o docker/docker-compose
   chown -R root:root docker
   chmod +x docker/*
   export PATH=$PATH:$(pwd)/docker
