@@ -68,7 +68,7 @@ function prepare_image_files() {
       rm -f ${IMAGE_DIR}/${component}*
       image_path="${IMAGE_DIR}/${filename}"
       echo " Save image ${image} -> ${image_path}"
-      docker save -o "${image_path}" "${image}" && echo "${image_id}" >"${md5_path}"
+      docker save "${image}" |gzip > "${image_path}" && echo "${image_id}" >"${md5_path}"
     else
       echo " The image has been saved, skipping: ${image}"
     fi
