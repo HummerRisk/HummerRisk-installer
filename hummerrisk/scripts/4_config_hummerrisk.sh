@@ -6,7 +6,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 function prepare_config() {
   cd "${PROJECT_DIR}" || exit 1
-  echo_yellow "1.  'Check Configuration File'"
+  echo_yellow "2.  'Check Configuration File'"
   echo " 'Path to Configuration file': ${CONFIG_DIR}"
 
   echo -e "${CONFIG_FILE}  [\033[32m √ \033[0m]"
@@ -20,7 +20,7 @@ function prepare_config() {
   fi
   now=$(date +'%Y-%m-%d_%H-%M-%S')
   backup_config_file="${backup_dir}/install.conf.${now}"
-  echo_yellow "\n2.  'Backup Configuration File'"
+  echo_yellow "\n3.  'Backup Configuration File'"
   \cp -rp ${PROJECT_DIR}/install.conf ${backup_config_file}
   echo " 'Back up to' ${backup_config_file}"
 
@@ -128,7 +128,7 @@ function set_internal_mysql() {
 }
 
 function set_mysql() {
-  echo_yellow "\n2. 'Configure MySQL'"
+  echo_yellow "\n4. 'Configure MySQL'"
   use_external_mysql=$(get_config USE_EXTERNAL_MYSQL)
   confirm="n"
   if [[ "${use_external_mysql}" == "1" ]]; then
@@ -145,7 +145,7 @@ function set_mysql() {
 }
 
 function set_service_port() {
-  echo_yellow "\n3.  'Configure External Port'"
+  echo_yellow "\n5.  'Configure External Port'"
   http_port=$(get_config HTTP_PORT)
   confirm="n"
   read_from_input confirm " 'Do you need to customize the hummerrisk external port'?" "y/n" "${confirm}"

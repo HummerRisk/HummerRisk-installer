@@ -267,7 +267,7 @@ function get_latest_version() {
 }
 
 function image_has_prefix() {
-  if [[ $1 =~ hummercloud.* ]]; then
+  if [[ $1 =~ registry.* ]]; then
     echo "1"
   else
     echo "0"
@@ -298,6 +298,7 @@ function get_current_version() {
 function pull_image() {
   image=$1
   DOCKER_IMAGE_PREFIX=$(get_config_or_env 'DOCKER_IMAGE_PREFIX')
+  DOCKER_IMAGE_PREFIX=$(get_config DOCKER_IMAGE_PREFIX)
   IMAGE_PULL_POLICY=${IMAGE_PULL_POLICY-"Always"}
 
   if docker image inspect -f '{{ .Id }}' "$image" &> /dev/null; then
@@ -310,7 +311,7 @@ function pull_image() {
     echo "Image exist, pass"
     return
   fi
-
+  echo "Test: DOCKER_IMAGE_PREFIX: ${DOCKER_IMAGE_PREFIX}"
   if [[ -n "${DOCKER_IMAGE_PREFIX}" && $(image_has_prefix "${image}") == "0" ]]; then
     docker pull "${DOCKER_IMAGE_PREFIX}/${image}"
     docker tag "${DOCKER_IMAGE_PREFIX}/${image}" "${image}"
