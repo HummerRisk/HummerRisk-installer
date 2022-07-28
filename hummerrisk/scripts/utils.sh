@@ -123,9 +123,12 @@ function get_images() {
   if [[ "$USE_XPACK" == "1" ]];then
     scope="all"
   fi
-  EXE=$(get_docker_compose_cmd_line)
-  images=$(${EXE} config|grep image:|awk '{print $2}')
-#  images=$(docker images|grep hummerrisk|awk '{print $1":"$2}')
+#  EXE=$(get_docker_compose_cmd_line)
+#  images=$(${EXE} config|grep image:|awk '{print $2}')
+  images=(
+    "hummerrisk/mysql:5.7.38"
+    "hummerrisk/hummerrisk:${VERSION}"
+  )
   for image in "${images[@]}"; do
     echo "${image}"
   done
@@ -294,7 +297,7 @@ function get_current_version() {
 
 function pull_image() {
   image=$1
-#  DOCKER_IMAGE_PREFIX=$(get_config_or_env 'DOCKER_IMAGE_PREFIX')
+  DOCKER_IMAGE_PREFIX=$(get_config_or_env 'DOCKER_IMAGE_PREFIX')
   IMAGE_PULL_POLICY=${IMAGE_PULL_POLICY-"Always"}
 
   if docker image inspect -f '{{ .Id }}' "$image" &> /dev/null; then

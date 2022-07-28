@@ -105,9 +105,11 @@ function set_external_mysql() {
   set_config USE_EXTERNAL_MYSQL 1
 
   run_base=$(get_config RUN_BASE)
+  mysql_pass_base64=$(echo "${mysql_pass}" |base64 )
+#  mysql_pass_base64_cmd=$(echo "$mysql_pass_base64"|base64 -d)
   sed -i "s@jdbc:mysql://mysql:3306@jdbc:mysql://${mysql_host}:${mysql_port}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
   sed -i "s@spring.datasource.username=.*@spring.datasource.username=${mysql_user}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
-  sed -i "s@spring.datasource.password=.*@spring.datasource.password=${mysql_pass}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
+  sed -i "s@spring.datasource.password=.*@spring.datasource.password=${mysql_pass_base64}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
 }
 
 function set_internal_mysql() {
@@ -117,8 +119,10 @@ function set_internal_mysql() {
     DB_PASSWORD=$(random_str 26)
     set_config DB_PASSWORD "${DB_PASSWORD}"
     run_base=$(get_config RUN_BASE)
+#    mysql_pass_base64=$(echo "${DB_PASSWORD}" |base64 )
     sed -i "s@spring.datasource.password=.*@spring.datasource.password=${DB_PASSWORD}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
   else
+#    mysql_pass_base64=$(echo "${password}" |base64 )
     sed -i "s@spring.datasource.password=.*@spring.datasource.password=${password}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
   fi
 }
