@@ -12,8 +12,8 @@ cd "${BASE_DIR}" || exit 1
 function install_docker() {
    if [[ -d docker ]]; then
       echo "... Offline | install docker"
-      cp docker/bin/* /usr/bin/
-      cp docker/service/docker.service /etc/systemd/system/
+      \cp -rp docker/* /usr/bin/
+      \cp -rp docker.service /etc/systemd/system/
       chmod +x /usr/bin/docker*
       chmod 754 /etc/systemd/system/docker.service
       echo "... Start docker"
