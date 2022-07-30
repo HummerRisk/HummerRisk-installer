@@ -63,7 +63,6 @@ function prepare_image_files() {
     fi
 
     mkdir -p "${IMAGE_DIR}"
-    # 这里达不到想要的想过，因为在构建前会删掉目录下的所有文件，所以 save_id 不可能存在
     if [[ ${image_id} != "${saved_id}" ]]; then
       rm -f ${IMAGE_DIR}/${component}*
       image_path="${IMAGE_DIR}/${filename}"
@@ -79,7 +78,7 @@ function prepare_image_files() {
 function main() {
   prepare_config_xpack
 
-  echo "1. Preparing Docker offline package"
+  echo  -e"\n1. Preparing Docker binary offline package"
   prepare_docker_bin
   prepare_compose_bin
 
