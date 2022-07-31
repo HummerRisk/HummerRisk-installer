@@ -6,8 +6,27 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 target=$1
 
+function prepare_new_package() {
+  hummerrisk_online_file_name="hummerrisk-installer-${to_version}.tar.gz"
+  echo "Download install script to hummerrisk-installer-${to_version} (开始下载包到 hummerrisk-installer-${to_version})"
+  if [ ! -d "hummerrisk-installer-${to_version}" ]; then
+    curl -LOk -m 60 -o "${hummerrisk_online_file_name}" https://github.com/alvin5840/hummerrisk/releases/download/"${to_version}"/"${hummerrisk_online_file_name}" || {
+    rm -rf "${hummerrisk_online_file_name}"
+    echo -e "[\033[31m ERROR \033[0m] Failed to download hummerrisk-installer-${to_version} (下载 hummerrisk-installer-${to_version} 失败, 请检查网络是否正常或尝试重新执行脚本)"
+    exit 1
+    }
+    tar -zxf "${hummerrisk_online_file_name}" || {
+      rm -rf hummerrisk-installer-"${to_version}"
+      echo -e "[\033[31m ERROR \033[0m] Failed to unzip hummerrisk-installer-${to_version} (解压 hummerrisk-installer-${to_version} 失败, 请检查网络是否正常或尝试重新执行脚本)"
+      exit 1
+    }
+    rm -rf "${hummerrisk_online_file_name}"
+  fi
+}
+
 function upgrade_config() {
   confirm="n"
+  # 处理版本
   to_version="${VERSION}"
   if [[ -n "${target}" ]]; then
     to_version="${target}"
@@ -15,24 +34,15 @@ function upgrade_config() {
     echo to_version=$(get_latest_version)
   fi
   if [[ "${to_version}" && "${to_version}" != "${VERSION}" ]]; then
+    prepare_new_package
+    cd hummerrisk-installer-"${to_version}"|| exit 1
+    sed -i -e "1,4s/VERSION=.*/VERSION=${to_version}/g" scripts/const.sh
     sed -i "s@VERSION=.*@VERSION=${to_version}@g" "${SCRIPT_DIR}/const.sh"
-    sed -i "s@CURRENT_VERSION=.*@CURRENT_VERSION=${to_version}@g" "${CONFIG_FILE}"
+    sed -i "s@HR_CURRENT_VERSION=.*@HR_CURRENT_VERSION=${to_version}@g" "${CONFIG_FILE}"
     export VERSION=${to_version}
+    /bin/bash install.sh
   fi
   echo
-
-  current_version=$(get_config CURRENT_VERSION)
-  if [ -z "${current_version}" ]; then
-    set_config CURRENT_VERSION "${VERSION}"
-  fi
-
-  if [[ "${SHELL}" == "/bin/bash" ]]; then
-    if grep -q "alias hrctl=" ~/.bashrc; then
-      sed -i 's@alias hrctl=.*@@g' ~/.bashrc
-      unalias hrctl
-      . ~/.bashrc
-    fi
-  fi
 }
 
 function backup_db() {
@@ -65,26 +75,25 @@ function clear_images() {
 }
 
 function main() {
-  echo_yellow "\n2.  'Upgrade hummerrisk config'"
+  echo_yellow "\n1.  'Upgrade hummerrisk config'"
   upgrade_config
 
-  echo_yellow "\n3.  'Upgrade Docker image'"
+  echo_yellow "\n2.  'Upgrade Docker image'"
   bash "${SCRIPT_DIR}/4_load_images.sh"
 
-  echo_yellow "\n4.  'Backup database'"
+  echo_yellow "\n3.  'Backup database'"
   backup_db
 
-  echo_yellow "\n5.  'Cleanup Image'"
+  echo_yellow "\n4.  'Cleanup Image'"
   clear_images
 
-  echo_yellow "\n6.  'Upgrade successfully. You can now restart the program'"
-  echo "cd ${PROJECT_DIR}"
+  echo_yellow "\n5.  'Upgrade successfully. You can now restart the program'"
   echo "hrctl start"
-  set_current_version
-
   hrctl start
 }
 
 if [[ "$0" == "${BASH_SOURCE[0]}" ]]; then
   main
 fi
+
+}

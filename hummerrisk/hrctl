@@ -118,8 +118,6 @@ function main() {
       bash "${SCRIPT_DIR}/4_install_hummerrisk.sh"
       ;;
     upgrade)
-      wget xxx
-      cd xxx
       bash "${SCRIPT_DIR}/7_upgrade.sh" "$target"
       ;;
     reconfig)

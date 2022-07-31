@@ -5,7 +5,7 @@ set -e
 export CURRENT_DIR=$(cd "$(dirname "$0")";pwd)
 export VERSION=$(curl -s https://api.github.com/repos/alvin5840/HummerRisk/releases/latest | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g')
 
-hummerrisk_online_file_name="hummerrisk-${VERSION}-online.tar.gz"
+hummerrisk_online_file_name="hummerrisk-installer-${VERSION}.tar.gz"
 
 function get_installer() {
   echo "Download install script to hummerrisk-installer-${VERSION} (开始下载安装脚本到 hummerrisk-installer-${VERSION})"
@@ -25,7 +25,7 @@ function get_installer() {
 }
 
 function config_installer() {
-  cd hummerrisk-"${VERSION}"-online|| exit 1
+  cd hummerrisk-installer-"${VERSION}"|| exit 1
   sed -i -e "1,4s/VERSION=.*/VERSION=${VERSION}/g" scripts/const.sh
 }
 

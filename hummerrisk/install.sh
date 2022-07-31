@@ -67,8 +67,8 @@ function main() {
     exit 1
   fi
   set_current_version
-  post_install
   /bin/bash hrctl start
+  post_install
 }
 
 if [[ "$0" == "${BASH_SOURCE[0]}" ]]; then
