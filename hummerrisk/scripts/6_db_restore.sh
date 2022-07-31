@@ -15,8 +15,6 @@ DB_FILE="$1"
 function main() {
   echo " 'Start restoring database': $DB_FILE"
 
-  docker_network_check
-
   restore_cmd="mysql --host=${HOST} --port=${PORT} --user=${USER} --password=${PASSWORD} ${DATABASE}"
   if [[ ! -f "${DB_FILE}" ]]; then
     echo " 'file does not exist': ${DB_FILE}"

@@ -6,7 +6,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 function remove_hummerrisk() {
   echo -e " Make sure you have a backup of data, this operation is not reversible! \n"
-  RUN_BASE=$(get_config RUN_BASE)
+  HR_BASE=$(get_config HR_BASE)
 #  images=$(get_images)
   images=$(docker images|grep hummerrisk|awk '{print $1":"$2}')
   confirm="n"
@@ -17,8 +17,8 @@ function remove_hummerrisk() {
       hrctl down
       sleep 2s
       echo
-      echo -e " 'Cleaning up' ${RUN_BASE}"
-      rm -rf "${RUN_BASE}"
+      echo -e " 'Cleaning up' ${HR_BASE}"
+      rm -rf "${HR_BASE}"
       echo -e " 'Cleaning up' /usr/bin/hrctl"
       rm -f /usr/bin/hrctl
       echo_done

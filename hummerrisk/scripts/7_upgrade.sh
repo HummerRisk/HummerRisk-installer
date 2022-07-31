@@ -6,8 +6,19 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 target=$1
 
+function check_config() {
+  if [[ -f ${CONFIG_FILE} ]]; then
+     export HR_DB_HOST=$(get_config HR_DB_HOST)
+     export HR_DB_USER=$(get_config HR_DB_USER)
+     export HR_DB_PASSWORD=$(get_config HR_DB_PASSWORD)
+     export HR_DB_NAME=$(get_config HR_DB_NAME)
+     export HR_HTTP_PORT=$(get_config HR_HTTP_PORT)
+     export HR_DOCKER_SUBNET=$(get_config HR_DOCKER_SUBNET)
+     export HR_DOCKER_GATEWAY=$(get_config HR_DOCKER_GATEWAY)
+  fi
+}
+
 function upgrade_config() {
-  run_base=$(get_config RUN_BASE)
   confirm="n"
   to_version="${VERSION}"
   if [[ -n "${target}" ]]; then
@@ -37,7 +48,6 @@ function upgrade_config() {
 }
 
 function backup_db() {
-  docker_network_check
   if docker ps | grep hummer_risk >/dev/null; then
       docker stop hummer_risk
       docker rm hummer_risk
@@ -71,7 +81,7 @@ function main() {
   upgrade_config
 
   echo_yellow "\n3.  'Upgrade Docker image'"
-  bash "${SCRIPT_DIR}/3_load_images.sh"
+  bash "${SCRIPT_DIR}/4_load_images.sh"
 
   echo_yellow "\n4.  'Backup database'"
   backup_db

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 # shellcheck source=./const.sh
-. "${CURRENT_DIR}/const.sh"
+. "${SCRIPT_DIR}/const.sh"
 
 function is_confirm() {
   read -r confirmed
@@ -274,16 +274,10 @@ function image_has_prefix() {
   fi
 }
 
-function docker_network_check() {
-  if ! docker network ls | grep hr_default >/dev/null; then
-    docker network create hr_default
-  fi
-}
-
 function set_current_version() {
   current_version=$(get_config CURRENT_VERSION)
   if [ "${current_version}" != "${VERSION}" ]; then
-    set_config CURRENT_VERSION "${VERSION}"
+    set_config HR_CURRENT_VERSION "${VERSION}"
   fi
 }
 
@@ -297,7 +291,7 @@ function get_current_version() {
 
 function pull_image() {
   image=$1
-  DOCKER_IMAGE_PREFIX=$(get_config_or_env 'DOCKER_IMAGE_PREFIX')
+  DOCKER_IMAGE_PREFIX=$(get_config_or_env 'HR_DOCKER_IMAGE_PREFIX')
   IMAGE_PULL_POLICY=${IMAGE_PULL_POLICY-"Always"}
 
   if docker image inspect -f '{{ .Id }}' "$image" &> /dev/null; then
@@ -327,4 +321,8 @@ function pull_images() {
     echo "[${image}]"
     pull_image "$image"
   done
+}
+
+function prop {
+   [ -f "$1" ] | grep -P "^\s*[^#]?${2}=.*$" $1 | cut -d'=' -f2
 }

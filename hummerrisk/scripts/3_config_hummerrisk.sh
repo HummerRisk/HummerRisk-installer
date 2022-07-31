@@ -10,11 +10,11 @@ function prepare_config() {
   echo " 'Path to Configuration file': ${CONFIG_DIR}"
 
   echo -e "${CONFIG_FILE}  [\033[32m √ \033[0m]"
-  if [[ ! -f "${run_base}/compose/.env" ]]; then
-    ln -s "${CONFIG_FILE}" "${run_base}/compose/.env"
+  if [[ ! -f "${HR_BASE}/compose/.env" ]]; then
+    ln -s "${CONFIG_FILE}" "${HR_BASE}/compose/.env"
   fi
   echo_done
-  backup_dir="${run_base}/backup"
+  backup_dir="${HR_BASE}/backup"
   if [[ ! -d "${backup_dir}" ]]; then
     mkdir -p ${backup_dir}
   fi
@@ -29,46 +29,27 @@ function prepare_config() {
 
 function set_run_base() {
   echo_yellow "1.  'Configure Persistent Directory'"
-  run_base="${HR_BASE}"
-#  confirm="n"
   echo "HummerRisk will be installed to the $(echo_yellow /opt/hummerrisk) directory"
-#  read_from_input confirm " 'Do you need custom persistent store, will use the default directory' ${run_base} ?" "y/n" "${confirm}"
-#  if [[ "${confirm}" == "y" ]]; then
-#    echo
-#    echo " 'To modify the persistent directory such as logs video, you can select your largest disk and create a directory in it, such as' /opt/hummerrisk"
-#    echo " 'Note: you can not change it after installation, otherwise the database may be lost'"
-#    echo
-#    df -h | grep -Ev "map|devfs|tmpfs|overlay|shm"
-#    echo
-#    read_from_input run_base " 'Persistent storage directory'"  "${run_base}" "/opt/hummerrisk"
-#    if [[ "${run_base}" == "y" ]]; then
-#      echo_failed
-#      echo
-#      set_run_base
-#    fi
-#  fi
 
-  # 设置 hummerrisk 安装目录
-  export HR_BASE=${run_base}
-  . "${BASE_DIR}/utils.sh"
-  sed -i "1,4s@HR_BASE=.*@HR_BASE=${run_base}@g" hrctl
-  sed -i "s@VERSION=.*@VERSION=${VERSION}@g" "${PROJECT_DIR}/scripts/const.sh"
-#  sed -i "1,4s@RUN_BASE=.*@RUN_BASE=${run_base}@g" "${PROJECT_DIR}/install.conf"
   \cp -rp hrctl /usr/bin/hrctl
   chmod 755 /usr/bin/hrctl
 
-  if [[ ! -d "${run_base}" ]]; then
-    mkdir -p "${run_base}"
-    \cp -rP "${PROJECT_DIR}/config_init" "${run_base}/conf"
-    \cp -rP "${PROJECT_DIR}/install.conf" "${run_base}/conf"
-    chmod 644 -R "${run_base}/conf"
+  if [[ ! -d "${HR_BASE}" ]]; then
+    mkdir -p "${HR_BASE}"
+    \cp -rP "${PROJECT_DIR}/config_init" "${HR_BASE}/conf"
+    \cp -rP "${PROJECT_DIR}/install.conf" "${HR_BASE}/conf"
+    chmod 644 -R "${HR_BASE}/conf"
   fi
 
-  if [[ ! -d "${run_base}/data" ]]; then
-    mkdir -p "${run_base}"/data/{hummerrisk,mysql}
+  if [[ ! -d "${HR_BASE}/data" ]]; then
+    mkdir -p "${HR_BASE}"/data/{hummerrisk,mysql}
   fi
-  \cp -rp "${PROJECT_DIR}/compose" "${run_base}"
-  \cp -rp "${PROJECT_DIR}/scripts" "${run_base}"
+  if [[ ! -d "${HR_BASE}/logs" ]]; then
+    mkdir -p "${HR_BASE}/logs"}
+  fi
+  \cp -rp "${PROJECT_DIR}/compose" "${HR_BASE}"
+  \cp -rp "${PROJECT_DIR}/scripts" "${HR_BASE}"
+
   echo_done
 }
 
@@ -97,38 +78,47 @@ function set_external_mysql() {
     set_mysql
   fi
 
-  set_config DB_HOST "${mysql_host}"
-  set_config DB_PORT "${mysql_port}"
-  set_config DB_USER "${mysql_user}"
-  set_config DB_PASSWORD "${mysql_pass}"
-  set_config DB_NAME "${mysql_db}"
-  set_config USE_EXTERNAL_MYSQL 1
+#  set_config HR_DB_HOST "${mysql_host}"
+#  set_config HR_DB_PORT "${mysql_port}"
+#  set_config HR_DB_USER "${mysql_user}"
+#  set_config HR_DB_PASSWORD "${mysql_pass}"
+#  set_config HR_DB_NAME "${mysql_db}"
+#  set_config HR_USE_EXTERNAL_MYSQL 1
+  export HR_DB_HOST="${mysql_host}"
+  export HR_DB_PORT="${mysql_port}"
+  export HR_DB_USER="${mysql_user}"
+  export HR_DB_PASSWORD="${mysql_pass}"
+  export HR_DB_NAME="${mysql_db}"
+  export HR_USE_EXTERNAL_MYSQL=1
 
-  run_base=$(get_config RUN_BASE)
   mysql_pass_base64=$(echo "${mysql_pass}" |base64 )
 #  mysql_pass_base64_cmd=$(echo "$mysql_pass_base64"|base64 -d)
-  sed -i "s@jdbc:mysql://mysql:3306@jdbc:mysql://${mysql_host}:${mysql_port}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
-  sed -i "s@spring.datasource.username=.*@spring.datasource.username=${mysql_user}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
-  sed -i "s@spring.datasource.password=.*@spring.datasource.password=${mysql_pass_base64}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
+  sed -i "s@jdbc:mysql://mysql:3306@jdbc:mysql://${mysql_host}:${mysql_port}@g" "${HR_BASE}/conf/hummerrisk/hummerrisk.properties"
+  sed -i "s@spring.datasource.username=.*@spring.datasource.username=${mysql_user}@g" "${HR_BASE}/conf/hummerrisk/hummerrisk.properties"
+  sed -i "s@spring.datasource.password=.*@spring.datasource.password=${mysql_pass_base64}@g" "${HR_BASE}/conf/hummerrisk/hummerrisk.properties"
 }
 
 function set_internal_mysql() {
-  set_config USE_EXTERNAL_MYSQL 0
+#  set_config USE_EXTERNAL_MYSQL 0
   password=$(get_config DB_PASSWORD)
   if [[ -z "${password}" ]]; then
     DB_PASSWORD=$(random_str 26)
-    set_config DB_PASSWORD "${DB_PASSWORD}"
-    run_base=$(get_config RUN_BASE)
+    set_config HR_DB_PASSWORD "${DB_PASSWORD}"
 #    mysql_pass_base64=$(echo "${DB_PASSWORD}" |base64 )
-    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${DB_PASSWORD}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
-  else
+#    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${DB_PASSWORD}@g" "${HR_BASE}/conf/hummerrisk/hummerrisk.properties"
+#  else
 #    mysql_pass_base64=$(echo "${password}" |base64 )
-    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${password}@g" "${run_base}/conf/hummerrisk/hummerrisk.properties"
+#    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${password}@g" "${HR_BASE}/conf/hummerrisk/hummerrisk.properties"
   fi
+    export HR_DB_HOST="mysql"
+    export HR_DB_PORT="3306"
+    export HR_DB_USER="root"
+    export HR_DB_PASSWORD="${DB_PASSWORD}"
+    export HR_DB_NAME="hummerrisk"
+    export HR_USE_EXTERNAL_MYSQL=0
 }
 
 function set_mysql() {
-  echo_yellow "\n4. 'Configure MySQL'"
   use_external_mysql=$(get_config USE_EXTERNAL_MYSQL)
   confirm="n"
   if [[ "${use_external_mysql}" == "1" ]]; then
@@ -150,9 +140,13 @@ function set_service_port() {
   confirm="n"
   read_from_input confirm " 'Do you need to customize the hummerrisk external port'?" "y/n" "${confirm}"
   if [[ "${confirm}" == "y" ]]; then
-    read_from_input http_port " 'hummerrisk web port'" "" "${http_port}"
-    set_config HTTP_PORT "${http_port}"
+    read_from_input http_port " hummerrisk web port:" "" "${http_port}"
+    set_config HR_HTTP_PORT "${http_port}"
+    export HR_HTTP_PORT=${http_port}
+  else
+    export HR_HTTP_PORT=80
   fi
+
   echo_done
 }
 
@@ -160,9 +154,7 @@ function init_db() {
   use_external_mysql=$(get_config USE_EXTERNAL_MYSQL)
   if [[ "${use_external_mysql}" == "1" ]]; then
     echo_yellow "\n4.  'Init hummerrisk Database'"
-    run_base=$(get_config RUN_BASE)
-    docker_network_check
-    bash "${BASE_DIR}/6_db_restore.sh" "${run_base}/conf/mysql/hummerrisk.sql" || {
+    bash "${BASE_DIR}/6_db_restore.sh" "${HR_BASE}/conf/mysql/hummerrisk.sql" || {
       echo_failed
       exit 1
     }
@@ -171,13 +163,22 @@ function init_db() {
 }
 
 function main() {
+#  check_config
   set_run_base
   prepare_config
+  echo_yellow "\n4.  'Configure MySQL'"
   set_mysql
   set_service_port
   init_db
+  if [[ -f ${CONFIG_FILE} ]]; then
+#    env|grep -E "HR_|COMPOSE" > "$CONFIG_FILE"
+    envsubst < install.conf > "${CONFIG_FILE}"
+    cd "$CURRENT_DIR"/config_init/hummerrisk && envsubst < hummerrisk.properties > "$CONFIG_DIR/hummerrisk/hummerrisk.properties"
+    cd "$CURRENT_DIR"
+  fi
 }
 
 if [[ "$0" == "${BASH_SOURCE[0]}" ]]; then
   main
+  set -a
 fi

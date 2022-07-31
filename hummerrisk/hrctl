@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-HR_BASE="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+#HR_BASE="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+HR_BASE=/opt/hummerrisk
 
 . "${HR_BASE}/scripts/utils.sh"
 
@@ -117,6 +118,8 @@ function main() {
       bash "${SCRIPT_DIR}/4_install_hummerrisk.sh"
       ;;
     upgrade)
+      wget xxx
+      cd xxx
       bash "${SCRIPT_DIR}/7_upgrade.sh" "$target"
       ;;
     reconfig)
@@ -158,7 +161,7 @@ function main() {
       bash "${SCRIPT_DIR}/6_db_restore.sh" "$target"
       ;;
     load_image)
-      bash "${SCRIPT_DIR}/3_load_images.sh"
+      bash "${SCRIPT_DIR}/4_load_images.sh"
       ;;
     cmd)
       echo "${EXE}"

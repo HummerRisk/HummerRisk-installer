@@ -5,12 +5,3 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-
-networks:
-  hummerrisk-network:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: ${HR_DOCKER_SUBNET}
-          gateway: ${HR_DOCKER_GATEWAY}

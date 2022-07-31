@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-export CURRENT_DIR=$(cd "$(dirname "$0")";pwd)
+. "./scripts/utils.sh"
 
-. "${CURRENT_DIR}/scripts/utils.sh"
+export CURRENT_DIR=$(cd "$(dirname "$0")";pwd)
 
 function pre_install() {
   if ! command -v systemctl &>/dev/null; then
@@ -14,6 +14,11 @@ function pre_install() {
       log_error " 'The current Linux system does not support systemd management. Please deploy docker-compose by yourself before running this script again'"
       exit 1
     }
+  fi
+  if [ -f /usr/bin/hrctl ]; then
+     # 获取已安装的 hummerrisk 的运行目录
+     HR_BASE=`grep "^HR_BASE=" /usr/bin/hrctl | cut -d'=' -f2`
+     hrctl down
   fi
 }
 
@@ -54,16 +59,16 @@ function main() {
     exit 1
   fi
   echo_green "\n>>>  'Install and Configure hummerrisk'"
-  if ! bash "${SCRIPT_DIR}/4_config_hummerrisk.sh"; then
+  if ! bash "${SCRIPT_DIR}/3_config_hummerrisk.sh"; then
     exit 1
   fi
   echo_green "\n>>>  'Loading Docker Image'"
-  if ! bash "${SCRIPT_DIR}/3_load_images.sh"; then
+  if ! bash "${SCRIPT_DIR}/4_load_images.sh"; then
     exit 1
   fi
   set_current_version
   post_install
-  hrctl start
+  /bin/bash hrctl start
 }
 
 if [[ "$0" == "${BASH_SOURCE[0]}" ]]; then
