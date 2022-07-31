@@ -10,7 +10,33 @@ function prepare_new_package() {
   hummerrisk_online_file_name="hummerrisk-installer-${to_version}.tar.gz"
   echo "Download install script to hummerrisk-installer-${to_version} (开始下载包到 hummerrisk-installer-${to_version})"
   if [ ! -d "hummerrisk-installer-${to_version}" ]; then
-    curl -LOk -m 60 -o "${hummerrisk_online_file_name}" https://github.com/alvin5840/hummerrisk/releases/download/"${to_version}"/"${hummerrisk_online_file_name}" || {
+       git_urls=('github.com' 'hub.fastgit.org')
+       for git_url in ${git_urls[*]}
+       do
+          success="true"
+          for i in {1..3}
+          do
+             echo -ne "检测 ${git_url} ... ${i} "
+             curl -m 5 -kIs https://${git_url} >/dev/null
+             if [ $? != 0 ];then
+                echo "failed"
+                success="false"
+                break
+             else
+                echo "ok"
+             fi
+          done
+          if [ ${success} == "true" ];then
+             server_url=${git_url}
+             break
+          fi
+       done
+
+       if [ "x${server_url}" == "x" ];then
+           echo "No stable download server found, please check the network"
+           exit 1
+       fi
+    curl -LOk -m 60 -o "${hummerrisk_online_file_name}" https://${server_url}/alvin5840/hummerrisk/releases/download/"${to_version}"/"${hummerrisk_online_file_name}" || {
     rm -rf "${hummerrisk_online_file_name}"
     echo -e "[\033[31m ERROR \033[0m] Failed to download hummerrisk-installer-${to_version} (下载 hummerrisk-installer-${to_version} 失败, 请检查网络是否正常或尝试重新执行脚本)"
     exit 1
@@ -41,6 +67,9 @@ function upgrade_config() {
     sed -i "s@HR_CURRENT_VERSION=.*@HR_CURRENT_VERSION=${to_version}@g" "${CONFIG_FILE}"
     export VERSION=${to_version}
     /bin/bash install.sh
+  elif [[ "${to_version}" != "${VERSION}" ]]; then
+    echo "The current version is the same as the latest version, exit the upgrade process"
+    exit 0
   fi
   echo
 }

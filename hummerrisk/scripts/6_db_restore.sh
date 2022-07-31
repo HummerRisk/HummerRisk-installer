@@ -21,7 +21,7 @@ function main() {
     exit 2
   fi
 
-  if ! docker run --rm -i --network=hr_default hummerrisk/mysql:5.7.38 ${restore_cmd} <"${DB_FILE}"; then
+  if ! docker run --rm -i --network=hr_hummerrisk-network hummerrisk/mysql:5.7.38 ${restore_cmd} <"${DB_FILE}"; then
     log_error " 'Database recovery failed. Please check whether the database file is complete or try to recover manually'!"
     exit 1
   else
