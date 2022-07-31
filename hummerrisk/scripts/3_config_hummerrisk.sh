@@ -45,7 +45,7 @@ function set_run_base() {
     mkdir -p "${HR_BASE}"/data/{hummerrisk,mysql}
   fi
   if [[ ! -d "${HR_BASE}/logs" ]]; then
-    mkdir -p "${HR_BASE}/logs"}
+    mkdir -p "${HR_BASE}/logs"
   fi
   \cp -rp "${PROJECT_DIR}/compose" "${HR_BASE}"
   \cp -rp "${PROJECT_DIR}/scripts" "${HR_BASE}"
