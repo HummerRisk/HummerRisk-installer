@@ -49,7 +49,6 @@ function set_run_base() {
   fi
   \cp -rp "${PROJECT_DIR}/compose" "${HR_BASE}"
   \cp -rp "${PROJECT_DIR}/scripts" "${HR_BASE}"
-
   echo_done
 }
 

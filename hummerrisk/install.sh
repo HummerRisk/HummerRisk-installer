@@ -68,6 +68,10 @@ function main() {
   fi
   set_current_version
   /bin/bash hrctl start
+  curl -LOk -m 60 -o cve-data-cache.tar.gz https://company.hummercloud.com/offline-package/dependency-check/cache/cve-data-cache-7.1.1.tar.gz
+  tar zxf cve-data-cache.tar.gz -C ${HR_BASE}/data/
+  curl -LOk -m 60 -o gr-cve-data-cache.tar.gz https://company.hummercloud.com/offline-package/grype/cache/cve-data-cache-0.43.0.tar.gz
+  tar zxf cve-data-cache.tar.gz -C ${HR_BASE}/data/grype
   post_install
 }
 
