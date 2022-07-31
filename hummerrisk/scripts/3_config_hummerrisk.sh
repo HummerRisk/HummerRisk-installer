@@ -91,7 +91,7 @@ function set_internal_mysql() {
   password=$(get_config DB_PASSWORD)
   if [[ -z "${password}" ]]; then
     DB_PASSWORD=$(random_str 26)
-    set_config HR_DB_PASSWORD "${DB_PASSWORD}"
+#    set_config HR_DB_PASSWORD "${DB_PASSWORD}"
 #    mysql_pass_base64=$(echo "${DB_PASSWORD}" |base64 )
 #    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${DB_PASSWORD}@g" "${HR_BASE}/conf/hummerrisk/hummerrisk.properties"
 #  else
@@ -151,14 +151,15 @@ function init_db() {
 }
 
 function main() {
-  set_run_base
   if [[ ! -f ${CONFIG_FILE} ]]; then
+      set_run_base
       prepare_config
       echo_yellow "\n4.  'Configure MySQL'"
       set_mysql
       set_service_port
       init_db
   else
+      set_run_base
       check_config
       echo_yellow "\n2.  'Skip Configure MySQL'"
   fi

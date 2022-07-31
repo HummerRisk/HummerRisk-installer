@@ -204,10 +204,21 @@ function echo_done() {
   echo "'complete'"
 }
 
+# shellcheck disable=SC2120
+function get_docker_compose_cmd_line() {
+  ignore_db="$1"
+  cmd="docker-compose -f ${HR_BASE}/compose/docker-compose-app.yml"
+  services=$(get_docker_compose_services "$ignore_db")
+  if [[ "${services}" =~ mysql ]]; then
+    cmd="${cmd} -f  ${HR_BASE}/compose/docker-compose-mysql.yml -f  ${HR_BASE}/compose/docker-compose-service.yml"
+  fi
+  echo "${cmd}"
+}
+
 function get_docker_compose_services() {
   ignore_db="$1"
   services="hummerrisk"
-  use_external_mysql=$(get_config USE_EXTERNAL_MYSQL)
+  use_external_mysql=$(get_config HR_USE_EXTERNAL_MYSQL)
   if [[ "${use_external_mysql}" != "1" && "${ignore_db}" != "ignore_db" ]]; then
     services+=" mysql"
   fi
@@ -230,16 +241,7 @@ function random_str() {
   fi
 }
 
-# shellcheck disable=SC2120
-function get_docker_compose_cmd_line() {
-  ignore_db="$1"
-  cmd="docker-compose -f ${HR_BASE}/compose/docker-compose-app.yml"
-  services=$(get_docker_compose_services "$ignore_db")
-  if [[ "${services}" =~ mysql ]]; then
-    cmd="${cmd} -f  ${HR_BASE}/compose/docker-compose-mysql.yml -f  ${HR_BASE}/compose/docker-compose-service.yml"
-  fi
-  echo "${cmd}"
-}
+
 
 function prepare_set_redhat_firewalld() {
   if command -v firewall-cmd > /dev/null; then
@@ -257,8 +259,6 @@ function prepare_set_redhat_firewalld() {
     fi
   fi
 }
-
-
 
 function get_latest_version() {
   curl -s 'https://api.github.com/repos/HummerRisk/HummerRisk/releases/latest' |
@@ -329,6 +329,7 @@ function prop {
 
 function check_config() {
   if [[ -f ${CONFIG_FILE} ]]; then
+     export HR_USE_EXTERNAL_MYSQL=$(get_config HR_USE_EXTERNAL_MYSQL)
      export HR_DB_HOST=$(get_config HR_DB_HOST)
      export HR_DB_USER=$(get_config HR_DB_USER)
      export HR_DB_PASSWORD=$(get_config HR_DB_PASSWORD)
