@@ -78,24 +78,12 @@ function set_external_mysql() {
     set_mysql
   fi
 
-#  set_config HR_DB_HOST "${mysql_host}"
-#  set_config HR_DB_PORT "${mysql_port}"
-#  set_config HR_DB_USER "${mysql_user}"
-#  set_config HR_DB_PASSWORD "${mysql_pass}"
-#  set_config HR_DB_NAME "${mysql_db}"
-#  set_config HR_USE_EXTERNAL_MYSQL 1
   export HR_DB_HOST="${mysql_host}"
   export HR_DB_PORT="${mysql_port}"
   export HR_DB_USER="${mysql_user}"
   export HR_DB_PASSWORD="${mysql_pass}"
   export HR_DB_NAME="${mysql_db}"
   export HR_USE_EXTERNAL_MYSQL=1
-
-  mysql_pass_base64=$(echo "${mysql_pass}" |base64 )
-#  mysql_pass_base64_cmd=$(echo "$mysql_pass_base64"|base64 -d)
-  sed -i "s@jdbc:mysql://mysql:3306@jdbc:mysql://${mysql_host}:${mysql_port}@g" "${HR_BASE}/conf/hummerrisk/hummerrisk.properties"
-  sed -i "s@spring.datasource.username=.*@spring.datasource.username=${mysql_user}@g" "${HR_BASE}/conf/hummerrisk/hummerrisk.properties"
-  sed -i "s@spring.datasource.password=.*@spring.datasource.password=${mysql_pass_base64}@g" "${HR_BASE}/conf/hummerrisk/hummerrisk.properties"
 }
 
 function set_internal_mysql() {
@@ -163,13 +151,17 @@ function init_db() {
 }
 
 function main() {
-#  check_config
   set_run_base
-  prepare_config
-  echo_yellow "\n4.  'Configure MySQL'"
-  set_mysql
-  set_service_port
-  init_db
+  if [[ ! -f ${CONFIG_FILE} ]]; then
+      prepare_config
+      echo_yellow "\n4.  'Configure MySQL'"
+      set_mysql
+      set_service_port
+      init_db
+  else
+      check_config
+      echo_yellow "\n2.  'Skip Configure MySQL'"
+  fi
   if [[ -f ${CONFIG_FILE} ]]; then
 #    env|grep -E "HR_|COMPOSE" > "$CONFIG_FILE"
     envsubst < install.conf > "${CONFIG_FILE}"
@@ -180,5 +172,4 @@ function main() {
 
 if [[ "$0" == "${BASH_SOURCE[0]}" ]]; then
   main
-  set -a
 fi

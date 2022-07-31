@@ -6,18 +6,6 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 target=$1
 
-function check_config() {
-  if [[ -f ${CONFIG_FILE} ]]; then
-     export HR_DB_HOST=$(get_config HR_DB_HOST)
-     export HR_DB_USER=$(get_config HR_DB_USER)
-     export HR_DB_PASSWORD=$(get_config HR_DB_PASSWORD)
-     export HR_DB_NAME=$(get_config HR_DB_NAME)
-     export HR_HTTP_PORT=$(get_config HR_HTTP_PORT)
-     export HR_DOCKER_SUBNET=$(get_config HR_DOCKER_SUBNET)
-     export HR_DOCKER_GATEWAY=$(get_config HR_DOCKER_GATEWAY)
-  fi
-}
-
 function upgrade_config() {
   confirm="n"
   to_version="${VERSION}"
