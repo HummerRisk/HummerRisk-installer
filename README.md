@@ -10,14 +10,11 @@ cd installer
 # 安装，版本是在 static.env 指定的
 hrctl install
 
-# 检查更新
-hrctl check_update
-
 # 升级到 static.env 中的版本
 hrctl upgrade
 
 # 升级到指定版本
-hrctl upgrade v0.1.0
+hrctl upgrade v0.2.0
 ```
 
 
