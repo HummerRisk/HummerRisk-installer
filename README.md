@@ -36,27 +36,33 @@ hrctl upgrade
 # 卸载
 hrctl uninstall
 
+# 备份数据库
+hrctl backup_db
+
+# 还原数据库
+hrctl restore_db /opt/hummerrisk/db_backup/hummerrisk-xx.sql
 # 帮助
 hrctl --help
 ```
 
 ## 配置文件说明
 
-配置文件将会放在 /opt/hummerrisk/config 中
+配置文件将会放在 /opt/hummerrisk/conf 中
 
 ```
-[root@hummerrisk hummerrisk]# tree .
-├── conf
-│   ├── mysql                      
-│   │   ├── mysql.cnf               # mysql 配置文件
-│   │   └── sql
-│   │       └── hummerrisk.sql     # mysql 初始化数据库脚本
-│   ├── hummerrisk.properties      # hummerrisk 配置文件
-│   └── version                     # 版本文件
-└── config
-    └── install.conf                  # 主配置文件
+[root@VM-25-15-centos ~]# tree /opt/hummerrisk/conf/
+/opt/hummerrisk/conf/
+├── grype
+│   └── grype.yaml              # grype 的配置文件
+├── hummerrisk
+│   ├── hummerrisk.properties   # hummerrisk 的配置文件
+│   └── version
+├── install.conf                      # 整个项目的配置文件
+└── mysql
+    ├── hummerrisk.sql                # 初始化 SQL
+    └── mysql.cnf                     # MySQL 数据库的配置文件
 
-4 directories, 5 files
+3 directories, 6 files
 ```
 
 ### install.conf 说明
