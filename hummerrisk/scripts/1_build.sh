@@ -78,11 +78,11 @@ function prepare_image_files() {
 function main() {
   prepare_config_xpack
 
-  echo  -e"\n1. Preparing Docker binary offline package"
+  echo -e "\n 1. Preparing Docker binary offline package"
   prepare_docker_bin
   prepare_compose_bin
 
-  echo -e "\n2. Preparing image offline package"
+  echo -e "\n 2. Preparing image offline package"
   prepare_image_files
 }
 

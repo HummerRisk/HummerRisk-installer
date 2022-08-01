@@ -293,7 +293,9 @@ function pull_image() {
   image=$1
   DOCKER_IMAGE_PREFIX=$(get_config_or_env 'HR_DOCKER_IMAGE_PREFIX')
   IMAGE_PULL_POLICY=${IMAGE_PULL_POLICY-"Always"}
-
+  if [[ "x${DOCKER_IMAGE_PREFIX}" == "x" ]];then
+    DOCKER_IMAGE_PREFIX="registry.cn-beijing.aliyuncs.com"
+  fi
   if docker image inspect -f '{{ .Id }}' "$image" &> /dev/null; then
     exits=0
   else

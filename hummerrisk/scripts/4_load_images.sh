@@ -40,6 +40,9 @@ function load_image_files() {
 function pull_image() {
   images=$(get_images)
   DOCKER_IMAGE_PREFIX=$(get_config HR_DOCKER_IMAGE_PREFIX)
+  if [[ "x${DOCKER_IMAGE_PREFIX}" == "x" ]];then
+    DOCKER_IMAGE_PREFIX="registry.cn-beijing.aliyuncs.com"
+  fi
   i=1
   for image in ${images}; do
     echo "[${image}]"
