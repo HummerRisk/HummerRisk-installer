@@ -23,13 +23,13 @@ jobs:
           cd installer
           rm -rf hudson.* .travis.yml .git .github
           chmod +x hummerrisk/hrctl
+          sed -i "s@Version=.*@Version=${version}@g" quick_start.sh
           cd ..
           version=`echo ${RELEASE_VERSION##*/}`
           filename=hummerrisk-installer-$version
           mv installer/hummerrisk $filename
           sed -i "s@HR_CURRENT_VERSION=.*@HR_CURRENT_VERSION=${version}@g" $filename/install.conf
           sed -i "s@VERSION=.*@VERSION=${version}@g" $filename/scripts/const.sh
-          sed -i "s@Version=.*@Version=${version}@g" $filename/quick_start.sh
           tar -czvf $filename.tar.gz $filename
           echo "::set-output name=VERSION::$(echo $version)"
       - name: Create Release
