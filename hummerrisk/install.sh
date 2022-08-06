@@ -51,6 +51,18 @@ function post_install() {
   echo -e "\n\n"
 }
 
+function download_cve_data() {
+    dependency_cache=cve-data-cache-$(get_config DEPENDENCY_VERSION).tar.gz
+    grype_cache=cve-data-cache-$(get_config GRYPE_VERSION).tar.gz
+    if [[ ! -f ${dependency_cache} ]] && [[ ! -f ${grype_cache} ]];then
+      echo -e "\n Download cve data"
+      curl -LOk -m 300 -o ${dependency_cache} https://company.hummercloud.com/offline-package/dependency-check/cache/${dependency_cache}
+      curl -LOk -m 300 -o ${grype_cache} https://company.hummercloud.com/offline-package/grype/cache/${grype_cache}
+    fi
+    tar zxf ${dependency_cache} -C ${HR_BASE}/data/
+    tar zxf ${grype_cache} -C "${HR_BASE}/data/grype"
+}
+
 function main() {
   echo_logo
   pre_install
@@ -68,15 +80,7 @@ function main() {
   fi
   set_current_version
   /bin/bash hrctl start
-  dependency_cache=cve-data-cache-7.1.1.tar.gz
-  grype_cache=cve-data-cache-0.43.0.tar.gz
-  if [[ ! -f ${dependency_cache} ]] && [[ ! -f ${grype_cache} ]];then
-    echo -e "\n Download cve data"
-    curl -LOk -m 300 -o ${dependency_cache} https://company.hummercloud.com/offline-package/dependency-check/cache/${dependency_cache}
-    curl -LOk -m 300 -o ${grype_cache} https://company.hummercloud.com/offline-package/grype/cache/${grype_cache}
-  fi
-  tar zxf ${dependency_cache} -C ${HR_BASE}/data/
-  tar zxf ${grype_cache} -C "${HR_BASE}/data/grype"
+  download_cve_data
   post_install
 }
 
