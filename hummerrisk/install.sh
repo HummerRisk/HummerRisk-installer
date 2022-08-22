@@ -54,13 +54,18 @@ function post_install() {
 function download_cve_data() {
     dependency_cache=cve-data-cache-$(get_config DEPENDENCY_VERSION).tar.gz
     grype_cache=cve-data-cache-$(get_config GRYPE_VERSION).tar.gz
-    if [[ ! -f ${dependency_cache} ]] && [[ ! -f ${grype_cache} ]];then
+    triy_db=trivy-offline-v1-$(get_config TRIVY_DB_VERSION).db.tgz
+    if [[ ! -f ${dependency_cache} ]];then
       echo -e "\n Download cve data"
       curl -LOk -m 300 -o ${dependency_cache} https://company.hummercloud.com/offline-package/dependency-check/cache/${dependency_cache}
+    elif [[ ! -f ${grype_cache} ]]; then
       curl -LOk -m 300 -o ${grype_cache} https://company.hummercloud.com/offline-package/grype/cache/${grype_cache}
+    elif [[ ! -f ${triy_db} ]]; then
+      curl -LOk -m 300 -o ${triy_db} https://company.hummercloud.com/offline-package/trivy/trivy-db/${triy_db}
     fi
-    tar zxf ${dependency_cache} -C ${HR_BASE}/data/
+    tar zxf ${dependency_cache} -C "${HR_BASE}/data/"
     tar zxf ${grype_cache} -C "${HR_BASE}/data/grype"
+    tar zxf ${triy_db} -C "${HR_BASE}/data/trivy/db"
 }
 
 function main() {
