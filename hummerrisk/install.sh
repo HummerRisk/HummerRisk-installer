@@ -57,11 +57,13 @@ function download_cve_data() {
     triy_db=trivy-offline-v1-$(get_config TRIVY_DB_VERSION).db.tar.gz
     if [[ ! -f ${dependency_cache} ]];then
       echo -e "\n Download cve data"
-      curl -LOk -m 300 -o ${dependency_cache} https://company.hummercloud.com/offline-package/dependency-check/cache/${dependency_cache}
-    elif [[ ! -f ${grype_cache} ]]; then
-      curl -LOk -m 300 -o ${grype_cache} https://company.hummercloud.com/offline-package/grype/cache/${grype_cache}
-    elif [[ ! -f ${triy_db} ]]; then
-      curl -LOk -m 300 -o ${triy_db} https://company.hummercloud.com/offline-package/trivy/trivy-db/${triy_db}
+      curl -LOk -m 600 -o ${dependency_cache} https://company.hummercloud.com/offline-package/dependency-check/cache/${dependency_cache}
+    fi
+    if [[ ! -f ${grype_cache} ]]; then
+      curl -LOk -m 600 -o ${grype_cache} https://company.hummercloud.com/offline-package/grype/cache/${grype_cache}
+    fi
+    if [[ ! -f ${triy_db} ]]; then
+      curl -LOk -m 600 -o ${triy_db} https://company.hummercloud.com/offline-package/trivy/trivy-db/${triy_db}
     fi
     tar zxf ${dependency_cache} -C "${HR_BASE}/data/"
     tar zxf ${grype_cache} -C "${HR_BASE}/data/grype"
