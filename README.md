@@ -52,8 +52,6 @@ hrctl --help
 ```
 [root@VM-25-15-centos ~]# tree /opt/hummerrisk/conf/
 /opt/hummerrisk/conf/
-├── grype
-│   └── grype.yaml              # grype 的配置文件
 ├── hummerrisk
 │   ├── hummerrisk.properties   # hummerrisk 的配置文件
 │   └── version

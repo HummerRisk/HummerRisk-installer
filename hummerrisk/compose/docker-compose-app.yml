@@ -24,8 +24,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker
       - ${HR_BASE}/data/dependency-check:/usr/share/dependency-check/data
-      - ${HR_BASE}/conf/grype/grype.yaml:/root/.grype.yaml
-      - ${HR_BASE}/data/grype:/opt/.cache/grype/db/4
       - ${HR_BASE}/data/trivy/cache:/opt/hummerrisk/trivy
       - ${HR_BASE}/data/trivy/db:/root/.cache/trivy/db/
     healthcheck:
