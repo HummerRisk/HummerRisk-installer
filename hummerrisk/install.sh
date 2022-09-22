@@ -52,16 +52,10 @@ function post_install() {
 }
 
 function download_cve_data() {
-    dependency_cache=cve-data-cache-$(get_config DEPENDENCY_VERSION).tar.gz
     triy_db=trivy-offline-v1-$(get_config TRIVY_DB_VERSION).db.tar.gz
-    if [[ ! -f ${dependency_cache} ]];then
-      echo -e "\n Download cve data"
-      curl -LOk -m 600 -o ${dependency_cache} https://company.hummercloud.com/offline-package/dependency-check/cache/${dependency_cache}
-    fi
     if [[ ! -f ${triy_db} ]]; then
       curl -LOk -m 600 -o ${triy_db} https://company.hummercloud.com/offline-package/trivy/trivy-db/${triy_db}
     fi
-    tar zxf ${dependency_cache} -C "${HR_BASE}/data/"
     tar zxf ${triy_db} -C "${HR_BASE}/data/trivy/db"
 }
 
