@@ -23,7 +23,6 @@ services:
       - ${HR_BASE}/data/hummerrisk/file:/opt/hummerrisk/file
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker
-      - ${HR_BASE}/data/dependency-check:/usr/share/dependency-check/data
       - ${HR_BASE}/data/trivy/cache:/opt/hummerrisk/trivy
       - ${HR_BASE}/data/trivy/db:/root/.cache/trivy/db/
     healthcheck:
