@@ -4,11 +4,11 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 . "${BASE_DIR}/utils.sh"
 
-HOST=$(get_config DB_HOST)
-PORT=$(get_config DB_PORT)
-USER=$(get_config DB_USER)
-PASSWORD=$(get_config DB_PASSWORD)
-DATABASE=$(get_config DB_NAME)
+HOST=$(get_config HR_DB_HOST)
+PORT=$(get_config HR_DB_PORT)
+USER=$(get_config HR_DB_USER)
+PASSWORD=$(get_config HR_DB_PASSWORD)
+DATABASE=$(get_config HR_DB_NAME)
 
 DB_FILE="$1"
 
@@ -20,6 +20,7 @@ function main() {
     echo " 'file does not exist': ${DB_FILE}"
     exit 2
   fi
+  echo $restore_cmd "Test"
 
   if ! docker run --rm -i --network=hr_hummerrisk-network hummerrisk/mysql:5.7.38 ${restore_cmd} <"${DB_FILE}"; then
     log_error " 'Database recovery failed. Please check whether the database file is complete or try to recover manually'!"
