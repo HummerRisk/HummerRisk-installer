@@ -5,7 +5,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 . "${BASE_DIR}/utils.sh"
 HR_BASE=$(get_config HR_BASE)
 BACKUP_DIR="${HR_BASE}/db_backup"
-CURRENT_VERSION=$(get_config CURRENT_VERSION)
+CURRENT_VERSION=$(get_config HR_CURRENT_VERSION)
 
 HOST=$(get_config HR_DB_HOST)
 PORT=$(get_config HR_DB_PORT)
