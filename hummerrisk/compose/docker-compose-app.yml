@@ -25,6 +25,7 @@ services:
       - /usr/bin/docker:/usr/bin/docker
       - ${HR_BASE}/data/trivy/cache:/opt/hummerrisk/trivy
       - ${HR_BASE}/data/trivy/db:/root/.cache/trivy/db/
+      - ${HR_BASE}/conf/hummerrisk/aws-config:/root/.aws
     healthcheck:
       test: "curl -fsL http://localhost:8088 > /dev/null"
       interval: 10s
