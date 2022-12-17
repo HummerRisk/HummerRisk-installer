@@ -340,5 +340,6 @@ function check_config() {
      export HR_HTTP_PORT=$(get_config HR_HTTP_PORT)
      export HR_DOCKER_SUBNET=$(get_config HR_DOCKER_SUBNET)
      export HR_DOCKER_GATEWAY=$(get_config HR_DOCKER_GATEWAY)
+     export TRIVY_SERVER_PORT=$(get_config TRIVY_SERVER_PORT)
   fi
 }

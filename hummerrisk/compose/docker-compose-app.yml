@@ -33,6 +33,25 @@ services:
     networks:
      - hummerrisk-network
 
+  trivy-server:
+    image: hummerrisk/hummerrisk:${VERSION}
+    container_name: trivy_server
+    restart: always
+    ports:
+      - ${TRIVY_SERVER_PORT}:4975
+    command: "trivy server --skip-update --listen 0.0.0.0:4975"
+    volumes:
+      - ${HR_BASE}/data/trivy/cache:/opt/hummerrisk/trivy
+      - ${HR_BASE}/data/trivy/db:/root/.cache/trivy/db/
+    healthcheck:
+      test: "curl -fsL http://localhost:4975/healthz> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+    networks:
+     - hummerrisk-network
+
 networks:
   hummerrisk-network:
     driver: bridge
