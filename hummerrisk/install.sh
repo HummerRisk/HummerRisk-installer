@@ -52,7 +52,7 @@ function post_install() {
 }
 
 function download_cve_data() {
-    triy_db=trivy-offline-v1-$(get_config TRIVY_DB_VERSION).db.tar.gz
+    triy_db=trivy-offline-v2-$(get_config TRIVY_DB_VERSION).db.tar.gz
     if [[ ! -f ${triy_db} ]]; then
       curl -LOk -m 600 -o ${triy_db} https://company.hummercloud.com/offline-package/trivy/trivy-db/${triy_db}
     fi
