@@ -3,7 +3,7 @@
 
 set -e
 export CURRENT_DIR=$(cd "$(dirname "$0")";pwd)
-export VERSION=$(curl -s https://api.github.com/repos/HummerRisk/HummerRisk/releases/latest | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g')
+export VERSION=v0.9.0
 
 hummerrisk_online_file_name="hummerrisk-installer-${VERSION}.tar.gz"
 
@@ -26,7 +26,7 @@ function get_installer() {
 
 function config_installer() {
   cd hummerrisk-installer-"${VERSION}"|| exit 1
-  sed -i -e "1,4s/VERSION=.*/VERSION=${VERSION}/g" scripts/const.sh
+  sed -i -e "1,4s/VERSION=v0.9.0
 }
 
 function main(){
