@@ -24,7 +24,7 @@ function pre_install() {
 
 function post_install() {
   echo_green "\n>>>  'The Installation is Complete'"
-  HOST=$(ip addr | grep 'state UP' -A2 | grep inet | grep -Ev '(127.0.0.1|inet6|docker)' | awk '{print $2}' | tr -d "addr:" | head -n 1 | cut -d / -f1)
+  HOST=$(ip addr | grep 'state UP' -A3 | grep inet | grep -Ev '(127.0.0.1|inet6|docker)' | awk '{print $2}' | tr -d "addr:" | head -n 1 | cut -d / -f1)
   if [ ! "$HOST" ]; then
       HOST=$(hostname -I | cut -d ' ' -f1)
   fi
