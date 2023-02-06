@@ -217,7 +217,7 @@ function get_docker_compose_cmd_line() {
 
 function get_docker_compose_services() {
   ignore_db="$1"
-  services="hummerrisk"
+  services="hummerrisk trivy-server"
   use_external_mysql=$(get_config HR_USE_EXTERNAL_MYSQL)
   if [[ "${use_external_mysql}" != "1" && "${ignore_db}" != "ignore_db" ]]; then
     services+=" mysql"
