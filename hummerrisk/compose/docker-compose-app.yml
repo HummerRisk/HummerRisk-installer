@@ -39,7 +39,7 @@ services:
     restart: always
     ports:
       - ${TRIVY_SERVER_PORT}:4975
-    command: "trivy server --skip-update --listen 0.0.0.0:4975"
+    command: "trivy server --listen 0.0.0.0:4975"
     volumes:
       - ${HR_BASE}/data/trivy/cache:/opt/hummerrisk/trivy
       - ${HR_BASE}/data/trivy/db:/root/.cache/trivy/db/
