@@ -106,17 +106,26 @@ function set_internal_mysql() {
 }
 
 function set_mysql() {
-  use_external_mysql=$(get_config USE_EXTERNAL_MYSQL)
   confirm="n"
-  if [[ "${use_external_mysql}" == "1" ]]; then
-    confirm="y"
-  fi
-  read_from_input confirm " 'Do you want to use external MySQL'?" "y/n" "${confirm}"
-
-  if [[ "${confirm}" == "y" ]]; then
-    set_external_mysql
+  if [[ $(cat $(pwd)/install.conf |grep HR_USE_EXTERNAL_MYSQL|awk -F= '{print $2}') -eq 1 ]];then
+    for i in `cat $(pwd)/install.conf |grep HR_DB`;do
+      export ${i}
+      confirm="skip"
+    done
   else
-    set_internal_mysql
+    read_from_input confirm " 'Do you want to use external MySQL'?" "y/n" "${confirm}"
+  fi
+#  use_external_mysql=$(get_config USE_EXTERNAL_MYSQL)
+#  confirm="n"
+#  if [[ "${use_external_mysql}" == "1" ]]; then
+#    confirm="y"
+#  fi
+  if [[ ${confirm} != "skip" ]];then
+    if [[ "${confirm}" == "y" ]]; then
+      set_external_mysql
+    else
+      set_internal_mysql
+    fi
   fi
   echo_done
 }
