@@ -56,7 +56,7 @@ function download_cve_data() {
     if [[ ! -f ${triy_db} ]]; then
       curl -LOk -m 600 -o ${triy_db} https://company.hummercloud.com/offline-package/trivy/trivy-db/${triy_db}
     fi
-    tar zxf ${triy_db} -C "${HR_BASE}/data/trivy/db"
+    tar zxf ${triy_db} -C "${HR_BASE}/data/trivy/"
 }
 
 function main() {
