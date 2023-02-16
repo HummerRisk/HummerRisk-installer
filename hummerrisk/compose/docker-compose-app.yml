@@ -21,8 +21,6 @@ services:
       - ${HR_BASE}/logs/hummerrisk/:/opt/hummerrisk/logs
       - ${HR_BASE}/data/hummerrisk/image:/opt/hummerrisk/image
       - ${HR_BASE}/data/hummerrisk/file:/opt/hummerrisk/file
-      - ${HR_BASE}/data/trivy/cache:/opt/hummerrisk/trivy
-      - ${HR_BASE}/data/trivy/db:/root/.cache/trivy/db/
       - ${HR_BASE}/conf/hummerrisk/aws-config:/root/.aws
     healthcheck:
       test: "curl -fsL http://localhost:8088 > /dev/null"
@@ -41,8 +39,7 @@ services:
       - ${TRIVY_SERVER_PORT}:4975
     command: "trivy server --skip-db-update --listen 0.0.0.0:4975"
     volumes:
-      - ${HR_BASE}/data/trivy/cache:/opt/hummerrisk/trivy
-      - ${HR_BASE}/data/trivy/db:/root/.cache/trivy/db/
+      - ${HR_BASE}/data/trivy:/root/.cache/trivy/
     healthcheck:
       test: "curl -fsL http://localhost:4975/healthz> /dev/null"
       interval: 10s
