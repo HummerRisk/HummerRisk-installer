@@ -76,7 +76,6 @@ function set_external_mysql() {
     echo
     set_mysql
   fi
-  sed -i 's/HR_USE_EXTERNAL_MYSQL=.*/HR_USE_EXTERNAL_MYSQL=1/g' $(pwd)/install.conf
 
   export HR_DB_HOST="${mysql_host}"
   export HR_DB_PORT="${mysql_port}"
@@ -108,7 +107,7 @@ function set_internal_mysql() {
 
 function set_mysql() {
   confirm="n"
-  if [[ $(cat $(pwd)/install.conf |grep HR_USE_EXTERNAL_MYSQL|awk -F= '{print $2}') -eq 1 ]];then
+  if [[ $(cat $(pwd)/install.conf |grep HR_USE_EXTERNAL_MYSQL|awk -F= '{print $2}'|cut -d '{' -f2|cut -d '}' -f1) -eq 1 ]];then
     for i in `cat $(pwd)/install.conf |grep HR_DB`;do
       export ${i}
       confirm="skip"
