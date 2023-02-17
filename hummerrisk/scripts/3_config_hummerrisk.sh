@@ -76,6 +76,7 @@ function set_external_mysql() {
     echo
     set_mysql
   fi
+  sed -i 's/HR_USE_EXTERNAL_MYSQL=.*/HR_USE_EXTERNAL_MYSQL=1/g' $(pwd)/install.conf
 
   export HR_DB_HOST="${mysql_host}"
   export HR_DB_PORT="${mysql_port}"
