@@ -21,6 +21,7 @@ services:
       - ${HR_BASE}/logs/hummerrisk/:/opt/hummerrisk/logs
       - ${HR_BASE}/data/hummerrisk/image:/opt/hummerrisk/image
       - ${HR_BASE}/data/hummerrisk/file:/opt/hummerrisk/file
+      - ${HR_BASE}/data/hummerrisk/trivy:/opt/hummerrisk/trivy
       - ${HR_BASE}/conf/hummerrisk/aws-config:/root/.aws
     healthcheck:
       test: "curl -fsL http://localhost:8088 > /dev/null"
