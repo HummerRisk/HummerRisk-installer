@@ -2,8 +2,8 @@ version: '2.4'
 
 services:
   mysql:
-    image: hummerrisk/mysql:5.7.38
-    container_name: hummer-mysql
+    image: mysql:8.0.32
+    container_name: hrs-mysql
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     environment:
