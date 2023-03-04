@@ -46,6 +46,29 @@ services:
     networks:
      - hummerrisk-network
 
+  jobs:
+    image: xuxueli/xxl-job-admin:2.3.1
+    container_name: hrs-job-admin
+    restart: on-failure
+#    env_file:
+#      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
+    environment:
+      ### xxl-job, datasource
+      PARAMS: "--spring.datasource.username=${HR_DB_USER} --spring.datasource.password=${HR_DB_PASSWORD} --spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver --spring.datasource.url=jdbc:mysql://${HR_DB_HOST}:${HR_DB_PORT}/${HR_DB_NAME}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai"
+    healthcheck:
+      test: "curl -fsL http://localhost:8080> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+    volumes:
+      - ${HR_BASE}/logs/jobs:/data/applogs
+    networks:
+      - hummerrisk-network
+    depends_on:
+      auth:
+        condition: service_healthy
+
   flyway:
     image: registry.cn-beijing.aliyuncs.com/hummerrisk/hrs-flyway:${VERSION}
     container_name: hrs-flyway
@@ -62,6 +85,8 @@ services:
       timeout: 5s
       retries: 10
       start_period: 120s
+    volumes:
+      - ${HR_BASE}/logs/flyway:/var/log/flyway
     networks:
      - hummerrisk-network
     depends_on:
@@ -89,6 +114,8 @@ services:
       timeout: 5s
       retries: 10
       start_period: 120s
+    volumes:
+      - ${HR_BASE}/logs/auth:/var/log/auth
     networks:
      - hummerrisk-network
     depends_on:
@@ -102,13 +129,15 @@ services:
     env_file:
       - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
     ports:
-      - 8080:8080
-#    healthcheck:
-#      test: "curl -fsL http://localhost:8080/healthz> /dev/null"
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 120s
+      - 8088:8088
+    healthcheck:
+      test: "curl -fsL http://localhost:8088/healthz> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+    volumes:
+      - ${HR_BASE}/logs/gateway:/var/log/gateway
     networks:
      - hummerrisk-network
     depends_on:
@@ -123,12 +152,14 @@ services:
       - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
     ports:
       - 9201:9201
-#    healthcheck:
-#      test: "curl -fsL http://localhost:9201/healthz> /dev/null"
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 120s
+    healthcheck:
+      test: "curl -fsL http://localhost:9201/healthz> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+    volumes:
+      - ${HR_BASE}/logs/system:/var/log/system
     networks:
      - hummerrisk-network
     depends_on:
@@ -143,32 +174,14 @@ services:
       - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
     ports:
       - 9202:9202
-#    healthcheck:
-#      test: "curl -fsL http://localhost:9202/healthz> /dev/null"
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 120s
-    networks:
-     - hummerrisk-network
-    depends_on:
-      auth:
-        condition: service_healthy
-
-  file:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hrs-file:${VERSION}
-    container_name: hrs-file
-    restart: on-failure
-    env_file:
-      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
-    ports:
-      - 9300:9300
-#    healthcheck:
-#      test: "curl -fsL http://localhost:9300/healthz> /dev/null"
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 120s
+    healthcheck:
+      test: "curl -fsL http://localhost:9202/healthz> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+    volumes:
+      - ${HR_BASE}/logs/job:/var/log/job
     networks:
      - hummerrisk-network
     depends_on:
@@ -185,12 +198,13 @@ services:
       - 9400:9400
     volumes:
       - ${HR_BASE}/conf/hummerrisk/aws-config:/root/.aws
-#    healthcheck:
-#      test: "curl -fsL http://localhost:9400/healthz> /dev/null"
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 120s
+      - ${HR_BASE}/logs/cloud:/var/log/cloud
+    healthcheck:
+      test: "curl -fsL http://localhost:9400/healthz> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
     networks:
      - hummerrisk-network
     depends_on:
@@ -208,12 +222,13 @@ services:
       - ${HR_BASE}/data/hummerrisk/trivy:/opt/hummerrisk/trivy
       - ${HR_BASE}/data/trivy:/root/.cache/trivy/
       - ${HR_BASE}/conf/hummerrisk/aws-config:/root/.aws
-#    healthcheck:
-#      test: "curl -fsL http://localhost:9500/healthz> /dev/null"
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 120s
+      - ${HR_BASE}/logs/k8s:/var/log/k8s
+    healthcheck:
+      test: "curl -fsL http://localhost:9500/healthz> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
     networks:
      - hummerrisk-network
     depends_on:
@@ -228,12 +243,36 @@ services:
       - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
     ports:
       - 9100:9100
-#    healthcheck:
-#      test: "curl -fsL http://localhost:9100/healthz> /dev/null"
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 120s
+    healthcheck:
+      test: "curl -fsL http://localhost:9100/healthz> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+    volumes:
+      - ${HR_BASE}/logs/monitor:/var/log/monitor
+    networks:
+     - hummerrisk-network
+    depends_on:
+      auth:
+        condition: service_healthy
+
+  ui:
+    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hrs-ui:${VERSION}
+    container_name: hrs-ui
+    restart: on-failure
+    env_file:
+      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
+    ports:
+      - 8089:80
+    healthcheck:
+      test: "curl -fsL http://localhost:80> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+    volumes:
+      - ${HR_BASE}/logs/ui:/var/log/ui
     networks:
      - hummerrisk-network
     depends_on:
@@ -249,17 +288,18 @@ services:
     command: "trivy server --skip-db-update --listen 0.0.0.0:4975"
     volumes:
       - ${HR_BASE}/data/trivy:/root/.cache/trivy/
-#    healthcheck:
-#      test: "curl -fsL http://localhost:4975/healthz> /dev/null"
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 120s
+    healthcheck:
+      test: "curl -fsL http://localhost:4975/healthz> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
     networks:
      - hummerrisk-network
     depends_on:
       auth:
         condition: service_healthy
+
 networks:
   hummerrisk-network:
     driver: bridge
@@ -268,3 +308,4 @@ networks:
       config:
         - subnet: ${HR_DOCKER_SUBNET}
           gateway: ${HR_DOCKER_GATEWAY}
+
