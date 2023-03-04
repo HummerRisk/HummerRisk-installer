@@ -126,8 +126,19 @@ function get_images() {
 #  EXE=$(get_docker_compose_cmd_line)
 #  images=$(${EXE} config|grep image:|awk '{print $2}')
   images=(
-    "hummerrisk/mysql:5.7.38"
+    "hummerrisk/mysql:8.0.32"
+    "hummerrisk/redis:6.2.10-alpine"
+    "hummerrisk/xxl-job-admin:2.3.1"
     "hummerrisk/hummerrisk:${VERSION}"
+    "hummerrisk/hrs-flyway:${VERSION}"
+    "hummerrisk/hrs-monitor:${VERSION}"
+    "hummerrisk/hrs-system:${VERSION}"
+    "hummerrisk/hrs-k8s:${VERSION}"
+    "hummerrisk/hrs-gateway${VERSION}"
+    "hummerrisk/hrs-auth${VERSION}"
+    "hummerrisk/hrs-cloud:${VERSION}"
+    "hummerrisk/hrs-ui:${VERSION}"
+    "hummerrisk/hrs-file:${VERSION}"
   )
   for image in "${images[@]}"; do
     echo "${image}"
@@ -217,7 +228,7 @@ function get_docker_compose_cmd_line() {
 
 function get_docker_compose_services() {
   ignore_db="$1"
-  services="hummerrisk trivy-server"
+  services="trivy-server"
   use_external_mysql=$(get_config HR_USE_EXTERNAL_MYSQL)
   if [[ "${use_external_mysql}" != "1" && "${ignore_db}" != "ignore_db" ]]; then
     services+=" mysql"
