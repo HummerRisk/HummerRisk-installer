@@ -117,6 +117,14 @@ function test_mysql_connect() {
   docker run -it --rm hummerrisk/mysql:5.7.38 mysql -h"${host}" -P"${port}" -u"${user}" -p"${password}" "${db}" -e "${command}" 2>/dev/null
 }
 
+function test_redis_connect() {
+  host=$1
+  port=$2
+  password=$3
+  command="SET msg 'ok';GET msg;DEL msg"
+  docker run -it --rm hummerrisk/redis:6.2.10-alpine redis-cli -h "${host}" -a"${user}" -p"${password}" "${command}" 2>/dev/null
+}
+
 function get_images() {
   USE_XPACK=$(get_config_or_env '0')
   scope="public"

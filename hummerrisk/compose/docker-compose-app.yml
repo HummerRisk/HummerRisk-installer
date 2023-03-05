@@ -4,18 +4,12 @@ services:
   nacos:
     image: registry.cn-beijing.aliyuncs.com/hummerrisk/nacos-server:v2.2.0
     container_name: hmr-nacos
+    mem_limit: 2g
+    mem_reservation: 512M
+    cpus: 2
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
     environment:
-#      HMR_DB_HOST: ${HMR_DB_HOST}
-#      HMR_DB_NACOS_NAME: ${HMR_DB_NACOS_NAME}
-#      HMR_DB_USER: ${HMR_DB_USER}
-#      HMR_DB_PASSWORD: ${HMR_DB_PASSWORD}
-#      HMR_MYSQL_HOST: ${HMR_DB_HOST}
-#      HMR_MYSQL_PORT: ${HMR_DB_PORT}
-#      HMR_MYSQL_DB: ${HMR_DB_NAME}
-#      HMR_MYSQL_USER: ${HMR_DB_USER}
-#      HMR_MYSQL_PASSWORD: ${HMR_DB_PASSWORD}
       DB_VENDOR: mysql
       PREFER_HOST_MODE: hostname
       MODE: standalone
@@ -33,9 +27,6 @@ services:
       - "8848:8848"
       - "9848:9848"
       - "9555:9555"
-    mem_limit: 2g
-    mem_reservation: 512M
-    cpus: 2
     healthcheck:
       test: "curl -fsL http://localhost:8848/nacos/actuator/health> /dev/null"
       interval: 2s
@@ -171,28 +162,6 @@ services:
     depends_on:
       auth:
         condition: service_healthy
-
-#  job:
-#    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-job:${VERSION}
-#    container_name: hmr-job
-#    restart: on-failure
-#    env_file:
-#      - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
-#    ports:
-#      - 9202:9202
-#    healthcheck:
-#      test: "curl -fsL http://localhost:9202/healthz> /dev/null"
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 120s
-#    volumes:
-#      - ${HMR_BASE}/logs/job:/var/log/job
-#    networks:
-#     - net
-#    depends_on:
-#      auth:
-#        condition: service_healthy
 
   cloud:
     image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-cloud:${VERSION}

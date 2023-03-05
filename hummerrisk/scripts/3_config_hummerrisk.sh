@@ -85,9 +85,9 @@ function set_external_mysql() {
   export HMR_USE_EXTERNAL_MYSQL=1
 }
 
+# MySQL config
 function set_internal_mysql() {
-#  set_config USE_EXTERNAL_MYSQL 0
-  password=$(get_config DB_PASSWORD)
+  password=$(get_config HMR_DB_PASSWORD)
   if [[ -z "${password}" ]]; then
     DB_PASSWORD=$(random_str 26)
 #    set_config HMR_DB_PASSWORD "${DB_PASSWORD}"
@@ -104,6 +104,7 @@ function set_internal_mysql() {
     export HMR_DB_NAME="hummerrisk"
     export HMR_USE_EXTERNAL_MYSQL=0
 }
+
 
 function set_mysql() {
   confirm="n"
@@ -125,6 +126,63 @@ function set_mysql() {
       set_external_mysql
     else
       set_internal_mysql
+    fi
+  fi
+  echo_done
+}
+
+# Redis config
+function set_internal_redis() {
+  password=$(get_config HMR_REDIS_PASSWORD)
+  if [[ -z "${password}" ]]; then
+    DB_PASSWORD=$(random_str 26)
+  fi
+    export HMR_REDIS_HOST="mysql"
+    export HMR_REDIS_PORT="6379"
+    export HMR_REDIS_PASSWORD="${DB_PASSWORD}"
+    export HMR_USE_EXTERNAL_REDIS=0
+}
+
+function set_external_redis() {
+  redis_host=$(get_config HMR_REDIS_HOST)
+  read_from_input redis_host " 'Please enter Redis server IP'" "" "${redis_host}"
+  if [[ "${redis_host}" == "127.0.0.1" || "${redis_host}" == "localhost" ]]; then
+    redis_host=$(hostname -I | cut -d ' ' -f1)
+  fi
+
+  redis_port=$(get_config HMR_REDIS_PORT)
+  read_from_input redis_port " 'Please enter Redis server port'" "" "${redis_port}"
+
+  redis_pass=$(get_config HMR_REDIS_PASSWORD)
+  read_from_input redis_pass " 'Please enter Redis password'" "" "${redis_pass}"
+
+  if ! test_redis_connect "${redis_host}" "${redis_port}"  "${redis_pass}"; then
+    echo_red " 'Failed to connect to Redis server, please reset'"
+    echo
+    set_mysql
+  fi
+
+  export HMR_REDIS_HOST="${redis_host}"
+  export HMR_REDIS_PORT="${redis_port}"
+  export HMR_REDIS_PASSWORD="${redis_pass}"
+  export HMR_USE_EXTERNAL_REDIS=1
+}
+
+function set_redis() {
+  confirm="n"
+  if [[ $(cat $(pwd)/install.conf |grep HMR_USE_EXTERNAL_REDIS|awk -F= '{print $2}'|cut -d '{' -f2|cut -d '}' -f1) -eq 1 ]];then
+    for i in `cat $(pwd)/install.conf |grep HMR_DB`;do
+      export ${i}
+      confirm="skip"
+    done
+  else
+    read_from_input confirm " 'Do you want to use external Redis'?" "y/n" "${confirm}"
+  fi
+  if [[ ${confirm} != "skip" ]];then
+    if [[ "${confirm}" == "y" ]]; then
+      set_external_redis
+    else
+      set_internal_redis
     fi
   fi
   echo_done
@@ -164,6 +222,7 @@ function main() {
       prepare_config
       echo_yellow "\n4.  'Configure MySQL'"
       set_mysql
+      set_redis
       set_service_port
       init_db
   else
