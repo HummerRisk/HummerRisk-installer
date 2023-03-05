@@ -219,7 +219,7 @@ services:
     ports:
       - 9100:9100
     healthcheck:
-      test: "curl -fsL http://localhost:9100/healthz> /dev/null"
+      test: "curl -fsL http://localhost:9100/actuator/health> /dev/null"
       interval: 10s
       timeout: 5s
       retries: 10
