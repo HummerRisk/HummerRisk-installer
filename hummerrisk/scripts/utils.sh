@@ -137,7 +137,6 @@ function get_images() {
     "hummerrisk/mysql:8.0.32"
     "hummerrisk/redis:6.2.10-alpine"
     "hummerrisk/xxl-job-admin:2.3.1"
-    "hummerrisk/hummerrisk:${VERSION}"
     "hummerrisk/hrs-flyway:${VERSION}"
     "hummerrisk/hrs-monitor:${VERSION}"
     "hummerrisk/hrs-system:${VERSION}"
@@ -146,7 +145,6 @@ function get_images() {
     "hummerrisk/hrs-auth:${VERSION}"
     "hummerrisk/hrs-cloud:${VERSION}"
     "hummerrisk/hrs-ui:${VERSION}"
-    "hummerrisk/hrs-file:${VERSION}"
   )
   for image in "${images[@]}"; do
     echo "${image}"
