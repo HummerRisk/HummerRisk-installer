@@ -47,7 +47,7 @@ services:
         condition: service_healthy
     restart: always
     networks:
-     - hummerrisk-network
+     - net
 
   jobs:
     image: xuxueli/xxl-job-admin:2.3.1
@@ -70,7 +70,7 @@ services:
     volumes:
       - ${HMR_BASE}/logs/jobs:/data/applogs
     networks:
-      - hummerrisk-network
+      - net
     depends_on:
       auth:
         condition: service_healthy
@@ -94,7 +94,7 @@ services:
     volumes:
       - ${HMR_BASE}/logs/flyway:/var/log/flyway
     networks:
-     - hummerrisk-network
+     - net
     depends_on:
       mysql:
         condition: service_healthy
@@ -123,7 +123,7 @@ services:
     volumes:
       - ${HMR_BASE}/logs/auth:/var/log/auth
     networks:
-     - hummerrisk-network
+     - net
     depends_on:
       nacos:
         condition: service_healthy
@@ -145,7 +145,7 @@ services:
     volumes:
       - ${HMR_BASE}/logs/gateway:/var/log/gateway
     networks:
-     - hummerrisk-network
+     - net
     depends_on:
       auth:
         condition: service_healthy
@@ -167,7 +167,7 @@ services:
     volumes:
       - ${HMR_BASE}/logs/system:/var/log/system
     networks:
-     - hummerrisk-network
+     - net
     depends_on:
       auth:
         condition: service_healthy
@@ -189,7 +189,7 @@ services:
 #    volumes:
 #      - ${HMR_BASE}/logs/job:/var/log/job
 #    networks:
-#     - hummerrisk-network
+#     - net
 #    depends_on:
 #      auth:
 #        condition: service_healthy
@@ -212,7 +212,7 @@ services:
       retries: 10
       start_period: 120s
     networks:
-     - hummerrisk-network
+     - net
     depends_on:
       auth:
         condition: service_healthy
@@ -236,7 +236,7 @@ services:
       retries: 10
       start_period: 120s
     networks:
-     - hummerrisk-network
+     - net
     depends_on:
       auth:
         condition: service_healthy
@@ -258,7 +258,7 @@ services:
     volumes:
       - ${HMR_BASE}/logs/monitor:/var/log/monitor
     networks:
-     - hummerrisk-network
+     - net
     depends_on:
       auth:
         condition: service_healthy
@@ -283,7 +283,7 @@ services:
     volumes:
       - ${HMR_BASE}/logs/ui:/var/log/ui
     networks:
-     - hummerrisk-network
+     - net
     depends_on:
       auth:
         condition: service_healthy
@@ -304,13 +304,13 @@ services:
       retries: 10
       start_period: 120s
     networks:
-     - hummerrisk-network
+     - net
     depends_on:
       auth:
         condition: service_healthy
 
 networks:
-  hummerrisk-network:
+  net:
     driver: bridge
     ipam:
       driver: default
