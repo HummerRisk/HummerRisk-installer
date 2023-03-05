@@ -65,7 +65,7 @@ function upgrade_config() {
     cd hummerrisk-installer-"${to_version}"|| exit 1
     sed -i -e "1,4s/VERSION=.*/VERSION=${to_version}/g" scripts/const.sh
     sed -i "s@VERSION=.*@VERSION=${to_version}@g" "${SCRIPT_DIR}/const.sh"
-    sed -i "s@HR_CURRENT_VERSION=.*@HR_CURRENT_VERSION=${to_version}@g" "${CONFIG_FILE}"
+    sed -i "s@HMR_CURRENT_VERSION=.*@HMR_CURRENT_VERSION=${to_version}@g" "${CONFIG_FILE}"
     /bin/bash install.sh
     elif [[ "${to_version}" != "${VERSION}" ]]; then
       echo "The current version is the same as the latest version, exit the upgrade process"
@@ -99,7 +99,7 @@ function backup_db() {
 }
 
 function clear_images() {
-  current_version=$(get_config HR_CURRENT_VERSION)
+  current_version=$(get_config HMR_CURRENT_VERSION)
   if [[ "x${current_version}" != "x" ]]; then
     docker images | grep hummerrisk/ | grep -Ev "${current_version}|mysql" | awk '{print $3}' | xargs docker rmi -f
   fi

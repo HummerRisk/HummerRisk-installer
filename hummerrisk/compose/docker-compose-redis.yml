@@ -7,17 +7,17 @@ services:
         condition: service_healthy
   redis:
     image: registry.cn-beijing.aliyuncs.com/hummerrisk/redis:6.2.10-alpine
-    container_name: hrs-redis
+    container_name: hmr-redis
     restart: always
-    command: ["redis-server", "/etc/redis.conf", "--requirepass", "$HR_REDIS_PASSWORD"]
+    command: ["redis-server", "/etc/redis.conf", "--requirepass", "$HMR_REDIS_PASSWORD"]
     environment:
-      REDIS_PORT: $HR_REDIS_PORT
-      REDIS_PASSWORD: $HR_REDIS_PASSWORD
+      REDIS_PORT: $HMR_REDIS_PORT
+      REDIS_PASSWORD: $HMR_REDIS_PASSWORD
     volumes:
-      - ${HR_BASE}/conf/redis/redis.conf:/etc/redis.conf
-      - ${HR_BASE}/data/redis:/opt/redis
+      - ${HMR_BASE}/conf/redis/redis.conf:/etc/redis.conf
+      - ${HMR_BASE}/data/redis:/opt/redis
     healthcheck:
-      test: "redis-cli -h 127.0.0.1 -p $HR_REDIS_PORT -a $HR_REDIS_PASSWORD info Replication"
+      test: "redis-cli -h 127.0.0.1 -p $HMR_REDIS_PORT -a $HMR_REDIS_PASSWORD info Replication"
       interval: 10s
       timeout: 5s
       retries: 3

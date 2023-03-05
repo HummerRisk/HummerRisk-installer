@@ -4,11 +4,11 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 . "${BASE_DIR}/utils.sh"
 
-HOST=$(get_config HR_DB_HOST)
-PORT=$(get_config HR_DB_PORT)
-USER=$(get_config HR_DB_USER)
-PASSWORD=$(get_config HR_DB_PASSWORD)
-DATABASE=$(get_config HR_DB_NAME)
+HOST=$(get_config HMR_DB_HOST)
+PORT=$(get_config HMR_DB_PORT)
+USER=$(get_config HMR_DB_USER)
+PASSWORD=$(get_config HMR_DB_PASSWORD)
+DATABASE=$(get_config HMR_DB_NAME)
 
 DB_FILE="$1"
 

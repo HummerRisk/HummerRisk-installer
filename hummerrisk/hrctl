@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-#HR_BASE="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-HR_BASE=/opt/hummerrisk
+#HMR_BASE="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+HMR_BASE=/opt/hummerrisk
 
-. "${HR_BASE}/scripts/utils.sh"
+. "${HMR_BASE}/scripts/utils.sh"
 
 action=${1-}
 target=${2-}

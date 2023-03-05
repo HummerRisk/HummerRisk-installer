@@ -218,10 +218,10 @@ function echo_done() {
 # shellcheck disable=SC2120
 function get_docker_compose_cmd_line() {
   ignore_db="$1"
-  cmd="docker-compose -f ${HR_BASE}/compose/docker-compose-app.yml"
+  cmd="docker-compose -f ${HMR_BASE}/compose/docker-compose-app.yml"
   services=$(get_docker_compose_services "$ignore_db")
   if [[ "${services}" =~ mysql ]]; then
-    cmd="${cmd} -f  ${HR_BASE}/compose/docker-compose-mysql.yml -f  ${HR_BASE}/compose/docker-compose-service.yml"
+    cmd="${cmd} -f  ${HMR_BASE}/compose/docker-compose-mysql.yml -f  ${HMR_BASE}/compose/docker-compose-service.yml"
   fi
   echo "${cmd}"
 }
@@ -229,7 +229,7 @@ function get_docker_compose_cmd_line() {
 function get_docker_compose_services() {
   ignore_db="$1"
   services="trivy-server"
-  use_external_mysql=$(get_config HR_USE_EXTERNAL_MYSQL)
+  use_external_mysql=$(get_config HMR_USE_EXTERNAL_MYSQL)
   if [[ "${use_external_mysql}" != "1" && "${ignore_db}" != "ignore_db" ]]; then
     services+=" mysql"
   fi
@@ -288,7 +288,7 @@ function image_has_prefix() {
 function set_current_version() {
   current_version=$(get_config CURRENT_VERSION)
   if [ "${current_version}" != "${VERSION}" ]; then
-    set_config HR_CURRENT_VERSION "${VERSION}"
+    set_config HMR_CURRENT_VERSION "${VERSION}"
   fi
 }
 
@@ -302,7 +302,7 @@ function get_current_version() {
 
 function pull_image() {
   image=$1
-  DOCKER_IMAGE_PREFIX=$(get_config_or_env 'HR_DOCKER_IMAGE_PREFIX')
+  DOCKER_IMAGE_PREFIX=$(get_config_or_env 'HMR_DOCKER_IMAGE_PREFIX')
   IMAGE_PULL_POLICY=${IMAGE_PULL_POLICY-"Always"}
   if [[ "x${DOCKER_IMAGE_PREFIX}" == "x" ]];then
     DOCKER_IMAGE_PREFIX="registry.cn-beijing.aliyuncs.com"
@@ -342,15 +342,15 @@ function prop {
 
 function check_config() {
   if [[ -f ${CONFIG_FILE} ]]; then
-     export HR_USE_EXTERNAL_MYSQL=$(get_config HR_USE_EXTERNAL_MYSQL)
-     export HR_DB_HOST=$(get_config HR_DB_HOST)
-     export HR_DB_USER=$(get_config HR_DB_USER)
-     export HR_DB_PASSWORD=$(get_config HR_DB_PASSWORD)
-     export HR_DB_NAME=$(get_config HR_DB_NAME)
-     export HR_DB_PORT=$(get_config HR_DB_PORT)
-     export HR_HTTP_PORT=$(get_config HR_HTTP_PORT)
-     export HR_DOCKER_SUBNET=$(get_config HR_DOCKER_SUBNET)
-     export HR_DOCKER_GATEWAY=$(get_config HR_DOCKER_GATEWAY)
+     export HMR_USE_EXTERNAL_MYSQL=$(get_config HMR_USE_EXTERNAL_MYSQL)
+     export HMR_DB_HOST=$(get_config HMR_DB_HOST)
+     export HMR_DB_USER=$(get_config HMR_DB_USER)
+     export HMR_DB_PASSWORD=$(get_config HMR_DB_PASSWORD)
+     export HMR_DB_NAME=$(get_config HMR_DB_NAME)
+     export HMR_DB_PORT=$(get_config HMR_DB_PORT)
+     export HMR_HTTP_PORT=$(get_config HMR_HTTP_PORT)
+     export HMR_DOCKER_SUBNET=$(get_config HMR_DOCKER_SUBNET)
+     export HMR_DOCKER_GATEWAY=$(get_config HMR_DOCKER_GATEWAY)
      export TRIVY_SERVER_PORT=$(get_config TRIVY_SERVER_PORT)
   fi
 }

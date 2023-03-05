@@ -3,66 +3,72 @@ version: '2.4'
 services:
   nacos:
     image: registry.cn-beijing.aliyuncs.com/hummerrisk/nacos-server:v2.2.0
-    container_name: hrs-nacos
+    container_name: hmr-nacos
     env_file:
-      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
+      - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
     environment:
-#      HR_DB_HOST: ${HR_DB_HOST}
-#      HR_DB_NACOS_NAME: ${HR_DB_NACOS_NAME}
-#      HR_DB_USER: ${HR_DB_USER}
-#      HR_DB_PASSWORD: ${HR_DB_PASSWORD}
-#      HR_MYSQL_HOST: ${HR_DB_HOST}
-#      HR_MYSQL_PORT: ${HR_DB_PORT}
-#      HR_MYSQL_DB: ${HR_DB_NAME}
-#      HR_MYSQL_USER: ${HR_DB_USER}
-#      HR_MYSQL_PASSWORD: ${HR_DB_PASSWORD}
+#      HMR_DB_HOST: ${HMR_DB_HOST}
+#      HMR_DB_NACOS_NAME: ${HMR_DB_NACOS_NAME}
+#      HMR_DB_USER: ${HMR_DB_USER}
+#      HMR_DB_PASSWORD: ${HMR_DB_PASSWORD}
+#      HMR_MYSQL_HOST: ${HMR_DB_HOST}
+#      HMR_MYSQL_PORT: ${HMR_DB_PORT}
+#      HMR_MYSQL_DB: ${HMR_DB_NAME}
+#      HMR_MYSQL_USER: ${HMR_DB_USER}
+#      HMR_MYSQL_PASSWORD: ${HMR_DB_PASSWORD}
       DB_VENDOR: mysql
       PREFER_HOST_MODE: hostname
       MODE: standalone
       SPRING_DATASOURCE_PLATFORM: mysql
-      MYSQL_SERVICE_HOST: ${HR_DB_HOST}
-      MYSQL_SERVICE_DB_NAME: ${HR_DB_NACOS_NAME}
-      MYSQL_SERVICE_PORT: ${HR_DB_PORT}
-      MYSQL_SERVICE_USER: ${HR_DB_USER}
-      MYSQL_SERVICE_PASSWORD: ${HR_DB_PASSWORD}
+      MYSQL_SERVICE_HOST: ${HMR_DB_HOST}
+      MYSQL_SERVICE_DB_NAME: ${HMR_DB_NACOS_NAME}
+      MYSQL_SERVICE_PORT: ${HMR_DB_PORT}
+      MYSQL_SERVICE_USER: ${HMR_DB_USER}
+      MYSQL_SERVICE_PASSWORD: ${HMR_DB_PASSWORD}
       MYSQL_SERVICE_DB_PARAM: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai
     volumes:
-      - ${HR_BASE}/logs/nacos:/home/nacos/logs
-#      - ${HR_BASE}/conf/nacos/application.properties:/home/nacos/init.d/application.properties
+      - ${HMR_BASE}/logs/nacos:/home/nacos/logs
+#      - ${HMR_BASE}/conf/nacos/application.properties:/home/nacos/init.d/application.properties
     ports:
       - "8848:8848"
       - "9848:9848"
       - "9555:9555"
+    mem_limit: 2g
+    mem_reservation: 512M
+    cpus: 2
     healthcheck:
       test: "curl -fsL http://localhost:8848/nacos/actuator/health> /dev/null"
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 120s
-#    depends_on:
-#      flyway:
-#        condition: service_healthy
+      interval: 2s
+      timeout: 10s
+      retries: 5
+      start_period: 15s
+    depends_on:
+      flyway:
+        condition: service_healthy
     restart: always
     networks:
      - hummerrisk-network
 
   jobs:
     image: xuxueli/xxl-job-admin:2.3.1
-    container_name: hrs-job-admin
+    container_name: hmr-job-admin
     restart: on-failure
+    mem_limit: 512m
+    mem_reservation: 128M
+    cpus: 0.5
 #    env_file:
-#      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
+#      - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
     environment:
       ### xxl-job, datasource
-      PARAMS: "--spring.datasource.username=${HR_DB_USER} --spring.datasource.password=${HR_DB_PASSWORD} --spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver --spring.datasource.url=jdbc:mysql://${HR_DB_HOST}:${HR_DB_PORT}/${HR_DB_NAME}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai"
+      PARAMS: "--spring.datasource.username=${HMR_DB_USER} --spring.datasource.password=${HMR_DB_PASSWORD} --spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver --spring.datasource.url=jdbc:mysql://${HMR_DB_HOST}:${HMR_DB_PORT}/${HMR_DB_NAME}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai"
     healthcheck:
-      test: "curl -fsL http://localhost:8080> /dev/null"
+      test: "curl -fsL http://localhost:8080/xxl-job-admin> /dev/null"
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 120s
     volumes:
-      - ${HR_BASE}/logs/jobs:/data/applogs
+      - ${HMR_BASE}/logs/jobs:/data/applogs
     networks:
       - hummerrisk-network
     depends_on:
@@ -70,13 +76,13 @@ services:
         condition: service_healthy
 
   flyway:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hrs-flyway:${VERSION}
-    container_name: hrs-flyway
+    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-flyway:${VERSION}
+    container_name: hmr-flyway
     restart: on-failure
     env_file:
-      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
+      - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
     environment:
-      JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHR_MYSQL_HOST=${HR_DB_HOST} -DHR_MYSQL_PORT=${HR_DB_PORT} -DHR_MYSQL_DB_NACOS=${HR_DB_NACOS_NAME} -DHR_MYSQL_USER=${HR_DB_USER} -DHR_MYSQL_PASSWORD=${HR_DB_PASSWORD}"
+      JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_MYSQL_HOST=${HMR_DB_HOST} -DHMR_MYSQL_PORT=${HMR_DB_PORT} -DHMR_MYSQL_DB_NACOS=${HMR_DB_NACOS_NAME} -DHMR_MYSQL_USER=${HMR_DB_USER} -DHMR_MYSQL_PASSWORD=${HMR_DB_PASSWORD}"
     ports:
       - 9000:9000
     healthcheck:
@@ -86,7 +92,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HR_BASE}/logs/flyway:/var/log/flyway
+      - ${HMR_BASE}/logs/flyway:/var/log/flyway
     networks:
      - hummerrisk-network
     depends_on:
@@ -94,18 +100,18 @@ services:
         condition: service_healthy
 
   auth:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hrs-auth:${VERSION}
-    container_name: hrs-auth
+    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-auth:${VERSION}
+    container_name: hmr-auth
     restart: on-failure
     env_file:
-      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
+      - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
 #    environment:
-#      HR_MYSQL_HOST: ${HR_DB_HOST}
-#      HR_MYSQL_PORT: ${HR_DB_PORT}
-#      HR_MYSQL_DB: ${HR_DB_NAME}
-#      HR_MYSQL_USER: ${HR_DB_USER}
-#      HR_MYSQL_PASSWORD: ${HR_DB_PASSWORD}
-#      JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHR_NACOS_SERVER_ADDR=${HR_NACOS_SERVER_ADDR}"
+#      HMR_MYSQL_HOST: ${HMR_DB_HOST}
+#      HMR_MYSQL_PORT: ${HMR_DB_PORT}
+#      HMR_MYSQL_DB: ${HMR_DB_NAME}
+#      HMR_MYSQL_USER: ${HMR_DB_USER}
+#      HMR_MYSQL_PASSWORD: ${HMR_DB_PASSWORD}
+#      JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
     ports:
       - 9200:9200
     healthcheck:
@@ -115,7 +121,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HR_BASE}/logs/auth:/var/log/auth
+      - ${HMR_BASE}/logs/auth:/var/log/auth
     networks:
      - hummerrisk-network
     depends_on:
@@ -123,11 +129,11 @@ services:
         condition: service_healthy
 
   gateway:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hrs-gateway:${VERSION}
-    container_name: hrs-gateway
+    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-gateway:${VERSION}
+    container_name: hmr-gateway
     restart: on-failure
     env_file:
-      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
+      - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
     ports:
       - 8088:8088
     healthcheck:
@@ -137,7 +143,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HR_BASE}/logs/gateway:/var/log/gateway
+      - ${HMR_BASE}/logs/gateway:/var/log/gateway
     networks:
      - hummerrisk-network
     depends_on:
@@ -145,11 +151,11 @@ services:
         condition: service_healthy
 
   system:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hrs-system:${VERSION}
-    container_name: hrs-system
+    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-system:${VERSION}
+    container_name: hmr-system
     restart: on-failure
     env_file:
-      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
+      - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
     ports:
       - 9201:9201
     healthcheck:
@@ -159,46 +165,46 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HR_BASE}/logs/system:/var/log/system
+      - ${HMR_BASE}/logs/system:/var/log/system
     networks:
      - hummerrisk-network
     depends_on:
       auth:
         condition: service_healthy
 
-  job:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hrs-job:${VERSION}
-    container_name: hrs-job
-    restart: on-failure
-    env_file:
-      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
-    ports:
-      - 9202:9202
-    healthcheck:
-      test: "curl -fsL http://localhost:9202/healthz> /dev/null"
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 120s
-    volumes:
-      - ${HR_BASE}/logs/job:/var/log/job
-    networks:
-     - hummerrisk-network
-    depends_on:
-      auth:
-        condition: service_healthy
+#  job:
+#    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-job:${VERSION}
+#    container_name: hmr-job
+#    restart: on-failure
+#    env_file:
+#      - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
+#    ports:
+#      - 9202:9202
+#    healthcheck:
+#      test: "curl -fsL http://localhost:9202/healthz> /dev/null"
+#      interval: 10s
+#      timeout: 5s
+#      retries: 10
+#      start_period: 120s
+#    volumes:
+#      - ${HMR_BASE}/logs/job:/var/log/job
+#    networks:
+#     - hummerrisk-network
+#    depends_on:
+#      auth:
+#        condition: service_healthy
 
   cloud:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hrs-cloud:${VERSION}
-    container_name: hrs-cloud
+    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-cloud:${VERSION}
+    container_name: hmr-cloud
     restart: on-failure
     env_file:
-      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
+      - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
     ports:
       - 9400:9400
     volumes:
-      - ${HR_BASE}/conf/hummerrisk/aws-config:/root/.aws
-      - ${HR_BASE}/logs/cloud:/var/log/cloud
+      - ${HMR_BASE}/conf/hummerrisk/aws-config:/root/.aws
+      - ${HMR_BASE}/logs/cloud:/var/log/cloud
     healthcheck:
       test: "curl -fsL http://localhost:9400/healthz> /dev/null"
       interval: 10s
@@ -211,18 +217,18 @@ services:
       auth:
         condition: service_healthy
   k8s:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hrs-k8s:${VERSION}
-    container_name: hrs-k8s
+    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-k8s:${VERSION}
+    container_name: hmr-k8s
     restart: on-failure
     env_file:
-      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
+      - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
     ports:
       - 9500:9500
     volumes:
-      - ${HR_BASE}/data/hummerrisk/trivy:/opt/hummerrisk/trivy
-      - ${HR_BASE}/data/trivy:/root/.cache/trivy/
-      - ${HR_BASE}/conf/hummerrisk/aws-config:/root/.aws
-      - ${HR_BASE}/logs/k8s:/var/log/k8s
+      - ${HMR_BASE}/data/hummerrisk/trivy:/opt/hummerrisk/trivy
+      - ${HMR_BASE}/data/trivy:/root/.cache/trivy/
+      - ${HMR_BASE}/conf/hummerrisk/aws-config:/root/.aws
+      - ${HMR_BASE}/logs/k8s:/var/log/k8s
     healthcheck:
       test: "curl -fsL http://localhost:9500/healthz> /dev/null"
       interval: 10s
@@ -236,11 +242,11 @@ services:
         condition: service_healthy
 
   monitor:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hrs-monitor:${VERSION}
-    container_name: hrs-monitor
+    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-monitor:${VERSION}
+    container_name: hmr-monitor
     restart: on-failure
     env_file:
-      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
+      - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
     ports:
       - 9100:9100
     healthcheck:
@@ -250,7 +256,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HR_BASE}/logs/monitor:/var/log/monitor
+      - ${HMR_BASE}/logs/monitor:/var/log/monitor
     networks:
      - hummerrisk-network
     depends_on:
@@ -258,11 +264,14 @@ services:
         condition: service_healthy
 
   ui:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hrs-ui:${VERSION}
-    container_name: hrs-ui
+    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-ui:${VERSION}
+    container_name: hmr-ui
     restart: on-failure
+    mem_limit: 512m
+    mem_reservation: 128M
+    cpus: 0.5
     env_file:
-      - ${HR_BASE}/conf/hummerrisk/hummerrisk-db.env
+      - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
     ports:
       - 8089:80
     healthcheck:
@@ -272,7 +281,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HR_BASE}/logs/ui:/var/log/ui
+      - ${HMR_BASE}/logs/ui:/var/log/ui
     networks:
      - hummerrisk-network
     depends_on:
@@ -281,13 +290,13 @@ services:
 
   trivy-server:
     image: registry.cn-beijing.aliyuncs.com/hummerrisk/hummerrisk:${VERSION}
-    container_name: hrs-trivy-server
+    container_name: hmr-trivy-server
     restart: always
     ports:
       - ${TRIVY_SERVER_PORT}:4975
     command: "trivy server --skip-db-update --listen 0.0.0.0:4975"
     volumes:
-      - ${HR_BASE}/data/trivy:/root/.cache/trivy/
+      - ${HMR_BASE}/data/trivy:/root/.cache/trivy/
     healthcheck:
       test: "curl -fsL http://localhost:4975/healthz> /dev/null"
       interval: 10s
@@ -306,6 +315,6 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: ${HR_DOCKER_SUBNET}
-          gateway: ${HR_DOCKER_GATEWAY}
+        - subnet: ${HMR_DOCKER_SUBNET}
+          gateway: ${HMR_DOCKER_GATEWAY}
 

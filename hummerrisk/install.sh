@@ -17,7 +17,7 @@ function pre_install() {
   fi
   if [ -f /usr/bin/hrctl ]; then
      # 获取已安装的 hummerrisk 的运行目录
-     HR_BASE=`grep "^HR_BASE=" /usr/bin/hrctl | cut -d'=' -f2`
+     HMR_BASE=`grep "^HMR_BASE=" /usr/bin/hrctl | cut -d'=' -f2`
      hrctl down
   fi
 }
@@ -56,7 +56,7 @@ function download_cve_data() {
     if [[ ! -f ${triy_db} ]]; then
       curl -LOk -m 600 -o ${triy_db} https://company.hummercloud.com/offline-package/trivy/trivy-db/${triy_db}
     fi
-    tar zxf ${triy_db} -C "${HR_BASE}/data/trivy/"
+    tar zxf ${triy_db} -C "${HMR_BASE}/data/trivy/"
 }
 
 function main() {
