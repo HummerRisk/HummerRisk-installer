@@ -42,7 +42,7 @@ function set_run_base() {
   fi
 
   if [[ ! -d "${HMR_BASE}/data" ]]; then
-    mkdir -p "${HMR_BASE}"/data/{hummerrisk,mysql}
+    mkdir -p "${HMR_BASE}"/data/{hummerrisk,mysql,trivy}
   fi
   if [[ ! -d "${HMR_BASE}/logs" ]]; then
     mkdir -p "${HMR_BASE}/logs"
@@ -87,7 +87,7 @@ function set_external_mysql() {
 
 # MySQL config
 function set_internal_mysql() {
-  password=$(get_config HMR_DB_PASSWORD)
+  password=$(get_config DB_PASSWORD)
   if [[ -z "${password}" ]]; then
     DB_PASSWORD=$(random_str 26)
 #    set_config HMR_DB_PASSWORD "${DB_PASSWORD}"
@@ -133,13 +133,13 @@ function set_mysql() {
 
 # Redis config
 function set_internal_redis() {
-  password=$(get_config HMR_REDIS_PASSWORD)
+  password=$(get_config REDIS_PASSWORD)
   if [[ -z "${password}" ]]; then
-    DB_PASSWORD=$(random_str 26)
+    REDIS_PASSWORD=$(random_str 18)
   fi
-    export HMR_REDIS_HOST="mysql"
+    export HMR_REDIS_HOST="redis"
     export HMR_REDIS_PORT="6379"
-    export HMR_REDIS_PASSWORD="${DB_PASSWORD}"
+    export HMR_REDIS_PASSWORD="${REDIS_PASSWORD}"
     export HMR_USE_EXTERNAL_REDIS=0
 }
 
@@ -222,6 +222,7 @@ function main() {
       prepare_config
       echo_yellow "\n4.  'Configure MySQL'"
       set_mysql
+      echo_yellow "\n4.  'Configure Redis'"
       set_redis
       set_service_port
       init_db
@@ -229,10 +230,13 @@ function main() {
       set_run_base
       check_config
       echo_yellow "\n2.  'Skip Configure MySQL'"
+      echo_yellow "\n3.  'Skip Configure Redis'"
   fi
   if [[ -f ${CONFIG_FILE} ]]; then
 #    env|grep -E "HMR_|COMPOSE" > "$CONFIG_FILE"
     envsubst < install.conf > "${CONFIG_FILE}"
+    envsubst
+    cd "$CURRENT_DIR"/config_init/hummerrisk && envsubst < hummerrisk-db.env > "$CONFIG_DIR/hummerrisk/hummerrisk-db.env"
     cd "$CURRENT_DIR"/config_init/hummerrisk && envsubst < hummerrisk.properties > "$CONFIG_DIR/hummerrisk/hummerrisk.properties"
     cd "$CURRENT_DIR"
   fi

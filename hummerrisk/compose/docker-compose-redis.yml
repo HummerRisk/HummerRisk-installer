@@ -17,7 +17,7 @@ services:
       - ${HMR_BASE}/conf/redis/redis.conf:/etc/redis.conf
       - ${HMR_BASE}/data/redis:/opt/redis
     healthcheck:
-      test: "redis-cli -h 127.0.0.1 -p $HMR_REDIS_PORT -a $HMR_REDIS_PASSWORD info Replication"
+      test: "redis-cli -h $HMR_REDIS_HOST -p $HMR_REDIS_PORT -a $HMR_REDIS_PASSWORD ping"
       interval: 10s
       timeout: 5s
       retries: 3
