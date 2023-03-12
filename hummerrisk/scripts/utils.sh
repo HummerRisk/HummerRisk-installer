@@ -230,7 +230,7 @@ function get_docker_compose_cmd_line() {
     cmd="${cmd} -f  ${HMR_BASE}/compose/docker-compose-mysql.yml -f  ${HMR_BASE}/compose/docker-compose-service.yml"
   fi
   if [[ "${services}" =~ redis ]]; then
-    cmd+="${cmd} -f  ${HMR_BASE}/compose/docker-compose-redis.yml"
+    cmd+=" -f  ${HMR_BASE}/compose/docker-compose-redis.yml"
   fi
   echo "${cmd}"
 }
@@ -242,7 +242,8 @@ function get_docker_compose_services() {
   use_external_redis=$(get_config HMR_USE_EXTERNAL_REDIS)
   if [[ "${use_external_mysql}" != "1" && "${ignore_db}" != "ignore_db" ]]; then
     services+=" mysql"
-  elif [[ "${use_external_redis}" != "1" && "${ignore_db}" != "ignore_db" ]]; then
+  fi
+  if [[ "${use_external_redis}" != "1" && "${ignore_db}" != "ignore_db" ]]; then
     services+=" redis"
   fi
   echo "${services}"
