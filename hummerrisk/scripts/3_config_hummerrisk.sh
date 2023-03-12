@@ -101,7 +101,8 @@ function set_internal_mysql() {
     export HMR_DB_PORT="3306"
     export HMR_DB_USER="root"
     export HMR_DB_PASSWORD="${DB_PASSWORD}"
-    export HMR_DB_NAME="hummerrisk"
+    export HMR_DB_NAME="hummer_risk"
+    export HMR_DB_NACOS_NAME="hummer_config"
     export HMR_USE_EXTERNAL_MYSQL=0
 }
 
