@@ -189,7 +189,7 @@ function set_redis() {
 }
 
 function set_service_port() {
-  echo_yellow "\n5.  'Configure External Port'"
+  echo_yellow "\n6.  'Configure External Port'"
   http_port=$(get_config HTTP_PORT)
   confirm="n"
   read_from_input confirm " 'Do you need to customize the hummerrisk external port'?" "y/n" "${confirm}"
@@ -222,7 +222,7 @@ function main() {
       prepare_config
       echo_yellow "\n4.  'Configure MySQL'"
       set_mysql
-      echo_yellow "\n4.  'Configure Redis'"
+      echo_yellow "\n5.  'Configure Redis'"
       set_redis
       set_service_port
       init_db
@@ -235,7 +235,6 @@ function main() {
   if [[ -f ${CONFIG_FILE} ]]; then
 #    env|grep -E "HMR_|COMPOSE" > "$CONFIG_FILE"
     envsubst < install.conf > "${CONFIG_FILE}"
-    envsubst
     cd "$CURRENT_DIR"/config_init/hummerrisk && envsubst < hummerrisk-db.env > "$CONFIG_DIR/hummerrisk/hummerrisk-db.env"
     cd "$CURRENT_DIR"/config_init/hummerrisk && envsubst < hummerrisk.properties > "$CONFIG_DIR/hummerrisk/hummerrisk.properties"
     cd "$CURRENT_DIR"

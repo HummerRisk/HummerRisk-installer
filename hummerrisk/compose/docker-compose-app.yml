@@ -95,13 +95,13 @@ services:
     restart: on-failure
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
-#    environment:
+    environment:
 #      HMR_MYSQL_HOST: ${HMR_DB_HOST}
 #      HMR_MYSQL_PORT: ${HMR_DB_PORT}
 #      HMR_MYSQL_DB: ${HMR_DB_NAME}
 #      HMR_MYSQL_USER: ${HMR_DB_USER}
 #      HMR_MYSQL_PASSWORD: ${HMR_DB_PASSWORD}
-#      JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
+      JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
     ports:
       - 9200:9200
     healthcheck:
