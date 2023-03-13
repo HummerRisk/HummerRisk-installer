@@ -117,8 +117,8 @@ services:
     image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-gateway:${VERSION}
     container_name: hmr-gateway
     restart: on-failure
-#    environment:
-#      JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
+    environment:
+      JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
     ports:
