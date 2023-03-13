@@ -15,7 +15,7 @@ services:
       REDIS_PASSWORD: $HMR_REDIS_PASSWORD
     volumes:
       - ${HMR_BASE}/conf/redis/redis.conf:/etc/redis.conf
-      - ${HMR_BASE}/data/redis:/opt/redis
+      - ${HMR_BASE}/data/redis:/data
     healthcheck:
       test: "redis-cli -h $HMR_REDIS_HOST -p $HMR_REDIS_PORT -a $HMR_REDIS_PASSWORD ping"
       interval: 10s
