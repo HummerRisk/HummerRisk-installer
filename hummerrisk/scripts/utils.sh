@@ -237,7 +237,7 @@ function get_docker_compose_cmd_line() {
 
 function get_docker_compose_services() {
   ignore_db="$1"
-  services="trivy-server"
+  services="trivy-server auth cloud flyway gateway jobs k8s monitor nacos system ui"
   use_external_mysql=$(get_config HMR_USE_EXTERNAL_MYSQL)
   use_external_redis=$(get_config HMR_USE_EXTERNAL_REDIS)
   if [[ "${use_external_mysql}" != "1" && "${ignore_db}" != "ignore_db" ]]; then
