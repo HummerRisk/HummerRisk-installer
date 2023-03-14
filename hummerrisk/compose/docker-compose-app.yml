@@ -80,7 +80,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/flyway:/var/log/flyway
+      - ${HMR_BASE}/logs/flyway:/opt/hummerrisk/logs/hummer-flyway
     networks:
      - net
     depends_on:
@@ -104,7 +104,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/auth:/var/log/auth
+      - ${HMR_BASE}/logs/auth:/opt/hummerrisk/logs/hummer-auth
     networks:
      - net
     depends_on:
@@ -128,7 +128,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/gateway:/var/log/gateway
+      - ${HMR_BASE}/logs/gateway:/opt/hummerrisk/logs/hummer-gateway
     networks:
      - net
     depends_on:
@@ -152,7 +152,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/system:/var/log/system
+      - ${HMR_BASE}/logs/system:/opt/hummerrisk/logs/hummer-system
     networks:
      - net
     depends_on:
@@ -171,7 +171,7 @@ services:
       - 9400:9400
     volumes:
       - ${HMR_BASE}/conf/hummerrisk/aws-config:/root/.aws
-      - ${HMR_BASE}/logs/cloud:/var/log/cloud
+      - ${HMR_BASE}/logs/cloud:/opt/hummerrisk/logs/hummer-cloud
     healthcheck:
       test: "curl -fsL http://localhost:9400/healthz> /dev/null"
       interval: 10s
@@ -198,7 +198,7 @@ services:
       - ${HMR_BASE}/data/hummerrisk/trivy:/opt/hummerrisk/trivy
       - ${HMR_BASE}/data/trivy:/root/.cache/trivy/
       - ${HMR_BASE}/conf/hummerrisk/aws-config:/root/.aws
-      - ${HMR_BASE}/logs/k8s:/var/log/k8s
+      - ${HMR_BASE}/logs/k8s:/opt/hummerrisk/logs/hummer-k8s
     healthcheck:
       test: "curl -fsL http://localhost:9500/healthz> /dev/null"
       interval: 10s
@@ -228,7 +228,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/monitor:/var/log/monitor
+      - ${HMR_BASE}/logs/monitor:/opt/hummerrisk/logs/hummer-monitor
     networks:
      - net
     depends_on:
@@ -253,7 +253,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/ui:/var/log/ui
+      - ${HMR_BASE}/logs/ui:/opt/hummerrisk/logs/hummer-ui
     networks:
      - net
     depends_on:
