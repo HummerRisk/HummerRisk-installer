@@ -253,7 +253,8 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/ui:/opt/hummerrisk/logs/hummer-ui
+      - ${HMR_BASE}/logs/ui:/var/log/nginx/
+      - ${HMR_BASE}/conf/nginx/hummerrisk.conf:/etc/nginx/conf.d/hummerrisk.conf
     networks:
      - net
     depends_on:
