@@ -21,12 +21,11 @@ services:
       MYSQL_SERVICE_PASSWORD: ${HMR_DB_PASSWORD}
       MYSQL_SERVICE_DB_PARAM: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai
     volumes:
-      - ${HMR_BASE}/logs/nacos:/home/nacos/logs
+      - ${HMR_BASE}/logs/hummer-nacos:/home/nacos/logs
 #      - ${HMR_BASE}/conf/nacos/application.properties:/home/nacos/init.d/application.properties
     ports:
       - "8848:8848"
       - "9848:9848"
-      - "9555:9555"
     healthcheck:
       test: "curl -fsL http://localhost:8848/nacos/actuator/health> /dev/null"
       interval: 2s
@@ -56,7 +55,7 @@ services:
       retries: 10
       start_period: 15s
     volumes:
-      - ${HMR_BASE}/logs/jobs:/data/applogs
+      - ${HMR_BASE}/logs/hummer-jobs:/data/applogs
     networks:
       - net
     depends_on:
@@ -80,7 +79,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/flyway:/opt/hummerrisk/logs/hummer-flyway
+      - ${HMR_BASE}/logs/hummer-flyway:/opt/hummerrisk/logs/hummer-flyway
     networks:
      - net
     depends_on:
@@ -104,7 +103,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/auth:/opt/hummerrisk/logs/hummer-auth
+      - ${HMR_BASE}/logs/hummer-auth:/opt/hummerrisk/logs/hummer-auth
     networks:
      - net
     depends_on:
@@ -128,7 +127,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/gateway:/opt/hummerrisk/logs/hummer-gateway
+      - ${HMR_BASE}/logs/hummer-gateway:/opt/hummerrisk/logs/hummer-gateway
     networks:
      - net
     depends_on:
@@ -144,7 +143,9 @@ services:
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk-db.env
     ports:
-      - 9201:9201
+      - 9300:9300
+      - 9301:9301
+      - 8001:8001
     healthcheck:
       test: "curl -fsL http://localhost:9201/healthz> /dev/null"
       interval: 10s
@@ -152,7 +153,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/system:/opt/hummerrisk/logs/hummer-system
+      - ${HMR_BASE}/logs/hummer-system:/opt/hummerrisk/logs/hummer-system
     networks:
      - net
     depends_on:
@@ -171,7 +172,7 @@ services:
       - 9400:9400
     volumes:
       - ${HMR_BASE}/conf/hummerrisk/aws-config:/root/.aws
-      - ${HMR_BASE}/logs/cloud:/opt/hummerrisk/logs/hummer-cloud
+      - ${HMR_BASE}/logs/hummer-cloud:/opt/hummerrisk/logs/hummer-cloud
     healthcheck:
       test: "curl -fsL http://localhost:9400/healthz> /dev/null"
       interval: 10s
@@ -196,9 +197,7 @@ services:
       - 9500:9500
     volumes:
       - ${HMR_BASE}/data/hummerrisk/trivy:/opt/hummerrisk/trivy
-      - ${HMR_BASE}/data/trivy:/root/.cache/trivy/
-      - ${HMR_BASE}/conf/hummerrisk/aws-config:/root/.aws
-      - ${HMR_BASE}/logs/k8s:/opt/hummerrisk/logs/hummer-k8s
+      - ${HMR_BASE}/logs/hummer-k8s:/opt/hummerrisk/logs/hummer-k8s
     healthcheck:
       test: "curl -fsL http://localhost:9500/healthz> /dev/null"
       interval: 10s
@@ -228,7 +227,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/monitor:/opt/hummerrisk/logs/hummer-monitor
+      - ${HMR_BASE}/logs/hummer-monitor:/opt/hummerrisk/logs/hummer-monitor
     networks:
      - net
     depends_on:
@@ -253,7 +252,7 @@ services:
       retries: 10
       start_period: 120s
     volumes:
-      - ${HMR_BASE}/logs/ui:/var/log/nginx/
+      - ${HMR_BASE}/logs/hummer-ui:/var/log/nginx/
       - ${HMR_BASE}/conf/nginx/hummerrisk.conf:/etc/nginx/conf.d/hummerrisk.conf
     networks:
      - net
