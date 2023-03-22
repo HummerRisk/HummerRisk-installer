@@ -253,7 +253,7 @@ services:
       start_period: c
     volumes:
       - ${HMR_BASE}/logs/hummer-ui:/var/log/nginx/
-      - ${HMR_BASE}/conf/nginx/hummerrisk.conf:/etc/nginx/conf.d/hummerrisk.conf
+      - ${HMR_BASE}/conf/nginx/hummerrisk.conf:/etc/nginx/conf.d/default.conf
     networks:
      - net
     depends_on:
