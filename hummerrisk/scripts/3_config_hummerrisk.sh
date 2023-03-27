@@ -236,8 +236,8 @@ function main() {
   if [[ -f ${CONFIG_FILE} ]]; then
 #    env|grep -E "HMR_|COMPOSE" > "$CONFIG_FILE"
     envsubst < install.conf > "${CONFIG_FILE}"
-    cd "$CURRENT_DIR"/config_init/hummerrisk && envsubst < hummerrisk-db.env > "$CONFIG_DIR/hummerrisk/hummerrisk-db.env"
-    cd "$CURRENT_DIR"/config_init/hummerrisk && envsubst < hummerrisk.properties > "$CONFIG_DIR/hummerrisk/hummerrisk.properties"
+    cd "$CURRENT_DIR"/config_init/hummerrisk && envsubst < hummerrisk.env > "$CONFIG_DIR/hummerrisk/hummerrisk.env"
+#    cd "$CURRENT_DIR"/config_init/hummerrisk && envsubst < hummerrisk.properties > "$CONFIG_DIR/hummerrisk/hummerrisk.properties"
     cd "$CURRENT_DIR"
   fi
 }

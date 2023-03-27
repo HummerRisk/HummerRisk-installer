@@ -9,6 +9,6 @@ export SCRIPT_DIR="${BASE_DIR}"
 PROJECT_DIR=$(dirname "${SCRIPT_DIR}")
 
 export CONFIG_DIR="${HMR_BASE}/conf"
-export HUMMERRISK_CONF="${CONFIG_DIR}/hummerrisk/hummerrisk.properties"
+#export HUMMERRISK_CONF="${CONFIG_DIR}/hummerrisk/hummerrisk.properties"
 export CONFIG_FILE="$CONFIG_DIR/install.conf"
 export OS=$(uname -s)
