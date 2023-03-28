@@ -261,7 +261,7 @@ services:
         condition: service_healthy
 
   trivy-server:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hummerrisk:${VERSION}
+    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-k8s:${VERSION}
     container_name: hmr-trivy-server
     restart: always
     ports:
