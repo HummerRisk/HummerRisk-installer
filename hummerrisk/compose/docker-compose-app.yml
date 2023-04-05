@@ -203,6 +203,8 @@ services:
       - 9500:9500
     volumes:
       - ${HMR_BASE}/data/hummerrisk/trivy:/opt/hummerrisk/trivy
+      - ${HMR_BASE}/data/hummerrisk/file:/opt/hummerrisk/file
+      - ${HMR_BASE}/data/hummerrisk/image:/opt/hummerrisk/image
       - ${HMR_BASE}/logs/hummer-k8s:/opt/hummerrisk/logs/hummer-k8s
     healthcheck:
       test: "curl -fsL http://localhost:9500/healthz> /dev/null"
