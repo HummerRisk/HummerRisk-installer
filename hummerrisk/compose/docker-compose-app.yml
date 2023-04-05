@@ -31,7 +31,7 @@ services:
       interval: 2s
       timeout: 10s
       retries: 5
-      start_period: 15s
+      start_period: 60s
     depends_on:
       flyway:
         condition: service_healthy
@@ -53,7 +53,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 15s
+      start_period: 60s
     volumes:
       - ${HMR_BASE}/logs/hummer-jobs:/data/applogs
     networks:
@@ -77,7 +77,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 15s
+      start_period: 60s
     volumes:
       - ${HMR_BASE}/logs/hummer-flyway:/opt/hummerrisk/logs/hummer-flyway
     networks:
@@ -101,7 +101,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 15s
+      start_period: 60s
     volumes:
       - ${HMR_BASE}/logs/hummer-auth:/opt/hummerrisk/logs/hummer-auth
     networks:
@@ -125,7 +125,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 15s
+      start_period: 60s
     volumes:
       - ${HMR_BASE}/logs/hummer-gateway:/opt/hummerrisk/logs/hummer-gateway
     networks:
@@ -151,7 +151,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 15s
+      start_period: 60s
     volumes:
       - ${HMR_BASE}/logs/hummer-system:/opt/hummerrisk/logs/hummer-system
     networks:
@@ -181,7 +181,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 120s
+      start_period: 60s
     networks:
      - net
     depends_on:
@@ -209,7 +209,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 120s
+      start_period: 60s
     networks:
      - net
     depends_on:
@@ -234,7 +234,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 120s
+      start_period: 60s
     volumes:
       - ${HMR_BASE}/logs/hummer-monitor:/opt/hummerrisk/logs/hummer-monitor
     networks:
@@ -259,7 +259,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: c
+      start_period: 60s
     volumes:
       - ${HMR_BASE}/logs/hummer-ui:/var/log/nginx/
       - ${HMR_BASE}/conf/nginx/hummerrisk.conf:/etc/nginx/conf.d/default.conf
@@ -283,7 +283,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 120s
+      start_period: 60s
     networks:
      - net
     depends_on:
