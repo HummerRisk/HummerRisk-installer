@@ -22,7 +22,7 @@ function main() {
   echo " 'Backing up'..."
 
   backup_cmd="mysqldump --host=${HOST} --port=${PORT} --user=${USER} --password=${PASSWORD} ${DATABASE}"
-  if ! docker run --rm -i --network=hummer_net hummerrisk/mysql:5.7.38 ${backup_cmd} > "${DB_FILE}"; then
+  if ! docker run --rm -i --network=hummer_net registry.cn-beijing.aliyuncs.com/hummerrisk/mysql:8.0.32 ${backup_cmd} > "${DB_FILE}"; then
     log_error " 'Backup failed'!"
     rm -f "${DB_FILE}"
     exit 1

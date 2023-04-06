@@ -360,6 +360,7 @@ function check_config() {
      export HMR_DB_USER=$(get_config HMR_DB_USER)
      export HMR_DB_PASSWORD=$(get_config HMR_DB_PASSWORD)
      export HMR_DB_NAME=$(get_config HMR_DB_NAME)
+     export HMR_DB_NACOS_NAME=$(get_config HMR_DB_NACOS_NAME)
      export HMR_DB_PORT=$(get_config HMR_DB_PORT)
      export HMR_HTTP_PORT=$(get_config HMR_HTTP_PORT)
      export HMR_DOCKER_SUBNET=$(get_config HMR_DOCKER_SUBNET)
