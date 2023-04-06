@@ -206,6 +206,7 @@ services:
       - ${HMR_BASE}/data/hummerrisk/file:/opt/hummerrisk/file
       - ${HMR_BASE}/data/hummerrisk/image:/opt/hummerrisk/image
       - ${HMR_BASE}/logs/hummer-k8s:/opt/hummerrisk/logs/hummer-k8s
+      - ${HMR_BASE}/data/trivy:/root/.cache/trivy/
     healthcheck:
       test: "curl -fsL http://localhost:9500/healthz> /dev/null"
       interval: 10s
@@ -271,26 +272,26 @@ services:
       auth:
         condition: service_healthy
 
-  trivy-server:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-k8s:${VERSION}
-    container_name: hmr-trivy-server
-    restart: always
-    ports:
-      - ${TRIVY_SERVER_PORT}:4975
-    command: "trivy server --skip-db-update --listen 0.0.0.0:4975"
-    volumes:
-      - ${HMR_BASE}/data/trivy:/root/.cache/trivy/
-    healthcheck:
-      test: "curl -fsL http://localhost:4975/healthz> /dev/null"
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 60s
-    networks:
-     - net
-    depends_on:
-      auth:
-        condition: service_healthy
+#  trivy-server:
+#    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-k8s:${VERSION}
+#    container_name: hmr-trivy-server
+#    restart: always
+#    ports:
+#      - ${TRIVY_SERVER_PORT}:4975
+#    command: "trivy server --skip-db-update --listen 0.0.0.0:4975"
+#    volumes:
+#      - ${HMR_BASE}/data/trivy:/root/.cache/trivy/
+#    healthcheck:
+#      test: "curl -fsL http://localhost:4975/healthz> /dev/null"
+#      interval: 10s
+#      timeout: 5s
+#      retries: 10
+#      start_period: 60s
+#    networks:
+#     - net
+#    depends_on:
+#      auth:
+#        condition: service_healthy
 
 networks:
   net:
