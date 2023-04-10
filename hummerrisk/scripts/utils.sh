@@ -138,7 +138,6 @@ function get_images() {
     "hummerrisk/redis:6.2.10-alpine"
     "hummerrisk/hmr-job:${VERSION}"
     "hummerrisk/hmr-flyway:${VERSION}"
-    "hummerrisk/hmr-monitor:${VERSION}"
     "hummerrisk/hmr-system:${VERSION}"
     "hummerrisk/hmr-k8s:${VERSION}"
     "hummerrisk/hmr-gateway:${VERSION}"

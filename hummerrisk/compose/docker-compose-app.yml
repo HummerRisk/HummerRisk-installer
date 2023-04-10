@@ -219,32 +219,32 @@ services:
       auth:
         condition: service_healthy
 
-  monitor:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-monitor:${VERSION}
-    container_name: hmr-monitor
-    restart: on-failure
-    mem_limit: 2g
-    mem_reservation: 1024M
-    cpus: 1
-    environment:
-      JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
-    env_file:
-      - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
-    ports:
-      - 9100:9100
-    healthcheck:
-      test: "curl -fsL http://localhost:9100/actuator/health> /dev/null"
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 60s
-    volumes:
-      - ${HMR_BASE}/logs/hummer-monitor:/opt/hummerrisk/logs/hummer-monitor
-    networks:
-     - net
-    depends_on:
-      auth:
-        condition: service_healthy
+#  monitor:
+#    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-monitor:${VERSION}
+#    container_name: hmr-monitor
+#    restart: on-failure
+#    mem_limit: 2g
+#    mem_reservation: 1024M
+#    cpus: 1
+#    environment:
+#      JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
+#    env_file:
+#      - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
+#    ports:
+#      - 9100:9100
+#    healthcheck:
+#      test: "curl -fsL http://localhost:9100/actuator/health> /dev/null"
+#      interval: 10s
+#      timeout: 5s
+#      retries: 10
+#      start_period: 60s
+#    volumes:
+#      - ${HMR_BASE}/logs/hummer-monitor:/opt/hummerrisk/logs/hummer-monitor
+#    networks:
+#     - net
+#    depends_on:
+#      auth:
+#        condition: service_healthy
 
   ui:
     image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-ui:${VERSION}
