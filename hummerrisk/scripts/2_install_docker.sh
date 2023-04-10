@@ -35,9 +35,16 @@ function check_docker_install() {
 
 function check_docker_compose_install() {
   command -v docker-compose >/dev/null || {
-  curl -SL https://download.hummerrisk.com/docker/compose/releases/download/v2.17.2/docker-compose-$(uname -s | tr A-Z a-z)-$(uname -m) -o /usr/local/bin/docker-compose 2>&1
-  chmod +x /usr/local/bin/docker-compose
-  ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+  if [[ -d docker ]]; then
+    echo "... Offline | install docker compose"
+    \cp -rp docker/docker-compose /usr/bin/
+    chmod +x /usr/bin/docker-compose
+  else
+    echo "... Online| install docker compose"
+    curl -SL https://download.hummerrisk.com/docker/compose/releases/download/v2.17.2/docker-compose-$(uname -s | tr A-Z a-z)-$(uname -m) -o /usr/local/bin/docker-compose 2>&1
+    chmod +x /usr/local/bin/docker-compose
+    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+  fi
   }
   echo_done
 }
