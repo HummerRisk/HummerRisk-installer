@@ -27,16 +27,15 @@ function install_docker() {
    fi
 }
 
-
 function check_docker_install() {
   command -v docker >/dev/null || {
     install_docker
   }
 }
 
-function check_compose_install() {
+function check_docker_compose_install() {
   command -v docker-compose >/dev/null || {
-  curl -L https://get.daocloud.io/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose 2>&1
+  curl -SL https://download.hummerrisk.com/docker/compose/releases/download/v2.17.2/docker-compose-$(uname -s | tr A-Z a-z)-$(uname -m) -o /usr/local/bin/docker-compose 2>&1
   chmod +x /usr/local/bin/docker-compose
   ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
   }
@@ -75,9 +74,9 @@ function main() {
     echo " 'Skip docker installation on MacOS'"
     return
   fi
-  echo_yellow "1.  'Install Docker'"
+  echo_yellow "1.  'Install Docker and Docker-compose'"
   check_docker_install
-  check_compose_install
+  check_docker_compose_install
   echo_yellow "\n2.  'Start Docker'"
   check_docker_start
   check_docker_compose
