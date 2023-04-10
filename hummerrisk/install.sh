@@ -28,7 +28,7 @@ function post_install() {
   if [ ! "$HOST" ]; then
       HOST=$(hostname -I | cut -d ' ' -f1)
   fi
-  HTTP_PORT=$(get_config HTTP_PORT)
+  HTTP_PORT=$(get_config HMR_HTTP_PORT)
 
   echo_yellow "1.  'You can use the following command to start, and then visit'"
 #  echo "cd ${PROJECT_DIR}"
