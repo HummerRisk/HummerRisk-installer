@@ -136,6 +136,7 @@ function get_images() {
   images=(
     "hummerrisk/mysql:8.0.32"
     "hummerrisk/redis:6.2.10-alpine"
+    "hummerrisk/nacos-server:v2.2.0"
     "hummerrisk/hmr-job:${VERSION}"
     "hummerrisk/hmr-flyway:${VERSION}"
     "hummerrisk/hmr-system:${VERSION}"
