@@ -68,3 +68,20 @@ hrctl --help
 install.conf 文件是环境变量式配置文件，会挂在到各个容器中
 
 install.conf 有说明，可以参考
+
+### 组件端口说明
+
+| 组件名称        | 端口             | 说明 |
+|-------------|----------------|--|
+| hmr-ui      | 80             |  |
+| hmr-flyway  | 9000           |  |
+| hmr-gateway | 8080           |  |
+| hmr-auth    | 9200           |  |
+| hmr-system  | 9300,9301,8001 |  |
+| hmr-cloud   | 9400,9401,8002 |  |
+| hmr-k8s     | 9500,9501,8003 |  |
+| hmr-monitor | 9100           |  |
+| hmr-mysql   | 3306           |  |
+| hmr-nacos   | 8848,9848      |  |
+| hmr-redis   | 6379           |  |
+| hmr-job     | 8084           |  |

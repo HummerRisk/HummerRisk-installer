@@ -17,7 +17,7 @@ function pre_install() {
   fi
   if [ -f /usr/bin/hrctl ]; then
      # 获取已安装的 hummerrisk 的运行目录
-     HR_BASE=`grep "^HR_BASE=" /usr/bin/hrctl | cut -d'=' -f2`
+     HMR_BASE=`grep "^HMR_BASE=" /usr/bin/hrctl | cut -d'=' -f2`
      hrctl down
   fi
 }
@@ -28,7 +28,7 @@ function post_install() {
   if [ ! "$HOST" ]; then
       HOST=$(hostname -I | cut -d ' ' -f1)
   fi
-  HTTP_PORT=$(get_config HTTP_PORT)
+  HTTP_PORT=$(get_config HMR_HTTP_PORT)
 
   echo_yellow "1.  'You can use the following command to start, and then visit'"
 #  echo "cd ${PROJECT_DIR}"
@@ -58,7 +58,7 @@ function download_cve_data() {
       curl -LOk -m 600 -o ${triy_db} https://company.hummercloud.com/offline-package/trivy/trivy-db/${triy_db}
       curl -LOk -m 600 -o ${triy_db_md5} https://company.hummercloud.com/offline-package/trivy/trivy-db/${triy_db_md5}
     fi
-    tar zxf ${triy_db} -C "${HR_BASE}/data/trivy/"
+    tar zxf ${triy_db} -C "${HMR_BASE}/data/trivy/"
 }
 
 function main() {

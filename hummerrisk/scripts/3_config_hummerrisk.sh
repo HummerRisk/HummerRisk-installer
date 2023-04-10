@@ -10,11 +10,11 @@ function prepare_config() {
   echo " 'Path to Configuration file': ${CONFIG_DIR}"
 
   echo -e "${CONFIG_FILE}  [\033[32m √ \033[0m]"
-  if [[ ! -f "${HR_BASE}/compose/.env" ]]; then
-    ln -s "${CONFIG_FILE}" "${HR_BASE}/compose/.env"
+  if [[ ! -f "${HMR_BASE}/compose/.env" ]]; then
+    ln -s "${CONFIG_FILE}" "${HMR_BASE}/compose/.env"
   fi
   echo_done
-  backup_dir="${HR_BASE}/backup"
+  backup_dir="${HMR_BASE}/backup"
   if [[ ! -d "${backup_dir}" ]]; then
     mkdir -p ${backup_dir}
   fi
@@ -34,21 +34,21 @@ function set_run_base() {
   \cp -rp hrctl /usr/bin/hrctl
   chmod 755 /usr/bin/hrctl
 
-  if [[ ! -d "${HR_BASE}" ]]; then
-    mkdir -p "${HR_BASE}"
-    \cp -rP "${PROJECT_DIR}/config_init" "${HR_BASE}/conf"
-    \cp -rP "${PROJECT_DIR}/install.conf" "${HR_BASE}/conf"
-    chmod 644 -R "${HR_BASE}/conf"
+  if [[ ! -d "${HMR_BASE}" ]]; then
+    mkdir -p "${HMR_BASE}"
+    \cp -rP "${PROJECT_DIR}/config_init" "${HMR_BASE}/conf"
+    \cp -rP "${PROJECT_DIR}/install.conf" "${HMR_BASE}/conf"
+    chmod 644 -R "${HMR_BASE}/conf"
   fi
 
-  if [[ ! -d "${HR_BASE}/data" ]]; then
-    mkdir -p "${HR_BASE}"/data/{hummerrisk,mysql}
+  if [[ ! -d "${HMR_BASE}/data" ]]; then
+    mkdir -p "${HMR_BASE}"/data/{hummerrisk,mysql,trivy}
   fi
-  if [[ ! -d "${HR_BASE}/logs" ]]; then
-    mkdir -p "${HR_BASE}/logs"
+  if [[ ! -d "${HMR_BASE}/logs" ]]; then
+    mkdir -p "${HMR_BASE}/logs"
   fi
-  \cp -rp "${PROJECT_DIR}/compose" "${HR_BASE}"
-  \cp -rp "${PROJECT_DIR}/scripts" "${HR_BASE}"
+  \cp -rp "${PROJECT_DIR}/compose" "${HMR_BASE}"
+  \cp -rp "${PROJECT_DIR}/scripts" "${HMR_BASE}"
   echo_done
 }
 
@@ -77,38 +77,40 @@ function set_external_mysql() {
     set_mysql
   fi
 
-  export HR_DB_HOST="${mysql_host}"
-  export HR_DB_PORT="${mysql_port}"
-  export HR_DB_USER="${mysql_user}"
-  export HR_DB_PASSWORD="${mysql_pass}"
-  export HR_DB_NAME="${mysql_db}"
-  export HR_USE_EXTERNAL_MYSQL=1
+  export HMR_DB_HOST="${mysql_host}"
+  export HMR_DB_PORT="${mysql_port}"
+  export HMR_DB_USER="${mysql_user}"
+  export HMR_DB_PASSWORD="${mysql_pass}"
+  export HMR_DB_NAME="${mysql_db}"
+  export HMR_USE_EXTERNAL_MYSQL=1
 }
 
+# MySQL config
 function set_internal_mysql() {
-#  set_config USE_EXTERNAL_MYSQL 0
   password=$(get_config DB_PASSWORD)
   if [[ -z "${password}" ]]; then
     DB_PASSWORD=$(random_str 26)
-#    set_config HR_DB_PASSWORD "${DB_PASSWORD}"
+#    set_config HMR_DB_PASSWORD "${DB_PASSWORD}"
 #    mysql_pass_base64=$(echo "${DB_PASSWORD}" |base64 )
-#    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${DB_PASSWORD}@g" "${HR_BASE}/conf/hummerrisk/hummerrisk.properties"
+#    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${DB_PASSWORD}@g" "${HMR_BASE}/conf/hummerrisk/hummerrisk.properties"
 #  else
 #    mysql_pass_base64=$(echo "${password}" |base64 )
-#    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${password}@g" "${HR_BASE}/conf/hummerrisk/hummerrisk.properties"
+#    sed -i "s@spring.datasource.password=.*@spring.datasource.password=${password}@g" "${HMR_BASE}/conf/hummerrisk/hummerrisk.properties"
   fi
-    export HR_DB_HOST="mysql"
-    export HR_DB_PORT="3306"
-    export HR_DB_USER="root"
-    export HR_DB_PASSWORD="${DB_PASSWORD}"
-    export HR_DB_NAME="hummerrisk"
-    export HR_USE_EXTERNAL_MYSQL=0
+    export HMR_DB_HOST="mysql"
+    export HMR_DB_PORT="3306"
+    export HMR_DB_USER="root"
+    export HMR_DB_PASSWORD="${DB_PASSWORD}"
+    export HMR_DB_NAME="hummer_risk"
+    export HMR_DB_NACOS_NAME="hummer_config"
+    export HMR_USE_EXTERNAL_MYSQL=0
 }
+
 
 function set_mysql() {
   confirm="n"
-  if [[ $(cat $(pwd)/install.conf |grep HR_USE_EXTERNAL_MYSQL|awk -F= '{print $2}'|cut -d '{' -f2|cut -d '}' -f1) -eq 1 ]];then
-    for i in `cat $(pwd)/install.conf |grep HR_DB`;do
+  if [[ $(cat $(pwd)/install.conf |grep HMR_USE_EXTERNAL_MYSQL|awk -F= '{print $2}'|cut -d '{' -f2|cut -d '}' -f1) -eq 1 ]];then
+    for i in `cat $(pwd)/install.conf |grep HMR_DB`;do
       export ${i}
       confirm="skip"
     done
@@ -130,17 +132,74 @@ function set_mysql() {
   echo_done
 }
 
+# Redis config
+function set_internal_redis() {
+  password=$(get_config REDIS_PASSWORD)
+  if [[ -z "${password}" ]]; then
+    REDIS_PASSWORD=$(random_str 18)
+  fi
+    export HMR_REDIS_HOST="redis"
+    export HMR_REDIS_PORT="6379"
+    export HMR_REDIS_PASSWORD="${REDIS_PASSWORD}"
+    export HMR_USE_EXTERNAL_REDIS=0
+}
+
+function set_external_redis() {
+  redis_host=$(get_config HMR_REDIS_HOST)
+  read_from_input redis_host " 'Please enter Redis server IP'" "" "${redis_host}"
+  if [[ "${redis_host}" == "127.0.0.1" || "${redis_host}" == "localhost" ]]; then
+    redis_host=$(hostname -I | cut -d ' ' -f1)
+  fi
+
+  redis_port=$(get_config HMR_REDIS_PORT)
+  read_from_input redis_port " 'Please enter Redis server port'" "" "${redis_port}"
+
+  redis_pass=$(get_config HMR_REDIS_PASSWORD)
+  read_from_input redis_pass " 'Please enter Redis password'" "" "${redis_pass}"
+
+  if ! test_redis_connect "${redis_host}" "${redis_port}"  "${redis_pass}"; then
+    echo_red " 'Failed to connect to Redis server, please reset'"
+    echo
+    set_mysql
+  fi
+
+  export HMR_REDIS_HOST="${redis_host}"
+  export HMR_REDIS_PORT="${redis_port}"
+  export HMR_REDIS_PASSWORD="${redis_pass}"
+  export HMR_USE_EXTERNAL_REDIS=1
+}
+
+function set_redis() {
+  confirm="n"
+  if [[ $(cat $(pwd)/install.conf |grep HMR_USE_EXTERNAL_REDIS|awk -F= '{print $2}'|cut -d '{' -f2|cut -d '}' -f1) -eq 1 ]];then
+    for i in `cat $(pwd)/install.conf |grep HMR_DB`;do
+      export ${i}
+      confirm="skip"
+    done
+  else
+    read_from_input confirm " 'Do you want to use external Redis'?" "y/n" "${confirm}"
+  fi
+  if [[ ${confirm} != "skip" ]];then
+    if [[ "${confirm}" == "y" ]]; then
+      set_external_redis
+    else
+      set_internal_redis
+    fi
+  fi
+  echo_done
+}
+
 function set_service_port() {
-  echo_yellow "\n5.  'Configure External Port'"
+  echo_yellow "\n6.  'Configure External Port'"
   http_port=$(get_config HTTP_PORT)
   confirm="n"
   read_from_input confirm " 'Do you need to customize the hummerrisk external port'?" "y/n" "${confirm}"
   if [[ "${confirm}" == "y" ]]; then
     read_from_input http_port " hummerrisk web port:" "" "${http_port}"
-    set_config HR_HTTP_PORT "${http_port}"
-    export HR_HTTP_PORT=${http_port}
+    set_config HMR_HTTP_PORT "${http_port}"
+    export HMR_HTTP_PORT=${http_port}
   else
-    export HR_HTTP_PORT=80
+    export HMR_HTTP_PORT=80
   fi
 
   echo_done
@@ -150,7 +209,7 @@ function init_db() {
   use_external_mysql=$(get_config USE_EXTERNAL_MYSQL)
   if [[ "${use_external_mysql}" == "1" ]]; then
     echo_yellow "\n4.  'Init hummerrisk Database'"
-    bash "${BASE_DIR}/6_db_restore.sh" "${HR_BASE}/conf/mysql/hummerrisk.sql" || {
+    bash "${BASE_DIR}/6_db_restore.sh" "${HMR_BASE}/conf/mysql/hummerrisk.sql" || {
       echo_failed
       exit 1
     }
@@ -164,17 +223,21 @@ function main() {
       prepare_config
       echo_yellow "\n4.  'Configure MySQL'"
       set_mysql
+      echo_yellow "\n5.  'Configure Redis'"
+      set_redis
       set_service_port
       init_db
   else
       set_run_base
       check_config
       echo_yellow "\n2.  'Skip Configure MySQL'"
+      echo_yellow "\n3.  'Skip Configure Redis'"
   fi
   if [[ -f ${CONFIG_FILE} ]]; then
-#    env|grep -E "HR_|COMPOSE" > "$CONFIG_FILE"
+#    env|grep -E "HMR_|COMPOSE" > "$CONFIG_FILE"
     envsubst < install.conf > "${CONFIG_FILE}"
-    cd "$CURRENT_DIR"/config_init/hummerrisk && envsubst < hummerrisk.properties > "$CONFIG_DIR/hummerrisk/hummerrisk.properties"
+    cd "$CURRENT_DIR"/config_init/hummerrisk && envsubst < hummerrisk.env > "$CONFIG_DIR/hummerrisk/hummerrisk.env"
+#    cd "$CURRENT_DIR"/config_init/hummerrisk && envsubst < hummerrisk.properties > "$CONFIG_DIR/hummerrisk/hummerrisk.properties"
     cd "$CURRENT_DIR"
   fi
 }

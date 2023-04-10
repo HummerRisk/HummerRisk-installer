@@ -1,0 +1,26 @@
+version: '2.4'
+
+services:
+  auth:
+    depends_on:
+      redis:
+        condition: service_healthy
+  redis:
+    image: registry.cn-beijing.aliyuncs.com/hummerrisk/redis:6.2.10-alpine
+    container_name: hmr-redis
+    restart: always
+    command: ["redis-server", "/etc/redis.conf", "--requirepass", "$HMR_REDIS_PASSWORD"]
+    environment:
+      REDIS_PORT: $HMR_REDIS_PORT
+      REDIS_PASSWORD: $HMR_REDIS_PASSWORD
+    volumes:
+      - ${HMR_BASE}/conf/redis/redis.conf:/etc/redis.conf
+      - ${HMR_BASE}/data/redis:/data
+    healthcheck:
+      test: "redis-cli -h $HMR_REDIS_HOST -p $HMR_REDIS_PORT -a $HMR_REDIS_PASSWORD ping"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - net

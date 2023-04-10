@@ -17,7 +17,7 @@ function prepare_docker_bin() {
   DOCKER_MD5="f8c950e9d4edb901c0a8124706f60919"
   md5_matched=$(check_md5 /tmp/docker.tar.gz "${DOCKER_MD5}")
   if [[ ! -f /tmp/docker.tar.gz || "${md5_matched}" != "1" ]]; then
-    curl -L https://download.docker.com/linux/static/stable/`uname -m`/docker-20.10.17.tgz -o /tmp/docker.tar.gz
+    curl -L "https://download.docker.com/linux/static/stable/`uname -m`/docker-20.10.24.tgz"  -o /tmp/docker.tar.gz
   else
     echo "'Using Docker cache':/tmp/docker.tar.gz"
   fi
@@ -33,7 +33,7 @@ function prepare_compose_bin() {
   if [[ ! -d "$BASE_DIR/docker" ]]; then
     mkdir -p "${BASE_DIR}/docker"
   fi
-  curl -L https://get.daocloud.io/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o docker/docker-compose
+  curl -SL https://download.hummerrisk.com/docker/compose/releases/download/v2.17.2/docker-compose-$(uname -s | tr A-Z a-z)-$(uname -m)  -o docker/docker-compose
   chown -R root:root docker
   chmod +x docker/*
   export PATH=$PATH:$(pwd)/docker
