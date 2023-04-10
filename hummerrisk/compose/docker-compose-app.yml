@@ -256,7 +256,7 @@ services:
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
     ports:
-      - 8089:80
+      - ${HMR_HTTP_PORT}:80
     healthcheck:
       test: "curl -fsL http://localhost:80> /dev/null"
       interval: 10s
@@ -271,27 +271,6 @@ services:
     depends_on:
       auth:
         condition: service_healthy
-
-#  trivy-server:
-#    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-k8s:${VERSION}
-#    container_name: hmr-trivy-server
-#    restart: always
-#    ports:
-#      - ${TRIVY_SERVER_PORT}:4975
-#    command: "trivy server --skip-db-update --listen 0.0.0.0:4975"
-#    volumes:
-#      - ${HMR_BASE}/data/trivy:/root/.cache/trivy/
-#    healthcheck:
-#      test: "curl -fsL http://localhost:4975/healthz> /dev/null"
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 60s
-#    networks:
-#     - net
-#    depends_on:
-#      auth:
-#        condition: service_healthy
 
 networks:
   net:
