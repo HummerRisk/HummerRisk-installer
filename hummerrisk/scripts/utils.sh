@@ -363,6 +363,14 @@ function check_config() {
      export HMR_DB_NACOS_NAME=$(get_config HMR_DB_NACOS_NAME)
      export HMR_DB_PORT=$(get_config HMR_DB_PORT)
      export HMR_HTTP_PORT=$(get_config HMR_HTTP_PORT)
+     export HMR_NACOS_SERVER_ADDR=$(get_config HMR_NACOS_SERVER_ADDR)
+     export HMR_XXL_JOB_ADDR=$(get_config HMR_XXL_JOB_ADDR)
+     # Reids env
+     export HMR_USE_EXTERNAL_REDIS=$(get_config HMR_USE_EXTERNAL_REDIS)
+     export HMR_REDIS_HOST=$(get_config HMR_REDIS_HOST)
+     export HMR_REDIS_PORT=$(get_config HMR_REDIS_PORT)
+     export HMR_REDIS_PASSWORD=$(get_config HMR_REDIS_PASSWORD)
+     # docker env
      export HMR_DOCKER_SUBNET=$(get_config HMR_DOCKER_SUBNET)
      export HMR_DOCKER_GATEWAY=$(get_config HMR_DOCKER_GATEWAY)
      export TRIVY_SERVER_PORT=$(get_config TRIVY_SERVER_PORT)

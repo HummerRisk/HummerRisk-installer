@@ -10,7 +10,7 @@ function prepare_new_package() {
   hummerrisk_online_file_name="hummerrisk-installer-${to_version}.tar.gz"
   echo "Download install script to hummerrisk-installer-${to_version} (开始下载包到 hummerrisk-installer-${to_version})"
   if [ ! -d "hummerrisk-installer-${to_version}" ]; then
-       git_urls=('github.com' 'hub.fastgit.org')
+       git_urls=('download.hummerrisk.com' 'github.com' 'hub.fastgit.org')
        for git_url in "${git_urls[@]}"
        do
           success="true"
