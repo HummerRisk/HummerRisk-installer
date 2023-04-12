@@ -22,10 +22,6 @@ services:
       MYSQL_SERVICE_DB_PARAM: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai
     volumes:
       - ${HMR_BASE}/logs/hummer-nacos:/home/nacos/logs
-#      - ${HMR_BASE}/conf/nacos/application.properties:/home/nacos/init.d/application.properties
-    ports:
-      - "8848:8848"
-      - "9848:9848"
     healthcheck:
       test: "curl -fsL http://localhost:8848/nacos/actuator/health> /dev/null"
       interval: 2s
@@ -70,8 +66,6 @@ services:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
     environment:
       JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_MYSQL_HOST=${HMR_DB_HOST} -DHMR_MYSQL_PORT=${HMR_DB_PORT} -DHMR_MYSQL_DB_NACOS=${HMR_DB_NACOS_NAME} -DHMR_MYSQL_USER=${HMR_DB_USER} -DHMR_MYSQL_PASSWORD=${HMR_DB_PASSWORD}"
-    ports:
-      - 9000:9000
     healthcheck:
       test: "curl -fsL http://localhost:9000/healthz> /dev/null"
       interval: 10s
@@ -94,8 +88,6 @@ services:
       JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
-    ports:
-      - 9200:9200
     healthcheck:
       test: "curl -fsL http://localhost:9200/healthz> /dev/null"
       interval: 10s
@@ -118,8 +110,6 @@ services:
       JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
-    ports:
-      - 8080:8080
     healthcheck:
       test: "curl -fsL http://localhost:8080/healthz> /dev/null"
       interval: 10s
@@ -142,10 +132,6 @@ services:
       JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
-    ports:
-      - 9300:9300
-      - 9301:9301
-      - 8001:8001
     healthcheck:
       test: "curl -fsL http://localhost:9300/healthz> /dev/null"
       interval: 10s
@@ -171,8 +157,6 @@ services:
       JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
-    ports:
-      - 9400:9400
     volumes:
       - ${HMR_BASE}/conf/hummerrisk/aws-config:/root/.aws
       - ${HMR_BASE}/logs/hummer-cloud:/opt/hummerrisk/logs/hummer-cloud
@@ -199,8 +183,6 @@ services:
       JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
-    ports:
-      - 9500:9500
     volumes:
       - ${HMR_BASE}/data/hummerrisk/trivy:/opt/hummerrisk/trivy
       - ${HMR_BASE}/data/hummerrisk/file:/opt/hummerrisk/file
