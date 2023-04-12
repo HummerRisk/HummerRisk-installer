@@ -22,7 +22,7 @@ function main() {
   fi
   echo $restore_cmd "Test"
 
-  if ! docker run --rm -i --network=hummer_net hummerrisk/mysql:5.7.38 ${restore_cmd} <"${DB_FILE}"; then
+  if ! docker run --rm -i --network=hummer_net hummerrisk/mysql:8.0.32 ${restore_cmd} <"${DB_FILE}"; then
     log_error " 'Database recovery failed. Please check whether the database file is complete or try to recover manually'!"
     exit 1
   else
