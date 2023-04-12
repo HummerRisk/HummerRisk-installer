@@ -6,7 +6,7 @@ services:
       redis:
         condition: service_healthy
   redis:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/redis:6.2.10-alpine
+    image: hummerrisk/redis:6.2.10-alpine
     container_name: hmr-redis
     restart: always
     command: ["redis-server", "/etc/redis.conf", "--requirepass", "$HMR_REDIS_PASSWORD"]

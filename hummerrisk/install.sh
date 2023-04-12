@@ -30,8 +30,9 @@ function post_install() {
   fi
   HTTP_PORT=$(get_config HMR_HTTP_PORT)
 
+  rm -rf $(get_config HMR_BASE)/scripts/docker/
+  rm -rf $(get_config HMR_BASE)/scripts/images/
   echo_yellow "1.  'You can use the following command to start, and then visit'"
-#  echo "cd ${PROJECT_DIR}"
   echo "hrctl start"
 
   echo_yellow "\n2.  'Other management commands'"

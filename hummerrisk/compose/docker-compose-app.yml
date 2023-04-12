@@ -2,7 +2,7 @@ version: '2.4'
 
 services:
   nacos:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/nacos-server:v2.2.0
+    image: hummerrisk/nacos-server:v2.2.0
     container_name: hmr-nacos
     mem_limit: 2g
     mem_reservation: 512M
@@ -40,7 +40,7 @@ services:
      - net
 
   jobs:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-job:dev
+    image: hummerrisk/hmr-job:${VERSION}
     container_name: hmr-job
     restart: on-failure
     mem_limit: 1G
@@ -63,7 +63,7 @@ services:
         condition: service_healthy
 
   flyway:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-flyway:${VERSION}
+    image: hummerrisk/hmr-flyway:${VERSION}
     container_name: hmr-flyway
     restart: on-failure
     env_file:
@@ -87,7 +87,7 @@ services:
         condition: service_healthy
 
   auth:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-auth:${VERSION}
+    image: hummerrisk/hmr-auth:${VERSION}
     container_name: hmr-auth
     restart: on-failure
     environment:
@@ -111,7 +111,7 @@ services:
         condition: service_healthy
 
   gateway:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-gateway:${VERSION}
+    image: hummerrisk/hmr-gateway:${VERSION}
     container_name: hmr-gateway
     restart: on-failure
     environment:
@@ -135,7 +135,7 @@ services:
         condition: service_healthy
 
   system:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-system:${VERSION}
+    image: hummerrisk/hmr-system:${VERSION}
     container_name: hmr-system
     restart: on-failure
     environment:
@@ -161,7 +161,7 @@ services:
         condition: service_healthy
 
   cloud:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-cloud:${VERSION}
+    image: hummerrisk/hmr-cloud:${VERSION}
     container_name: hmr-cloud
     restart: on-failure
     mem_limit: 2g
@@ -189,7 +189,7 @@ services:
         condition: service_healthy
 
   k8s:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-k8s:${VERSION}
+    image: hummerrisk/hmr-k8s:${VERSION}
     container_name: hmr-k8s
     restart: on-failure
     mem_limit: 2g
@@ -220,7 +220,7 @@ services:
         condition: service_healthy
 
 #  monitor:
-#    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-monitor:${VERSION}
+#    image: hummerrisk/hmr-monitor:${VERSION}
 #    container_name: hmr-monitor
 #    restart: on-failure
 #    mem_limit: 2g
@@ -247,7 +247,7 @@ services:
 #        condition: service_healthy
 
   ui:
-    image: registry.cn-beijing.aliyuncs.com/hummerrisk/hmr-ui:${VERSION}
+    image: hummerrisk/hmr-ui:${VERSION}
     container_name: hmr-ui
     restart: on-failure
     mem_limit: 512m

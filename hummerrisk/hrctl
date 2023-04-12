@@ -134,7 +134,8 @@ function main() {
       stop
       ;;
     pull)
-      pull
+#      pull
+      bash "${SCRIPT_DIR}/4_load_images.sh"
       ;;
     close)
       close
