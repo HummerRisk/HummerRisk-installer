@@ -11,10 +11,10 @@ cd installer
 hrctl install
 
 # 升级到 static.env 中的版本
-hrctl upgrade v0.9.0
+hrctl upgrade v1.0.0
 
 # 升级到指定版本
-hrctl upgrade v0.9.0
+hrctl upgrade v1.0.0
 ```
 
 
@@ -40,7 +40,7 @@ hrctl uninstall
 hrctl backup_db
 
 # 还原数据库
-hrctl restore_db /opt/hummerrisk/db_backup/hummerrisk-xx.sql
+hrctl restore_db /opt/hmr_db_backup/hummerrisk-xx.sql
 # 帮助
 hrctl --help
 ```
@@ -53,14 +53,18 @@ hrctl --help
 [root@VM-25-15-centos ~]# tree /opt/hummerrisk/conf/
 /opt/hummerrisk/conf/
 ├── hummerrisk
-│   ├── aws-config            # aws配置文件
-│   └── hummerrisk.properties # hummerrisk 的配置文件
-├── install.conf              #  # 整个项目的配置文件
-└── mysql
-    ├── hummerrisk.sql        # 初始化 SQL
-    └── mysql.cnf             # MySQL 数据库的配置文件
-
-3 directories, 4 files
+│   ├── aws-config      # aws配置文件
+│   └── hummerrisk.env   # HummerRisk 的变量配置文件
+├── install.conf
+├── mysql
+│   ├── hummerrisk.sql  # 初始化 SQL
+│   └── mysql.cnf       # MySQL 数据库的配置文件
+├── nacos
+│   └── application.properties # Nacos 的配置文件
+├── nginx
+│   └── hummerrisk.conf  # nginx 配置文件
+└── redis
+    └── redis.conf             # MySQL 数据库的配置文件
 ```
 
 ### install.conf 说明
