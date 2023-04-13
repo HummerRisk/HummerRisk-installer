@@ -70,7 +70,7 @@ jobs:
               # 升级
               hrctl upgrade v1.0.0
             ```
-            ```
+            
             # 产品文档
             点击 [完整文档](https://docs.hummerrisk.com/) 查看完整的安装和使用文档
             
