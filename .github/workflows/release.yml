@@ -64,6 +64,7 @@ jobs:
               # 升级
               hrctl upgrade v0.10.x
             ```
+            
             v1.x.x 版本为 SpringCloud 微服务版，不可由单机版直接升级:
             如果您已经部署 v1.x.x 旧版本，可通过如下命令一键升级至最新版本:
             ```sh
