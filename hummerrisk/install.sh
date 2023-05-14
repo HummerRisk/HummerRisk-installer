@@ -23,6 +23,11 @@ function pre_install() {
 }
 
 function post_install() {
+  if [[ $(docker exec -it hmr-auth sh -c 'curl http://system:9300/xpack/license') =~ 'true' ]];then
+    echo_green "\n>>>  'Loading XPACK Plugin'"
+    local  EXE="$(get_docker_compose_cmd_line) -f  ${HMR_BASE}/compose/docker-compose-xpack.yml"
+    ${EXE} up -d
+  fi
   echo_green "\n>>>  'The Installation is Complete'"
   HOST=$(ip addr | grep 'state UP' -A3 | grep inet | grep -Ev '(127.0.0.1|inet6|docker)' | awk '{print $2}' | tr -d "addr:" | head -n 1 | cut -d / -f1)
   if [ ! "$HOST" ]; then
@@ -78,8 +83,8 @@ function main() {
     exit 1
   fi
   set_current_version
-  /bin/bash hrctl start
   download_cve_data
+  /bin/bash hrctl start
   post_install
 }
 
