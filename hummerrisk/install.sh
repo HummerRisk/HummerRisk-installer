@@ -23,7 +23,7 @@ function pre_install() {
 }
 
 function post_install() {
-  if [[ $(docker exec -it hmr-auth sh -c 'curl http://system:9300/xpack/license') =~ 'true' ]];then
+  if [[ $(docker exec -it hmr-auth sh -c 'curl http://system:9300/license') =~ 'true' ]];then
     echo_green "\n>>>  'Loading XPACK Plugin'"
     local  EXE="$(get_docker_compose_cmd_line) -f  ${HMR_BASE}/compose/docker-compose-xpack.yml"
     ${EXE} up -d

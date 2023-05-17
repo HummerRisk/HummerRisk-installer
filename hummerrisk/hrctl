@@ -61,10 +61,6 @@ function service_to_docker_name() {
 
 EXE=""
 
-function start() {
-  ${EXE} up -d
-}
-
 function stop() {
   if [[ -n "${target}" ]]; then
     ${EXE} stop "${target}" && ${EXE} rm -f "${target}"
@@ -112,6 +108,11 @@ function main() {
   else
     pre_check || return 3
     EXE=$(get_docker_compose_cmd_line)
+    if docker exec -it hmr-auth sh -c 'curl http://system:9300/license' &> /dev/null;then
+      if [[ $(docker exec -it hmr-auth sh -c 'curl http://system:9300/license') =~ 'true' ]];then
+        local  EXE="$(get_docker_compose_cmd_line) -f  ${HMR_BASE}/compose/docker-compose-xpack.yml"
+      fi
+    fi
   fi
   case "${action}" in
     install)
@@ -125,7 +126,7 @@ function main() {
       bash "${SCRIPT_DIR}/1_config_hummerrisk.sh"
       ;;
     start)
-      start
+      ${EXE} up -d
       ;;
     restart)
       restart
