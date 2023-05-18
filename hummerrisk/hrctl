@@ -94,11 +94,6 @@ function pull() {
   ${EXE} pull
 }
 
-function restart() {
-  stop
-  echo -e "\n"
-  start
-}
 
 function main() {
   if [[ "${action}" == "help" || "${action}" == "h" || "${action}" == "-h" || "${action}" == "--help" ]]; then
@@ -129,7 +124,8 @@ function main() {
       ${EXE} up -d
       ;;
     restart)
-      restart
+      stop
+      ${EXE} up -d
       ;;
     stop)
       stop
