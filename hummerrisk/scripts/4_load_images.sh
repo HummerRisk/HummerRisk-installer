@@ -40,29 +40,32 @@ function load_image_files() {
 function pull_image() {
   images=$(get_images)
   DOCKER_IMAGE_PREFIX=$(get_config HMR_DOCKER_IMAGE_PREFIX)
-  if [[ "x${DOCKER_IMAGE_PREFIX}" == "x" ]];then
-    DOCKER_IMAGE_PREFIX="registry.cn-beijing.aliyuncs.com"
-  fi
+#  if [[ "x${DOCKER_IMAGE_PREFIX}" == "x" ]];then
+#    DOCKER_IMAGE_PREFIX="registry.cn-beijing.aliyuncs.com"
+#  fi
   i=1
   for image in ${images}; do
     echo "[${image}]"
-    if docker images | grep "${image%:*}" | grep "${image#*:}" | grep -v ${DOCKER_IMAGE_PREFIX} >/dev/null; then
-      if [[ -n "${DOCKER_IMAGE_PREFIX}" && $(image_has_prefix "${image}") == "0" ]]; then
-        docker pull "${DOCKER_IMAGE_PREFIX}/${image}"
-        docker tag "${DOCKER_IMAGE_PREFIX}/${image}" "${image}"
-        docker rmi -f "${DOCKER_IMAGE_PREFIX}/${image}"
-      else
-        docker pull "${image}"
-      fi
+    if [[ -n "${DOCKER_IMAGE_PREFIX}" && $(image_has_prefix "${image}") == "0" ]]; then
+      docker pull "${DOCKER_IMAGE_PREFIX}/${image}"
+      docker tag "${DOCKER_IMAGE_PREFIX}/${image}" "${image}" &> /dev/null
+      docker rmi -f "${DOCKER_IMAGE_PREFIX}/${image}"  &> /dev/null
+    else
+      docker pull "${image}"
     fi
+#    if docker images | grep "${image%:*}" | grep "${image#*:}" | grep -v ${DOCKER_IMAGE_PREFIX} >/dev/null; then
+#
+#    fi
     ((i++)) || true
   done
 }
 
 function main() {
   if [[ -d "${IMAGE_DIR}" ]]; then
+    echo "Loading ..."
     load_image_files
   else
+    echo "Pulling ..."
     pull_image
   fi
   echo_done
