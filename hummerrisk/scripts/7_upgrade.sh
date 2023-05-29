@@ -7,9 +7,10 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 target=$1
 
 function prepare_new_package() {
-  hummerrisk_online_file_name="hummerrisk-installer-${to_version}.tar.gz"
-  echo "Download install script to hummerrisk-installer-${to_version} (开始下载包到 hummerrisk-installer-${to_version})"
-  if [ ! -d "hummerrisk-installer-${to_version}" ]; then
+  version=$1
+  hummerrisk_online_file_name="hummerrisk-installer-${version}.tar.gz"
+  echo "Download install script to hummerrisk-installer-${version} (开始下载包到 hummerrisk-installer-${version})"
+  if [ ! -d "hummerrisk-installer-${version}" ]; then
        git_urls=('download.hummerrisk.com' 'github.com' 'hub.fastgit.org')
        for git_url in "${git_urls[@]}"
        do
@@ -35,14 +36,14 @@ function prepare_new_package() {
            echo -e "\nNo stable download server found, please check the network or use the offline installation package"
            exit 1
        fi
-    curl -LOk -m 60 -o "${hummerrisk_online_file_name}" https://${server_url}/hummerrisk/hummerrisk/releases/download/"${to_version}"/"${hummerrisk_online_file_name}" || {
+    curl -LOk -m 60 -o "${hummerrisk_online_file_name}" https://${server_url}/hummerrisk/hummerrisk/releases/download/"${version}"/"${hummerrisk_online_file_name}" || {
     rm -rf "${hummerrisk_online_file_name}"
-    echo -e "[\033[31m ERROR \033[0m] Failed to download hummerrisk-installer-${to_version} (下载 hummerrisk-installer-${to_version} 失败, 请检查网络是否正常或尝试重新执行脚本)"
+    echo -e "[\033[31m ERROR \033[0m] Failed to download hummerrisk-installer-${version} (下载 hummerrisk-installer-${version} 失败, 请检查网络是否正常或尝试重新执行脚本)"
     exit 1
     }
     tar -zxf "${hummerrisk_online_file_name}" || {
-      rm -rf hummerrisk-installer-"${to_version}"
-      echo -e "[\033[31m ERROR \033[0m] Failed to unzip hummerrisk-installer-${to_version} (解压 hummerrisk-installer-${to_version} 失败, 请检查网络是否正常或尝试重新执行脚本)"
+      rm -rf hummerrisk-installer-"${version}"
+      echo -e "[\033[31m ERROR \033[0m] Failed to unzip hummerrisk-installer-${version} (解压 hummerrisk-installer-${version} 失败, 请检查网络是否正常或尝试重新执行脚本)"
       exit 1
     }
     rm -rf "${hummerrisk_online_file_name}"
@@ -53,24 +54,25 @@ function upgrade_config() {
   # 在线升级
   if [[ ! -f "install.sh" ]];then
     # 处理版本
-    echo "online update !"
+    echo "Online update !"
+    to_version=""
     if [[ -n "${target}" ]]; then
       to_version="${target}"
     else
-      echo to_version=$(get_latest_version)
+      to_version=$(get_latest_version)
     fi
-    prepare_new_package
-    if [[ "${to_version}" && "${to_version}" != "${VERSION}" ]]; then
-#    export VERSION=${to_version}
+    echo "Update version to: $to_version"
+    prepare_new_package $to_version
+#    if [[ "${to_version}" != "${VERSION}" ]] || [[ "${target}" =~ '-f' ]]; then
     cd hummerrisk-installer-"${to_version}"|| exit 1
     sed -i -e "1,4s/VERSION=.*/VERSION=${to_version}/g" scripts/const.sh
     sed -i "s@VERSION=.*@VERSION=${to_version}@g" "${SCRIPT_DIR}/const.sh"
     sed -i "s@HMR_CURRENT_VERSION=.*@HMR_CURRENT_VERSION=${to_version}@g" "${CONFIG_FILE}"
     /bin/bash install.sh
-    elif [[ "${to_version}" != "${VERSION}" ]]; then
-      echo "The current version is the same as the latest version, exit the upgrade process"
-      exit 0
-    fi
+#    elif [[ "${to_version}" == "${VERSION}" ]]; then
+#      echo "The current version is the same as the latest version, exit the upgrade process"
+#      exit 0
+#    fi
   else
     echo "offline update ！"
     /bin/bash install.sh
@@ -101,7 +103,7 @@ function backup_db() {
 function clear_images() {
   current_version=$(get_config HMR_CURRENT_VERSION)
   if [[ "x${current_version}" != "x" ]]; then
-    docker images | grep hummerrisk/ | grep -Ev "${current_version}|mysql" | awk '{print $3}' | xargs docker rmi -f
+    docker images | grep hummerrisk/ | grep -Ev "${current_version}|mysql" | awk '{print $3}' | xargs docker rmi -f &> /dev/null
   fi
   echo_done
 }

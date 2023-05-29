@@ -45,11 +45,12 @@ function pull_image() {
 #  fi
   i=1
   for image in ${images}; do
-    echo "[${image}]"
     if [[ -n "${DOCKER_IMAGE_PREFIX}" && $(image_has_prefix "${image}") == "0" ]]; then
+      echo -e "-----------[${image}]-----------"
       docker pull "${DOCKER_IMAGE_PREFIX}/${image}"
       docker tag "${DOCKER_IMAGE_PREFIX}/${image}" "${image}" &> /dev/null
       docker rmi -f "${DOCKER_IMAGE_PREFIX}/${image}"  &> /dev/null
+      echo
     else
       docker pull "${image}"
     fi
