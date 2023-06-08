@@ -145,6 +145,7 @@ function get_images() {
     "hummerrisk-ah/hmr-cloud:${VERSION}"
     "hummerrisk-ah/hmr-ui:${VERSION}"
     "hummerrisk-ah/hmr-xpack:${VERSION}"
+    "hummerrisk-ah/hmr-custodian-server:${VERSION}"
   )
   for image in "${images[@]}"; do
     echo "${image}"
