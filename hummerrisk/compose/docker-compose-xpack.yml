@@ -26,3 +26,27 @@ services:
     depends_on:
       system:
         condition: service_healthy
+
+  condition-server:
+    image: hummerrisk/hmr-condition-server:${VERSION}
+    container_name: hmr-condition-server
+    restart: on-failure
+    mem_limit: 2g
+    mem_reservation: 512M
+    cpus: 2
+    env_file:
+      - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
+    volumes:
+      - ${HMR_BASE}/data/hummerrisk/report:/opt/hummerrisk/report
+      - ${HMR_BASE}/logs/hummer-condition:/opt/hummerrisk/logs/hummer-condition
+    healthcheck:
+      test: "curl -fsL http://localhost:9600/healthz> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    networks:
+     - net
+    depends_on:
+      system:
+        condition: service_healthy

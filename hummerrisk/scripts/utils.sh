@@ -134,18 +134,17 @@ function get_images() {
 #  EXE=$(get_docker_compose_cmd_line)
 #  images=$(${EXE} config|grep image:|awk '{print $2}')
   images=(
-    "hummerrisk/mysql:8.0.32"
-    "hummerrisk/redis:6.2.10-alpine"
-    "hummerrisk/nacos-server:v2.2.0"
-    "hummerrisk/hmr-job:${VERSION}"
-    "hummerrisk/hmr-flyway:${VERSION}"
-    "hummerrisk/hmr-system:${VERSION}"
-    "hummerrisk/hmr-k8s:${VERSION}"
-    "hummerrisk/hmr-gateway:${VERSION}"
-    "hummerrisk/hmr-auth:${VERSION}"
-    "hummerrisk/hmr-cloud:${VERSION}"
-    "hummerrisk/hmr-ui:${VERSION}"
-    "hummerrisk/hmr-xpack:${VERSION}"
+    "hummerrisk-ah/mysql:8.0.32"
+    "hummerrisk-ah/redis:6.2.10-alpine"
+    "hummerrisk-ah/nacos-server:v2.2.0"
+    "hummerrisk-ah/hmr-job:${VERSION}"
+    "hummerrisk-ah/hmr-flyway:${VERSION}"
+    "hummerrisk-ah/hmr-system:${VERSION}"
+    "hummerrisk-ah/hmr-gateway:${VERSION}"
+    "hummerrisk-ah/hmr-auth:${VERSION}"
+    "hummerrisk-ah/hmr-cloud:${VERSION}"
+    "hummerrisk-ah/hmr-ui:${VERSION}"
+    "hummerrisk-ah/hmr-xpack:${VERSION}"
   )
   for image in "${images[@]}"; do
     echo "${image}"
@@ -324,7 +323,7 @@ function pull_image() {
   DOCKER_IMAGE_PREFIX=$(get_config_or_env 'HMR_DOCKER_IMAGE_PREFIX')
   IMAGE_PULL_POLICY=${IMAGE_PULL_POLICY-"Always"}
   if [[ "x${DOCKER_IMAGE_PREFIX}" == "x" ]];then
-    DOCKER_IMAGE_PREFIX="registry.cn-beijing.aliyuncs.com"
+    DOCKER_IMAGE_PREFIX="registry.cn-hangzhou.aliyuncs.com"
   fi
   if docker image inspect -f '{{ .Id }}' "$image" &> /dev/null; then
     exits=0
