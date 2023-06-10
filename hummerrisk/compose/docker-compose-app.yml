@@ -2,7 +2,7 @@ version: '2.4'
 
 services:
   nacos:
-    image: hummerrisk/nacos-server:v2.2.0
+    image: hummerrisk-ah/nacos-server:v2.2.0
     container_name: hmr-nacos
     mem_limit: 2g
     mem_reservation: 512M
@@ -36,7 +36,7 @@ services:
      - net
 
   jobs:
-    image: hummerrisk/hmr-job:${VERSION}
+    image: hummerrisk-ah/hmr-job:${VERSION}
     container_name: hmr-job
     restart: on-failure
     mem_limit: 1G
@@ -59,7 +59,7 @@ services:
         condition: service_healthy
 
   flyway:
-    image: hummerrisk/hmr-flyway:${VERSION}
+    image: hummerrisk-ah/hmr-flyway:${VERSION}
     container_name: hmr-flyway
     restart: on-failure
     env_file:
@@ -81,7 +81,7 @@ services:
         condition: service_healthy
 
   auth:
-    image: hummerrisk/hmr-auth:${VERSION}
+    image: hummerrisk-ah/hmr-auth:${VERSION}
     container_name: hmr-auth
     restart: on-failure
     environment:
@@ -103,7 +103,7 @@ services:
         condition: service_healthy
 
   gateway:
-    image: hummerrisk/hmr-gateway:${VERSION}
+    image: hummerrisk-ah/hmr-gateway:${VERSION}
     container_name: hmr-gateway
     restart: on-failure
     environment:
@@ -125,7 +125,7 @@ services:
         condition: service_healthy
 
   system:
-    image: hummerrisk/hmr-system:${VERSION}
+    image: hummerrisk-ah/hmr-system:${VERSION}
     container_name: hmr-system
     restart: on-failure
     environment:
@@ -147,7 +147,7 @@ services:
         condition: service_healthy
 
   cloud:
-    image: hummerrisk/hmr-cloud:${VERSION}
+    image: hummerrisk-ah/hmr-cloud:${VERSION}
     container_name: hmr-cloud
     restart: on-failure
     mem_limit: 2g
@@ -174,7 +174,7 @@ services:
 
 
 #  monitor:
-#    image: hummerrisk/hmr-monitor:${VERSION}
+#    image: hummerrisk-ah/hmr-monitor:${VERSION}
 #    container_name: hmr-monitor
 #    restart: on-failure
 #    mem_limit: 2g
@@ -201,7 +201,7 @@ services:
 #        condition: service_healthy
 
   ui:
-    image: hummerrisk/hmr-ui:${VERSION}
+    image: hummerrisk-ah/hmr-ui:${VERSION}
     container_name: hmr-ui
     restart: on-failure
     mem_limit: 512m

@@ -2,7 +2,7 @@ version: '2.4'
 
 services:
   xpack:
-    image: hummerrisk/hmr-xpack:${VERSION}
+    image: hummerrisk-ah/hmr-xpack:${VERSION}
     container_name: hmr-xpack
     restart: on-failure
     mem_limit: 2g
@@ -28,7 +28,7 @@ services:
         condition: service_healthy
 
   condition-server:
-    image: hummerrisk/hmr-scanner:${VERSION}
+    image: hummerrisk-ah/hmr-scanner:${VERSION}
     container_name: hmr-scanner
     restart: on-failure
     mem_limit: 2g
