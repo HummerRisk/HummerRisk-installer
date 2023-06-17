@@ -34,6 +34,9 @@ services:
     mem_limit: 2g
     mem_reservation: 512M
     cpus: 2
+    environment:
+      HMR_NACOS_SERVER_ADDR: "${HMR_NACOS_SERVER_ADDR}"
+      LOG_PATH: "/opt/hummerrisk"
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
     volumes:
