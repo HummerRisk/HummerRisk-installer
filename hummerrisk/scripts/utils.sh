@@ -146,6 +146,7 @@ function get_images() {
     "hummerrisk/hmr-cloud:${VERSION}"
     "hummerrisk/hmr-ui:${VERSION}"
     "hummerrisk/hmr-xpack:${VERSION}"
+    "hummerrisk/hmr-scanner:${VERSION}"
   )
   for image in "${images[@]}"; do
     echo "${image}"
@@ -249,7 +250,7 @@ function get_docker_compose_services() {
   fi
   if docker exec -it hmr-auth sh -c 'curl http://system:9300/license' &> /dev/null;then
     if [[ $(docker exec -it hmr-auth sh -c 'curl http://system:9300/license') =~ 'true' ]];then
-      services+=" xpack"
+      services+=" xpack scanner "
     fi
   fi
   echo "${services}"

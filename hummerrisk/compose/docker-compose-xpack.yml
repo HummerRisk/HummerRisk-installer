@@ -26,3 +26,30 @@ services:
     depends_on:
       system:
         condition: service_healthy
+
+  scanner:
+    image: hummerrisk/hmr-scanner:${VERSION}
+    container_name: hmr-scanner
+    restart: on-failure
+    mem_limit: 2g
+    mem_reservation: 512M
+    cpus: 2
+    environment:
+      HMR_NACOS_SERVER_ADDR: "${HMR_NACOS_SERVER_ADDR}"
+      LOG_PATH: "/opt/hummerrisk"
+    env_file:
+      - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
+    volumes:
+      - ${HMR_BASE}/data/hummerrisk/report:/opt/hummerrisk
+      - ${HMR_BASE}/logs/hummer-condition:/opt/hummerrisk/logs/hummer-condition
+    healthcheck:
+      test: "curl -fsL http://localhost/healthz> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    networks:
+     - net
+    depends_on:
+      system:
+        condition: service_healthy
