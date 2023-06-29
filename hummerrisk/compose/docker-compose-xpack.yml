@@ -41,7 +41,7 @@ services:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
     volumes:
       - ${HMR_BASE}/data/hummerrisk/report:/opt/hummerrisk
-      - ${HMR_BASE}/logs/hummer-condition:/opt/hummerrisk/logs/hummer-condition
+      - ${HMR_BASE}/logs/hummer-scanner:/opt/hummerrisk/logs/hummer-scanner
     healthcheck:
       test: "curl -fsL http://localhost/healthz> /dev/null"
       interval: 10s
