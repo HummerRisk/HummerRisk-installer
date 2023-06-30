@@ -36,12 +36,12 @@ services:
     cpus: 2
     environment:
       HMR_NACOS_SERVER_ADDR: "${HMR_NACOS_SERVER_ADDR}"
-      LOG_PATH: "/opt/hummerrisk"
+      LOG_PATH: "/opt/hummerrisk/logs"
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
     volumes:
       - ${HMR_BASE}/data/hummerrisk/report:/opt/hummerrisk
-      - ${HMR_BASE}/logs/hummer-scanner:/opt/hummerrisk/logs/hummer-scanner
+      - ${HMR_BASE}/logs/hummer-scanner:/opt/hummerrisk/logs
     healthcheck:
       test: "curl -fsL http://localhost/healthz> /dev/null"
       interval: 10s
