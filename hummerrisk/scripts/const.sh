@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # 当前 HummerRisk 版本
-export VERSION=v1.2.0
+export VERSION=v1.3.0
 export HMR_BASE=/opt/hummerrisk
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
