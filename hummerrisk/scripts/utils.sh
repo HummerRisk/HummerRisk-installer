@@ -126,11 +126,7 @@ function test_redis_connect() {
 }
 
 function get_images() {
-  USE_XPACK=$(get_config_or_env '0')
   scope="public"
-  if [[ "$USE_XPACK" == "1" ]];then
-    scope="all"
-  fi
 #  EXE=$(get_docker_compose_cmd_line)
 #  images=$(${EXE} config|grep image:|awk '{print $2}')
   images=(
@@ -140,12 +136,10 @@ function get_images() {
     "hummerrisk/hmr-job:${VERSION}"
     "hummerrisk/hmr-flyway:${VERSION}"
     "hummerrisk/hmr-system:${VERSION}"
-    "hummerrisk/hmr-k8s:${VERSION}"
     "hummerrisk/hmr-gateway:${VERSION}"
     "hummerrisk/hmr-auth:${VERSION}"
     "hummerrisk/hmr-cloud:${VERSION}"
     "hummerrisk/hmr-ui:${VERSION}"
-    "hummerrisk/hmr-xpack:${VERSION}"
     "hummerrisk/hmr-scanner:${VERSION}"
   )
   for image in "${images[@]}"; do
@@ -239,7 +233,7 @@ function get_docker_compose_cmd_line() {
 
 function get_docker_compose_services() {
   ignore_db="$1"
-  services="auth cloud flyway gateway jobs k8s  nacos system ui"
+  services="auth cloud flyway gateway jobs  nacos system ui"
   use_external_mysql=$(get_config HMR_USE_EXTERNAL_MYSQL)
   use_external_redis=$(get_config HMR_USE_EXTERNAL_REDIS)
   if [[ "${use_external_mysql}" != "1" && "${ignore_db}" != "ignore_db" ]]; then
@@ -247,11 +241,6 @@ function get_docker_compose_services() {
   fi
   if [[ "${use_external_redis}" != "1" && "${ignore_db}" != "ignore_db" ]]; then
     services+=" redis"
-  fi
-  if docker exec -it hmr-auth sh -c 'curl http://system:9300/license' &> /dev/null;then
-    if [[ $(docker exec -it hmr-auth sh -c 'curl http://system:9300/license') =~ 'true' ]];then
-      services+=" xpack scanner "
-    fi
   fi
   echo "${services}"
 }

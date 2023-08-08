@@ -42,6 +42,8 @@ services:
     mem_limit: 1G
     mem_reservation: 128M
     cpus: 0.5
+    ports:
+     - 8084:8084
     env_file:
       - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
     healthcheck:
@@ -172,35 +174,6 @@ services:
       auth:
         condition: service_healthy
 
-  k8s:
-    image: hummerrisk/hmr-k8s:${VERSION}
-    container_name: hmr-k8s
-    restart: on-failure
-    mem_limit: 2g
-    mem_reservation: 512M
-    cpus: 2
-    environment:
-      JAVA_OPTIONS: "-Dfile.encoding=utf-8 -Djava.awt.headless=true -DHMR_NACOS_SERVER_ADDR=${HMR_NACOS_SERVER_ADDR}"
-    env_file:
-      - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
-    volumes:
-      - ${HMR_BASE}/data/hummerrisk/trivy:/opt/hummerrisk/trivy
-      - ${HMR_BASE}/data/hummerrisk/file:/opt/hummerrisk/file
-      - ${HMR_BASE}/data/hummerrisk/image:/opt/hummerrisk/image
-      - ${HMR_BASE}/logs/hummer-k8s:/opt/hummerrisk/logs/hummer-k8s
-      - ${HMR_BASE}/data/trivy:/root/.cache/trivy/
-    healthcheck:
-      test: "curl -fsL http://localhost:9500/healthz> /dev/null"
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 60s
-    networks:
-     - net
-    depends_on:
-      auth:
-        condition: service_healthy
-
 #  monitor:
 #    image: hummerrisk/hmr-monitor:${VERSION}
 #    container_name: hmr-monitor
@@ -253,7 +226,32 @@ services:
     depends_on:
       auth:
         condition: service_healthy
-
+  scanner:
+    image: hummerrisk/hmr-scanner:${VERSION}
+    container_name: hmr-scanner
+    restart: on-failure
+    mem_limit: 2g
+    mem_reservation: 512M
+    cpus: 2
+    environment:
+      HMR_NACOS_SERVER_ADDR: "${HMR_NACOS_SERVER_ADDR}"
+      LOG_PATH: "/opt/hummerrisk/logs"
+    env_file:
+      - ${HMR_BASE}/conf/hummerrisk/hummerrisk.env
+    volumes:
+      - ${HMR_BASE}/data/hummerrisk/report:/opt/hummerrisk
+      - ${HMR_BASE}/logs/hummer-scanner:/opt/hummerrisk/logs
+    healthcheck:
+      test: "curl -fsL http://localhost/healthz> /dev/null"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    networks:
+     - net
+    depends_on:
+      system:
+        condition: service_healthy
 networks:
   net:
     driver: bridge

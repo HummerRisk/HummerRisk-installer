@@ -83,7 +83,6 @@ install.conf 有说明，可以参考
 | hmr-auth    | 9200           |  |
 | hmr-system  | 9300,9301,8001 |  |
 | hmr-cloud   | 9400,9401,8002 |  |
-| hmr-k8s     | 9500,9501,8003 |  |
 | hmr-monitor | 9100           |  |
 | hmr-mysql   | 3306           |  |
 | hmr-nacos   | 8848,9848      |  |
