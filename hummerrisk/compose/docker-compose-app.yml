@@ -162,6 +162,7 @@ services:
     volumes:
       - ${HMR_BASE}/conf/hummerrisk/aws-config:/root/.aws
       - ${HMR_BASE}/logs/hummer-cloud:/opt/hummerrisk/logs/hummer-cloud
+      - ${HMR_BASE}/data/hummerrisk/report:/opt/hummerrisk/report
     healthcheck:
       test: "curl -fsL http://localhost:9400/healthz> /dev/null"
       interval: 10s
