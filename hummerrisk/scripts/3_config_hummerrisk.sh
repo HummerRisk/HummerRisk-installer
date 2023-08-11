@@ -42,7 +42,7 @@ function set_run_base() {
   fi
 
   if [[ ! -d "${HMR_BASE}/data" ]]; then
-    mkdir -p "${HMR_BASE}"/data/{hummerrisk,mysql,trivy}
+    mkdir -p "${HMR_BASE}"/data/{hummerrisk,mysql}
   fi
   if [[ ! -d "${HMR_BASE}/logs" ]]; then
     mkdir -p "${HMR_BASE}/logs"

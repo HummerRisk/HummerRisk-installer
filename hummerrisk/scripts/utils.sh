@@ -369,6 +369,5 @@ function check_config() {
      # docker env
      export HMR_DOCKER_SUBNET=$(get_config HMR_DOCKER_SUBNET)
      export HMR_DOCKER_GATEWAY=$(get_config HMR_DOCKER_GATEWAY)
-     export TRIVY_SERVER_PORT=$(get_config TRIVY_SERVER_PORT)
   fi
 }
