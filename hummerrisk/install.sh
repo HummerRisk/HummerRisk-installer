@@ -23,12 +23,9 @@ function pre_install() {
 }
 
 function post_install() {
-  if [[ $(docker exec -it hmr-auth sh -c 'curl http://system:9300/license') =~ 'true' ]];then
-    echo_green "\n>>>  'Loading XPACK Plugin'"
-    local  EXE="$(get_docker_compose_cmd_line) -f  ${HMR_BASE}/compose/docker-compose-xpack.yml"
-    ${EXE} up -d
-  fi
-  echo_green "\n>>>  'The Installation is Complete'"
+  EXE="$(get_docker_compose_cmd_line)
+  ${EXE} up -d
+  echo_green "\n >>  'The Installation is Complete'"
   HOST=$(ip addr | grep 'state UP' -A3 | grep inet | grep -Ev '(127.0.0.1|inet6|docker)' | awk '{print $2}' | tr -d "addr:" | head -n 1 | cut -d / -f1)
   if [ ! "$HOST" ]; then
       HOST=$(hostname -I | cut -d ' ' -f1)
@@ -70,15 +67,15 @@ function download_cve_data() {
 function main() {
   echo_logo
   pre_install
-  echo_green "\n>>>  'Install and Configure Docker'"
+  echo_green "\n>>  'Install and Configure Docker'"
   if ! bash "${SCRIPT_DIR}/2_install_docker.sh"; then
     exit 1
   fi
-  echo_green "\n>>>  'Install and Configure hummerrisk'"
+  echo_green "\n>>  'Install and Configure hummerrisk'"
   if ! bash "${SCRIPT_DIR}/3_config_hummerrisk.sh"; then
     exit 1
   fi
-  echo_green "\n>>>  'Loading Docker Image'"
+  echo_green "\n>>  'Loading Docker Image'"
   if ! bash "${SCRIPT_DIR}/4_load_images.sh"; then
     exit 1
   fi

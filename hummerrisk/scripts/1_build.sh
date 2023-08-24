@@ -5,13 +5,6 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 . "${BASE_DIR}/utils.sh"
 
 IMAGE_DIR="images"
-USE_XPACK="${USE_XPACK-0}"
-
-function prepare_config_xpack() {
-  if [[ "${USE_XPACK}" == "1" ]]; then
-    sed -i 's@USE_XPACK=.*@USE_XPACK=1@g' "${PROJECT_DIR}"/install.conf
-  fi
-}
 
 function prepare_docker_bin() {
   DOCKER_MD5="f8c950e9d4edb901c0a8124706f60919"
@@ -76,8 +69,6 @@ function prepare_image_files() {
 }
 
 function main() {
-  prepare_config_xpack
-
   echo -e "\n 1. Preparing Docker binary offline package"
   prepare_docker_bin
   prepare_compose_bin

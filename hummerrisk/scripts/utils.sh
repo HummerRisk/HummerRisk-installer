@@ -126,11 +126,7 @@ function test_redis_connect() {
 }
 
 function get_images() {
-  USE_XPACK=$(get_config_or_env '0')
   scope="public"
-  if [[ "$USE_XPACK" == "1" ]];then
-    scope="all"
-  fi
 #  EXE=$(get_docker_compose_cmd_line)
 #  images=$(${EXE} config|grep image:|awk '{print $2}')
   images=(
@@ -145,8 +141,6 @@ function get_images() {
     "hummerrisk/hmr-auth:${VERSION}"
     "hummerrisk/hmr-cloud:${VERSION}"
     "hummerrisk/hmr-ui:${VERSION}"
-    "hummerrisk/hmr-xpack:${VERSION}"
-    "hummerrisk/hmr-scanner:${VERSION}"
   )
   for image in "${images[@]}"; do
     echo "${image}"
@@ -248,11 +242,7 @@ function get_docker_compose_services() {
   if [[ "${use_external_redis}" != "1" && "${ignore_db}" != "ignore_db" ]]; then
     services+=" redis"
   fi
-  if docker exec -it hmr-auth sh -c 'curl http://system:9300/license' &> /dev/null;then
-    if [[ $(docker exec -it hmr-auth sh -c 'curl http://system:9300/license') =~ 'true' ]];then
-      services+=" xpack scanner "
-    fi
-  fi
+
   echo "${services}"
 }
 

@@ -94,31 +94,9 @@ function pull() {
   ${EXE} pull
 }
 
-function check_xpack_exe() {
-    EXE=$(get_docker_compose_cmd_line)
-    if docker exec -it hmr-auth sh -c 'curl http://system:9300/license' &> /dev/null;then
-      if [[ $(docker exec -it hmr-auth sh -c 'curl http://system:9300/license') =~ 'true' ]];then
-        EXE+=" -f  ${HMR_BASE}/compose/docker-compose-xpack.yml"
-      fi
-    fi
-    echo $EXE
-}
 
 function start() {
-    `check_xpack_exe` up -d
-    for (( i = 0; i < 6; i++ )); do
-      sleep 30
-      if docker exec -it hmr-auth sh -c 'curl http://system:9300/license' &> /dev/null;then
-        local result=$(docker exec -it hmr-auth sh -c 'curl http://system:9300/license')
-        if [[  "$result" =~ 'true' ]];then
-          `check_xpack_exe` up -d;break
-        elif [[ "$result" =~ 'false' ]]; then
-          break
-        else
-          continue
-        fi
-      fi
-    done
+    ${EXE} up -d
 }
 
 function main() {
@@ -128,7 +106,7 @@ function main() {
     echo ""
   else
     pre_check || return 3
-    EXE=`check_xpack_exe`
+    EXE=$(get_docker_compose_cmd_line)
   fi
   case "${action}" in
     install)
