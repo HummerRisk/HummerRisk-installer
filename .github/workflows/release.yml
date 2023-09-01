@@ -51,12 +51,12 @@ jobs:
             
             全球：
             ```sh
-            curl -sSL https://github.com/HummerRisk/HummerRisk/releases/latest/download/quick_start.sh | sh
+            curl -sSL https://github.com/HummerRisk/HummerRisk/releases/latest/download/quick_start.sh | bash
             ```
             
             中国大陆：
             ```sh
-            curl -sSL https://download.hummerrisk.com/hummerrisk/hummerrisk/releases/download/latest/quick_start.sh | sh
+            curl -sSL https://download.hummerrisk.com/hummerrisk/hummerrisk/releases/download/latest/quick_start.sh | bash
             ```
             
             v0.1.0-v0.10.x 版本为 SpringBoot 单机版，之间可以互相升级:
