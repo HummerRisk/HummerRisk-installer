@@ -140,6 +140,7 @@ services:
       start_period: 60s
     volumes:
       - ${HMR_BASE}/logs/hummer-system:/opt/hummerrisk/logs/hummer-system
+      - ${HMR_BASE}/data/hummerrisk/report:/opt/hummerrisk/report
     networks:
      - net
     depends_on:
